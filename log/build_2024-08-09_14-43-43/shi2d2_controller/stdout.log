@@ -1,0 +1,19 @@
+[35m[1mConsolidate compiler generated dependencies of target head_controller[0m
+[100%] Built target head_controller
+-- Install configuration: ""
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/lib/shi2d2_controller/head_controller
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/package_run_dependencies/shi2d2_controller
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/parent_prefix_path/shi2d2_controller
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/ament_prefix_path.sh
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/ament_prefix_path.dsv
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/path.sh
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/path.dsv
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.bash
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.sh
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.zsh
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.dsv
+-- Installing: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/package.dsv
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/packages/shi2d2_controller
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/cmake/shi2d2_controllerConfig.cmake
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/cmake/shi2d2_controllerConfig-version.cmake
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/package.xml

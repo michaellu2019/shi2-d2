@@ -1,0 +1,835 @@
+<?xml version="1.0" ?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot name="shi2d2" xmlns:xacro="http://ros.org/wiki/xacro">
+  <!-- <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_ros2_control.xacro"/> -->
+  <!-- <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_gazebo_plugins.xacro"/> -->
+
+	<xacro:property name="effort" value="5.0" />
+	<xacro:property name="velocity" value="0.0" />
+
+  <link
+    name="body_link">
+    <inertial>
+      <origin
+        xyz="-0.13606 0 0.011359"
+        rpy="0 0 0" />
+      <mass
+        value="8.9552" />
+      <inertia
+        ixx="0.065622"
+        ixy="3.076E-18"
+        ixz="-0.0026509"
+        iyy="0.097234"
+        iyz="-9.6882E-19"
+        izz="0.092589" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/body_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/body_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="lower_neck_link">
+    <inertial>
+      <origin
+        xyz="-5.5511E-17 -0.0017687 0.031852"
+        rpy="0 0 0" />
+      <mass
+        value="0.10532" />
+      <inertia
+        ixx="0.00010589"
+        ixy="-2.4726E-22"
+        ixz="2.1274E-21"
+        iyy="0.00011244"
+        iyz="7.9535E-06"
+        izz="2.1682E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/lower_neck_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/lower_neck_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="lower_neck_body_joint"
+    type="revolute">
+    <origin
+      xyz="-0.11 0 0.09"
+      rpy="0 0 0" />
+    <parent
+      link="body_link" />
+    <child
+      link="lower_neck_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="upper_neck_link">
+    <inertial>
+      <origin
+        xyz="3.20229842643016E-10 0.00456641880555519 0.02102603018183"
+        rpy="0 0 0" />
+      <mass
+        value="0.0458171863418158" />
+      <inertia
+        ixx="2.15673758568492E-05"
+        ixy="1.649532366958E-13"
+        ixz="-5.40737714696766E-14"
+        iyy="2.52796558598174E-05"
+        iyz="2.697546946691E-06"
+        izz="9.11330065564873E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/upper_neck_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/upper_neck_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="upper_neck_lower_neck_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.08"
+      rpy="0 0 0" />
+    <parent
+      link="lower_neck_link" />
+    <child
+      link="upper_neck_link" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="head_link">
+    <inertial>
+      <origin
+        xyz="0.00500336825963593 0 0.0238221948814875"
+        rpy="0 0 0" />
+      <mass
+        value="2.67569751121501" />
+      <inertia
+        ixx="0.0105939643420427"
+        ixy="6.16157394984149E-21"
+        ixz="1.69633975914199E-07"
+        iyy="0.0144986067494668"
+        iyz="8.93711263768297E-19"
+        izz="0.0239858417124271" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/head_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/head_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="head_upper_neck_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0.05"
+      rpy="0 0 0" />
+    <parent
+      link="upper_neck_link" />
+    <child
+      link="head_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="left_upper_hip_link">
+    <inertial>
+      <origin
+        xyz="-0.0059712 3.2849E-10 -0.028608"
+        rpy="0 0 0" />
+      <mass
+        value="0.062291" />
+      <inertia
+        ixx="3.4187E-05"
+        ixy="-3.0119E-13"
+        ixz="-4.9318E-06"
+        iyy="3.2134E-05"
+        iyz="-6.12E-14"
+        izz="1.5082E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_upper_hip_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_upper_hip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_upper_hip_body_joint"
+    type="revolute">
+    <origin
+      xyz="-0.11 0.07 0.01"
+      rpy="0 0 0" />
+    <parent
+      link="body_link" />
+    <child
+      link="left_upper_hip_link" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="left_lower_hip_link">
+    <inertial>
+      <origin
+        xyz="0.00412136847671674 0.022089432822315 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.0704499551399887" />
+      <inertia
+        ixx="3.56894011174932E-05"
+        ixy="5.62565383061564E-06"
+        ixz="-2.69628121776985E-21"
+        iyy="1.82818834853739E-05"
+        iyz="2.72719105860249E-21"
+        izz="3.4660829170683E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_lower_hip_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_lower_hip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_lower_hip_left_upper_hip_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="left_upper_hip_link" />
+    <child
+      link="left_lower_hip_link" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="left_upper_leg_link">
+    <inertial>
+      <origin
+        xyz="-5.55111512312578E-17 0.00754303064725609 -0.08"
+        rpy="0 0 0" />
+      <mass
+        value="0.209442443924986" />
+      <inertia
+        ixx="0.000678723340344466"
+        ixy="-2.43078723425231E-23"
+        ixz="3.37489689921635E-21"
+        iyy="0.000759267918622434"
+        iyz="-1.50123494551635E-21"
+        izz="8.83678528228141E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_upper_leg_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_upper_leg_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_upper_leg_left_lower_hip_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.05 0"
+      rpy="0 0 0" />
+    <parent
+      link="left_lower_hip_link" />
+    <child
+      link="left_upper_leg_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="left_lower_leg_link">
+    <inertial>
+      <origin
+        xyz="0 0 -0.05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0987374663549916" />
+      <inertia
+        ixx="0.000150036380523695"
+        ixy="-3.29579775314078E-24"
+        ixz="-8.43724224804088E-22"
+        iyy="0.000169013093769857"
+        iyz="-2.25432566314841E-22"
+        izz="2.26793682344739E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_lower_leg_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_lower_leg_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_lower_leg_left_upper_leg_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.0075 -0.16"
+      rpy="0 0 0" />
+    <parent
+      link="left_upper_leg_link" />
+    <child
+      link="left_lower_leg_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="left_foot_link">
+    <inertial>
+      <origin
+        xyz="0.0094925 -0.0046106 -0.025411"
+        rpy="0 0 0" />
+      <mass
+        value="0.052587" />
+      <inertia
+        ixx="1.7182E-05"
+        ixy="1.8977E-07"
+        ixz="8.5667E-07"
+        iyy="9.0114E-05"
+        iyz="-4.5184E-06"
+        izz="8.4037E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_foot_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/left_foot_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_foot_left_lower_leg_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.0075 -0.1"
+      rpy="0 0 0" />
+    <parent
+      link="left_lower_leg_link" />
+    <child
+      link="left_foot_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="right_upper_hip_link">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.062291" />
+      <inertia
+        ixx="3.4187E-05"
+        ixy="-3.0119E-13"
+        ixz="-4.9318E-06"
+        iyy="3.2134E-05"
+        iyz="-6.12E-14"
+        izz="1.5082E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_upper_hip_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_upper_hip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_upper_hip_body_joint"
+    type="revolute">
+    <origin
+      xyz="-0.11 -0.07 0.01"
+      rpy="0 0 0" />
+    <parent
+      link="body_link" />
+    <child
+      link="right_upper_hip_link" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="right_lower_hip_link">
+    <inertial>
+      <origin
+        xyz="0.00412136847671674 -0.022089432822315 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.0704499551399887" />
+      <inertia
+        ixx="3.56894011174933E-05"
+        ixy="-5.62565383061564E-06"
+        ixz="2.92248216211112E-21"
+        iyy="1.82818834853739E-05"
+        iyz="-1.81331094631583E-21"
+        izz="3.4660829170683E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_lower_hip_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_lower_hip_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_lower_hip_right_upper_hip_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 -0.05"
+      rpy="0 0 0" />
+    <parent
+      link="right_upper_hip_link" />
+    <child
+      link="right_lower_hip_link" />
+    <axis
+      xyz="-1 0 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="right_upper_leg_link">
+    <inertial>
+      <origin
+        xyz="-5.55111512312578E-17 -0.00754303064725607 -0.08"
+        rpy="0 0 0" />
+      <mass
+        value="0.209442443924986" />
+      <inertia
+        ixx="0.000678723340344465"
+        ixy="-3.20701870548828E-21"
+        ixz="-2.49104056566088E-21"
+        iyy="0.000759267918622433"
+        iyz="1.73097682375832E-20"
+        izz="8.83678528228138E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_upper_leg_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_upper_leg_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_upper_leg_right_lower_hip_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.05 0"
+      rpy="0 0 0" />
+    <parent
+      link="right_lower_hip_link" />
+    <child
+      link="right_upper_leg_link" />
+    <axis
+      xyz="0 -1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="right_lower_leg_link">
+    <inertial>
+      <origin
+        xyz="0 0 -0.05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0987374663549914" />
+      <inertia
+        ixx="0.000150036380523695"
+        ixy="1.15120018318712E-22"
+        ixz="-1.68744844960818E-21"
+        iyy="0.000169013093769857"
+        iyz="3.96991372186093E-22"
+        izz="2.26793682344739E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_lower_leg_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_lower_leg_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_lower_leg_right_upper_leg_joint"
+    type="revolute">
+    <origin
+      xyz="0 0.0075 -0.16"
+      rpy="0 0 0" />
+    <parent
+      link="right_upper_leg_link" />
+    <child
+      link="right_lower_leg_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+  <link
+    name="right_foot_link">
+    <inertial>
+      <origin
+        xyz="0.00949251107823679 0.0046106421166239 -0.0254114884788728"
+        rpy="0 0 0" />
+      <mass
+        value="0.0525874653229678" />
+      <inertia
+        ixx="1.71819053805558E-05"
+        ixy="-1.89765660216749E-07"
+        ixz="8.566705237295E-07"
+        iyy="9.01135527083E-05"
+        iyz="4.51837724189974E-06"
+        izz="8.40366490851664E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_foot_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://shi2d2_model/meshes/right_foot_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_foot_right_lower_leg_joint"
+    type="revolute">
+    <origin
+      xyz="0 -0.0075 -0.1"
+      rpy="0 0 0" />
+    <parent
+      link="right_lower_leg_link" />
+    <child
+      link="right_foot_link" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="${-pi/2}"
+      upper="${pi/2}"
+      effort="${effort}"
+      velocity="${velocity}" />
+  </joint>
+
+  <ros2_control name="IgnitionSystem" type="system">
+      <hardware>
+          <plugin>ign_ros2_control/IgnitionSystem</plugin>
+      </hardware>
+
+      <joint name="head_upper_neck_joint">
+          <command_interface name="position">
+              <param name="min">-0.1</param>
+              <param name="max">0.1</param>
+          </command_interface>
+          <state_interface name="position"/>
+          <state_interface name="velocity"/>
+          <state_interface name="effort"/>
+      </joint>
+  </ros2_control>
+
+  <gazebo>
+      <!-- hmmm, this needs to be last or else "[gz_ros2_control]: 
+      Error parsing URDF in ign_ros2_control plugin, plugin not active : no ros2_control tag"??? -->
+      <plugin 
+          filename="ign_ros2_control-system" 
+          name="ign_ros2_control::IgnitionROS2ControlPlugin">
+          <!-- <robot_param>robot_description</robot_param> -->
+          <!-- <robot_param_node>robot_state_publisher</robot_param_node> -->
+          <parameters>$(find shi2d2_model)/config/shi2d2_controller.yaml</parameters>
+          <!-- <controller_manager_name>controller_manager</controller_manager_name>   -->
+      </plugin>
+  </gazebo>
+</robot>

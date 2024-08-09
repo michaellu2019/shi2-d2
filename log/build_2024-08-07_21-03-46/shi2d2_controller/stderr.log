@@ -1,0 +1,4 @@
+[31mCMake Error at CMakeLists.txt:18 (install):
+  install TARGETS given target "hello" which does not exist.
+
+[0m

@@ -1,0 +1,17 @@
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/launch/display.launch
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/launch/gazebo.launch
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/ament_index/resource_index/package_run_dependencies/shi2d2_model
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/ament_index/resource_index/parent_prefix_path/shi2d2_model
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.sh
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.dsv
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/environment/path.sh
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/environment/path.dsv
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/local_setup.bash
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/local_setup.sh
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/local_setup.zsh
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/local_setup.dsv
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/package.dsv
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/ament_index/resource_index/packages/shi2d2_model
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig.cmake
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig-version.cmake
+/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model/share/shi2d2_model/package.xml

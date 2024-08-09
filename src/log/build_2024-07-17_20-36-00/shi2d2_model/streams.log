@@ -1,0 +1,10 @@
+[0.022s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model': /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model -- -j20 -l20
+[0.078s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model' returned '0': /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model -- -j20 -l20
+[0.152s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model': /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model
+[0.163s] -- Install configuration: ""
+[0.163s] -- Installing: /config
+[0.163s] [31mCMake Error at cmake_install.cmake:54 (file):
+[0.163s]   file INSTALL cannot make directory "/config": Permission denied.
+[0.163s] 
+[0.163s] [0m
+[0.165s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model' returned '1': /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model

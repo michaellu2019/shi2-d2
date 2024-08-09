@@ -1,0 +1,137 @@
+<?xml version="1.0" ?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro">
+  <xacro:property name="head_color" value="0.302 0.816 0.882 1" />
+  <xacro:property name="neck_color" value="0.412 0.941 0.682 1" />
+  <xacro:property name="body_color" value="0.404 0.227 0.718 1" />
+  <xacro:property name="left_leg_color" value="0.957 0.263 0.212 1" />
+  <xacro:property name="right_leg_color" value="1.000 0.596 0.000 1" />
+  <xacro:property name="left_foot_color" value="1.000 0.945 0.463 1" />
+  <xacro:property name="right_foot_color" value="0.957 0.561 0.694 1" />
+
+  <gazebo reference="head_link">
+    <visual>
+      <material>
+        <ambient>${head_color}</ambient>
+        <diffuse>${head_color}</diffuse>
+        <specular>${head_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="upper_neck_link">
+    <visual>
+      <material>
+        <ambient>${neck_color}</ambient>
+        <diffuse>${neck_color}</diffuse>
+        <specular>${neck_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="lower_neck_link">
+    <visual>
+      <material>
+        <ambient>${neck_color}</ambient>
+        <diffuse>${neck_color}</diffuse>
+        <specular>${neck_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="body_link">
+    <visual>
+      <material>
+        <ambient>${body_color}</ambient>
+        <diffuse>${body_color}</diffuse>
+        <specular>${body_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="left_upper_hip_link">
+    <visual>
+      <material>
+        <ambient>${body_color}</ambient>
+        <diffuse>${body_color}</diffuse>
+        <specular>${body_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="left_lower_hip_link">
+    <visual>
+      <material>
+        <ambient>${body_color}</ambient>
+        <diffuse>${body_color}</diffuse>
+        <specular>${body_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="right_upper_hip_link">
+    <visual>
+      <material>
+        <ambient>${body_color}</ambient>
+        <diffuse>${body_color}</diffuse>
+        <specular>${body_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="right_lower_hip_link">
+    <visual>
+      <material>
+        <ambient>${body_color}</ambient>
+        <diffuse>${body_color}</diffuse>
+        <specular>${body_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="left_upper_leg_link">
+    <visual>
+      <material>
+        <ambient>${left_leg_color}</ambient>
+        <diffuse>${left_leg_color}</diffuse>
+        <specular>${left_leg_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="left_lower_leg_link">
+    <visual>
+      <material>
+        <ambient>${left_leg_color}</ambient>
+        <diffuse>${left_leg_color}</diffuse>
+        <specular>${left_leg_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="right_upper_leg_link">
+    <visual>
+      <material>
+        <ambient>${right_leg_color}</ambient>
+        <diffuse>${right_leg_color}</diffuse>
+        <specular>${right_leg_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="right_lower_leg_link">
+    <visual>
+      <material>
+        <ambient>${right_leg_color}</ambient>
+        <diffuse>${right_leg_color}</diffuse>
+        <specular>${right_leg_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="left_foot_link">
+    <visual>
+      <material>
+        <ambient>${left_foot_color}</ambient>
+        <diffuse>${left_foot_color}</diffuse>
+        <specular>${left_foot_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+  <gazebo reference="right_foot_link">
+    <visual>
+      <material>
+        <ambient>${right_foot_color}</ambient>
+        <diffuse>${right_foot_color}</diffuse>
+        <specular>${right_foot_color}</specular>
+      </material>
+    </visual>
+  </gazebo>
+</robot>

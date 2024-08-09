@@ -1,0 +1,25 @@
+[0.020s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller': CMAKE_PREFIX_PATH=/opt/ros/humble:${CMAKE_PREFIX_PATH} /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller -- -j20 -l20
+[0.105s] [ 50%] [32mBuilding CXX object CMakeFiles/head_controller.dir/src/head_controller.cpp.o[0m
+[5.537s] [100%] [32m[1mLinking CXX executable head_controller[0m
+[5.818s] [100%] Built target head_controller
+[5.832s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble:${CMAKE_PREFIX_PATH} /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller -- -j20 -l20
+[5.864s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller': CMAKE_PREFIX_PATH=/opt/ros/humble:${CMAKE_PREFIX_PATH} /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller
+[5.874s] -- Install configuration: ""
+[5.874s] -- Installing: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/lib/shi2d2_controller/head_controller
+[5.877s] -- Set runtime path of "/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/lib/shi2d2_controller/head_controller" to ""
+[5.877s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/package_run_dependencies/shi2d2_controller
+[5.877s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/parent_prefix_path/shi2d2_controller
+[5.877s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/ament_prefix_path.sh
+[5.877s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/ament_prefix_path.dsv
+[5.877s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/path.sh
+[5.877s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/path.dsv
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.bash
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.sh
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.zsh
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.dsv
+[5.878s] -- Installing: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/package.dsv
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/packages/shi2d2_controller
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/cmake/shi2d2_controllerConfig.cmake
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/cmake/shi2d2_controllerConfig-version.cmake
+[5.878s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/package.xml
+[5.880s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble:${CMAKE_PREFIX_PATH} /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller

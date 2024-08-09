@@ -1,0 +1,41 @@
+[0.023s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model': /usr/bin/cmake /home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model
+[0.034s] [0mCMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+[0.035s]   Compatibility with CMake < 2.8.12 will be removed from a future version of
+[0.035s]   CMake.
+[0.035s] 
+[0.035s]   Update the VERSION argument <min> value or use a ...<max> suffix to tell
+[0.035s]   CMake that the project does not need compatibility with older versions.
+[0.035s] 
+[0.035s] [0m
+[0.149s] -- The C compiler identification is GNU 11.4.0
+[0.257s] -- The CXX compiler identification is GNU 11.4.0
+[0.275s] -- Detecting C compiler ABI info
+[0.384s] -- Detecting C compiler ABI info - done
+[0.399s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.400s] -- Detecting C compile features
+[0.401s] -- Detecting C compile features - done
+[0.408s] -- Detecting CXX compiler ABI info
+[0.566s] -- Detecting CXX compiler ABI info - done
+[0.584s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.585s] -- Detecting CXX compile features
+[0.586s] -- Detecting CXX compile features - done
+[0.622s] [31mCMake Error at CMakeLists.txt:5 (find_package):
+[0.622s]   By not providing "Findcatkin.cmake" in CMAKE_MODULE_PATH this project has
+[0.623s]   asked CMake to find a package configuration file provided by "catkin", but
+[0.623s]   CMake did not find one.
+[0.623s] 
+[0.623s]   Could not find a package configuration file provided by "catkin" with any
+[0.624s]   of the following names:
+[0.624s] 
+[0.624s]     catkinConfig.cmake
+[0.624s]     catkin-config.cmake
+[0.624s] 
+[0.624s]   Add the installation prefix of "catkin" to CMAKE_PREFIX_PATH or set
+[0.624s]   "catkin_DIR" to a directory containing one of the above files.  If "catkin"
+[0.625s]   provides a separate development package or SDK, be sure it has been
+[0.625s]   installed.
+[0.625s] 
+[0.625s] [0m
+[0.625s] -- Configuring incomplete, errors occurred!
+[0.625s] See also "/home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model/CMakeFiles/CMakeOutput.log".
+[0.629s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/src/build/shi2d2_model' returned '1': /usr/bin/cmake /home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model -DCATKIN_INSTALL_INTO_PREFIX_ROOT=0 -DCMAKE_INSTALL_PREFIX=/home/mlu/Documents/Programming/Robotics/shi2d2/src/install/shi2d2_model

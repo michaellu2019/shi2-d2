@@ -1,0 +1,8 @@
+-- Found ament_cmake: 1.3.4 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found ament_lint_auto: 0.12.6 (/opt/ros/humble/share/ament_lint_auto/cmake)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model
+-- Install configuration: ""
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config
+-- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/joint_names_shi2d2_model.yaml

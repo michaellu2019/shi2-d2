@@ -1,0 +1,6 @@
+[31mCMake Error at cmake_install.cmake:46 (file):
+  file INSTALL cannot find
+  "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/DIRECTORY":
+  No such file or directory.
+
+[0m

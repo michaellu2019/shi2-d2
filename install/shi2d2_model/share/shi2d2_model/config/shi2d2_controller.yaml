@@ -1,0 +1,20 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 1000  # Hz
+    use_sim_time: true
+
+    head_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+head_controller:
+  ros__parameters:
+    joints:
+      - head_upper_neck_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity

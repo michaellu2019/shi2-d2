@@ -1,0 +1,840 @@
+<?xml version="1.0" ?>
+<sdf version="1.8">
+  <world name="blank_world">
+    <physics name="1ms" type="ignored">
+      <max_step_size>0.001</max_step_size>
+      <real_time_factor>1.0</real_time_factor>
+    </physics>
+    <plugin
+      filename="libignition-gazebo-physics-system.so"
+      name="ignition::gazebo::systems::Physics">
+    </plugin>
+    <plugin
+      filename="libignition-gazebo-user-commands-system.so"
+      name="ignition::gazebo::systems::UserCommands">
+    </plugin>
+    <plugin
+      filename="libignition-gazebo-scene-broadcaster-system.so"
+      name="ignition::gazebo::systems::SceneBroadcaster">
+    </plugin>
+
+    <gravity>0.0 0.0 -9.8</gravity>
+
+    <light type="directional" name="sun">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 7 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.2 0.2 0.2 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>true</static>
+      <link name="link">
+        <collision name="collision">
+        <geometry>
+          <plane>
+          <normal>0 0 1</normal>
+          </plane>
+        </geometry>
+        </collision>
+        <visual name="visual">
+        <geometry>
+          <plane>
+          <normal>0 0 1</normal>
+          <size>100 100</size>
+          </plane>
+        </geometry>
+        <material>
+          <ambient>0.8 0.8 0.8 1</ambient>
+          <diffuse>0.8 0.8 0.8 1</diffuse>
+          <specular>0.8 0.8 0.8 1</specular>
+        </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- <model name="shi2d2">
+        <self_collide>true</self_collide>
+        <pose>0 0 0.4 0 0 0</pose>
+        <include>
+            <uri>model://shi2d2_model/sdf/shi2d2_model.sdf</uri>
+        </include>
+    </model> -->
+
+    <!-- <model name='shi2d2'>
+      <pose>0 0 0.4 0 0 0</pose>
+      <link name='body_link'>
+        <inertial>
+          <pose>-0.13606 0 0.011359 0 0 0</pose>
+          <mass>8.9551999999999996</mass>
+          <inertia>
+            <ixx>0.065622</ixx>
+            <ixy>3.076e-18</ixy>
+            <ixz>-0.0026508999999999999</ixz>
+            <iyy>0.097234000000000001</iyy>
+            <iyz>-9.6882000000000006e-19</iyz>
+            <izz>0.092589000000000005</izz>
+          </inertia>
+        </inertial>
+        <collision name='body_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/body_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='body_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/body_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='left_upper_hip_body_joint' type='revolute'>
+        <pose relative_to='body_link'>-0.11 0.07000000000000001 0.01 0 0 0</pose>
+        <parent>body_link</parent>
+        <child>left_upper_hip_link</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='left_upper_hip_link'>
+        <pose relative_to='left_upper_hip_body_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>-0.0059712 3.2849e-10 -0.028608 0 0 0</pose>
+          <mass>0.062290999999999999</mass>
+          <inertia>
+            <ixx>3.4187000000000003e-05</ixx>
+            <ixy>-3.0119e-13</ixy>
+            <ixz>-4.9317999999999999e-06</ixz>
+            <iyy>3.2134000000000001e-05</iyy>
+            <iyz>-6.1199999999999994e-14</iyz>
+            <izz>1.5082000000000001e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='left_upper_hip_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_upper_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='left_upper_hip_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_upper_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='left_lower_hip_left_upper_hip_joint' type='revolute'>
+        <pose relative_to='left_upper_hip_link'>0 0 -0.05 0 0 0</pose>
+        <parent>left_upper_hip_link</parent>
+        <child>left_lower_hip_link</child>
+        <axis>
+          <xyz>-1 0 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='left_lower_hip_link'>
+        <pose relative_to='left_lower_hip_left_upper_hip_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0.00412136847671674 0.022089432822315 0 0 0 0</pose>
+          <mass>0.070449955139988696</mass>
+          <inertia>
+            <ixx>3.5689401117493201e-05</ixx>
+            <ixy>5.6256538306156403e-06</ixy>
+            <ixz>-2.69628121776985e-21</ixz>
+            <iyy>1.8281883485373899e-05</iyy>
+            <iyz>2.7271910586024901e-21</iyz>
+            <izz>3.4660829170682998e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='left_lower_hip_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_lower_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='left_lower_hip_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_lower_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='left_upper_leg_left_lower_hip_joint' type='revolute'>
+        <pose relative_to='left_lower_hip_link'>0 0.05 0 0 0 0</pose>
+        <parent>left_lower_hip_link</parent>
+        <child>left_upper_leg_link</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='left_upper_leg_link'>
+        <pose relative_to='left_upper_leg_left_lower_hip_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>-5.55111512312578e-17 0.00754303064725609 -0.08 0 0 0</pose>
+          <mass>0.20944244392498601</mass>
+          <inertia>
+            <ixx>0.00067872334034446604</ixx>
+            <ixy>-2.4307872342523099e-23</ixy>
+            <ixz>3.3748968992163499e-21</ixz>
+            <iyy>0.00075926791862243397</iyy>
+            <iyz>-1.50123494551635e-21</iyz>
+            <izz>8.8367852822814093e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='left_upper_leg_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_upper_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='left_upper_leg_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_upper_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='left_lower_leg_left_upper_leg_joint' type='revolute'>
+        <pose relative_to='left_upper_leg_link'>0 -0.0075 -0.16 0 0 0</pose>
+        <parent>left_upper_leg_link</parent>
+        <child>left_lower_leg_link</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='left_lower_leg_link'>
+        <pose relative_to='left_lower_leg_left_upper_leg_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 -0.05 0 0 0</pose>
+          <mass>0.098737466354991602</mass>
+          <inertia>
+            <ixx>0.000150036380523695</ixx>
+            <ixy>-3.2957977531407801e-24</ixy>
+            <ixz>-8.4372422480408804e-22</ixz>
+            <iyy>0.00016901309376985701</iyy>
+            <iyz>-2.2543256631484101e-22</iyz>
+            <izz>2.26793682344739e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='left_lower_leg_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_lower_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='left_lower_leg_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_lower_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='left_foot_left_lower_leg_joint' type='revolute'>
+        <pose relative_to='left_lower_leg_link'>0 0.0075 -0.1 0 0 0</pose>
+        <parent>left_lower_leg_link</parent>
+        <child>left_foot_link</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='left_foot_link'>
+        <pose relative_to='left_foot_left_lower_leg_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0.009492499999999999 -0.0046106 -0.025411 0 0 0</pose>
+          <mass>0.052587000000000002</mass>
+          <inertia>
+            <ixx>1.7181999999999999e-05</ixx>
+            <ixy>1.8977000000000001e-07</ixy>
+            <ixz>8.5667000000000001e-07</ixz>
+            <iyy>9.0113999999999998e-05</iyy>
+            <iyz>-4.5183999999999998e-06</iyz>
+            <izz>8.4036999999999995e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='left_foot_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_foot_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='left_foot_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/left_foot_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='lower_neck_body_joint' type='revolute'>
+        <pose relative_to='body_link'>-0.11 0 0.09 0 0 0</pose>
+        <parent>body_link</parent>
+        <child>lower_neck_link</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='lower_neck_link'>
+        <pose relative_to='lower_neck_body_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>-5.5511e-17 -0.0017687 0.031852 0 0 0</pose>
+          <mass>0.10532</mass>
+          <inertia>
+            <ixx>0.00010589</ixx>
+            <ixy>-2.4726000000000001e-22</ixy>
+            <ixz>2.1274e-21</ixz>
+            <iyy>0.00011244</iyy>
+            <iyz>7.9534999999999993e-06</iyz>
+            <izz>2.1682e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='lower_neck_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/lower_neck_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='lower_neck_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/lower_neck_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='upper_neck_lower_neck_joint' type='revolute'>
+        <pose relative_to='lower_neck_link'>0 0 0.08 0 0 0</pose>
+        <parent>lower_neck_link</parent>
+        <child>upper_neck_link</child>
+        <axis>
+          <xyz>0 -1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='upper_neck_link'>
+        <pose relative_to='upper_neck_lower_neck_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>3.20229842643016e-10 0.00456641880555519 0.02102603018183 0 0 0</pose>
+          <mass>0.045817186341815801</mass>
+          <inertia>
+            <ixx>2.15673758568492e-05</ixx>
+            <ixy>1.649532366958e-13</ixy>
+            <ixz>-5.40737714696766e-14</ixz>
+            <iyy>2.52796558598174e-05</iyy>
+            <iyz>2.697546946691e-06</iyz>
+            <izz>9.1133006556487307e-06</izz>
+          </inertia>
+        </inertial>
+        <collision name='upper_neck_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/upper_neck_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='upper_neck_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/upper_neck_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='head_upper_neck_joint' type='revolute'>
+        <pose relative_to='upper_neck_link'>0 0 0.05 0 0 0</pose>
+        <parent>upper_neck_link</parent>
+        <child>head_link</child>
+        <axis>
+          <xyz>0 0 1</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='head_link'>
+        <pose relative_to='head_upper_neck_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0.00500336825963593 0 0.0238221948814875 0 0 0</pose>
+          <mass>2.6756975112150099</mass>
+          <inertia>
+            <ixx>0.010593964342042701</ixx>
+            <ixy>6.1615739498414904e-21</ixy>
+            <ixz>1.6963397591419899e-07</ixz>
+            <iyy>0.0144986067494668</iyy>
+            <iyz>8.9371126376829696e-19</iyz>
+            <izz>0.023985841712427101</izz>
+          </inertia>
+        </inertial>
+        <collision name='head_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/head_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='head_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/head_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='right_upper_hip_body_joint' type='revolute'>
+        <pose relative_to='body_link'>-0.11 -0.07000000000000001 0.01 0 0 0</pose>
+        <parent>body_link</parent>
+        <child>right_upper_hip_link</child>
+        <axis>
+          <xyz>0 0 -1</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='right_upper_hip_link'>
+        <pose relative_to='right_upper_hip_body_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 0 0 0 0</pose>
+          <mass>0.062290999999999999</mass>
+          <inertia>
+            <ixx>3.4187000000000003e-05</ixx>
+            <ixy>-3.0119e-13</ixy>
+            <ixz>-4.9317999999999999e-06</ixz>
+            <iyy>3.2134000000000001e-05</iyy>
+            <iyz>-6.1199999999999994e-14</iyz>
+            <izz>1.5082000000000001e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='right_upper_hip_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_upper_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='right_upper_hip_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_upper_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='right_lower_hip_right_upper_hip_joint' type='revolute'>
+        <pose relative_to='right_upper_hip_link'>0 0 -0.05 0 0 0</pose>
+        <parent>right_upper_hip_link</parent>
+        <child>right_lower_hip_link</child>
+        <axis>
+          <xyz>-1 0 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='right_lower_hip_link'>
+        <pose relative_to='right_lower_hip_right_upper_hip_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0.00412136847671674 -0.022089432822315 0 0 0 0</pose>
+          <mass>0.070449955139988696</mass>
+          <inertia>
+            <ixx>3.5689401117493302e-05</ixx>
+            <ixy>-5.6256538306156403e-06</ixy>
+            <ixz>2.9224821621111199e-21</ixz>
+            <iyy>1.8281883485373899e-05</iyy>
+            <iyz>-1.8133109463158301e-21</iyz>
+            <izz>3.4660829170682998e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='right_lower_hip_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_lower_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='right_lower_hip_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_lower_hip_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='right_upper_leg_right_lower_hip_joint' type='revolute'>
+        <pose relative_to='right_lower_hip_link'>0 -0.05 0 0 0 0</pose>
+        <parent>right_lower_hip_link</parent>
+        <child>right_upper_leg_link</child>
+        <axis>
+          <xyz>0 -1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='right_upper_leg_link'>
+        <pose relative_to='right_upper_leg_right_lower_hip_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>-5.55111512312578e-17 -0.00754303064725607 -0.08 0 0 0</pose>
+          <mass>0.20944244392498601</mass>
+          <inertia>
+            <ixx>0.00067872334034446496</ixx>
+            <ixy>-3.2070187054882801e-21</ixy>
+            <ixz>-2.4910405656608799e-21</ixz>
+            <iyy>0.000759267918622433</iyy>
+            <iyz>1.73097682375832e-20</iyz>
+            <izz>8.8367852822813795e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='right_upper_leg_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_upper_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='right_upper_leg_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_upper_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='right_lower_leg_right_upper_leg_joint' type='revolute'>
+        <pose relative_to='right_upper_leg_link'>0 0.0075 -0.16 0 0 0</pose>
+        <parent>right_upper_leg_link</parent>
+        <child>right_lower_leg_link</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='right_lower_leg_link'>
+        <pose relative_to='right_lower_leg_right_upper_leg_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0 0 -0.05 0 0 0</pose>
+          <mass>0.098737466354991393</mass>
+          <inertia>
+            <ixx>0.000150036380523695</ixx>
+            <ixy>1.1512001831871199e-22</ixy>
+            <ixz>-1.68744844960818e-21</ixz>
+            <iyy>0.00016901309376985701</iyy>
+            <iyz>3.96991372186093e-22</iyz>
+            <izz>2.26793682344739e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='right_lower_leg_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_lower_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='right_lower_leg_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_lower_leg_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+      <joint name='right_foot_right_lower_leg_joint' type='revolute'>
+        <pose relative_to='right_lower_leg_link'>0 -0.0075 -0.1 0 0 0</pose>
+        <parent>right_lower_leg_link</parent>
+        <child>right_foot_link</child>
+        <axis>
+          <xyz>0 1 0</xyz>
+          <limit>
+            <lower>-1.5707963300000001</lower>
+            <upper>1.5707963300000001</upper>
+            <effort>0</effort>
+            <velocity>0</velocity>
+          </limit>
+          <dynamics>
+            <spring_reference>0</spring_reference>
+            <spring_stiffness>0</spring_stiffness>
+          </dynamics>
+        </axis>
+      </joint>
+      <link name='right_foot_link'>
+        <pose relative_to='right_foot_right_lower_leg_joint'>0 0 0 0 0 0</pose>
+        <inertial>
+          <pose>0.009492511078236791 0.0046106421166239 -0.0254114884788728 0 0 0</pose>
+          <mass>0.052587465322967798</mass>
+          <inertia>
+            <ixx>1.7181905380555799e-05</ixx>
+            <ixy>-1.89765660216749e-07</ixy>
+            <ixz>8.5667052372950003e-07</ixz>
+            <iyy>9.0113552708299995e-05</iyy>
+            <iyz>4.5183772418997401e-06</iyz>
+            <izz>8.40366490851664e-05</izz>
+          </inertia>
+        </inertial>
+        <collision name='right_foot_link_collision'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_foot_link.STL</uri>
+            </mesh>
+          </geometry>
+        </collision>
+        <visual name='right_foot_link_visual'>
+          <pose>0 0 0 0 0 0</pose>
+          <geometry>
+            <mesh>
+              <scale>1 1 1</scale>
+              <uri>model://shi2d2_model/meshes/right_foot_link.STL</uri>
+            </mesh>
+          </geometry>
+          <material>
+            <diffuse>1 1 1 1</diffuse>
+            <ambient>1 1 1 1</ambient>
+          </material>
+        </visual>
+      </link>
+
+      <plugin
+          filename="gz-sim-joint-state-publisher-system"
+          name="gz::sim::systems::JointStatePublisher">
+      </plugin>
+
+      <plugin
+          filename="gz-sim-pose-publisher-system"
+          name="gz::sim::systems::PosePublisher">
+          <publish_link_pose>true</publish_link_pose>
+          <use_pose_vector_msg>true</use_pose_vector_msg>
+          <static_publisher>true</static_publisher>
+          <static_update_frequency>1</static_update_frequency>
+      </plugin>
+    </model> -->
+  </world>
+</sdf>

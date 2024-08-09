@@ -1,0 +1,4 @@
+[31mCMake Error at CMakeLists.txt:11 (install):
+  install TARGETS given target "shi2d2_model" which does not exist.
+
+[0m

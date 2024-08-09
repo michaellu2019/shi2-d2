@@ -1,0 +1,38 @@
+[0.013s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_urdf': CMAKE_PREFIX_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/opt/ros/humble:${CMAKE_PREFIX_PATH} PKG_CONFIG_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/x86_64-linux-gnu/pkgconfig:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/pkgconfig /usr/bin/cmake /home/mlu/Documents/Programming/Robotics/shi2d2/src/sdformat_urdf/sdformat_urdf -DCMAKE_INSTALL_PREFIX=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_urdf
+[0.101s] -- The C compiler identification is GNU 11.4.0
+[0.179s] -- The CXX compiler identification is GNU 11.4.0
+[0.189s] -- Detecting C compiler ABI info
+[0.283s] -- Detecting C compiler ABI info - done
+[0.295s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.295s] -- Detecting C compile features
+[0.296s] -- Detecting C compile features - done
+[0.301s] -- Detecting CXX compiler ABI info
+[0.444s] -- Detecting CXX compiler ABI info - done
+[0.460s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.461s] -- Detecting CXX compile features
+[0.462s] -- Detecting CXX compile features - done
+[0.475s] -- Found ament_cmake_ros: 0.10.0 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[0.816s] -- Found Python3: /usr/bin/python3.10 (found version "3.10.12") found components: Interpreter 
+[0.999s] -- Found pluginlib: 5.1.0 (/opt/ros/humble/share/pluginlib/cmake)
+[1.092s] -- Found urdf_parser_plugin: 2.6.0 (/opt/ros/humble/share/urdf_parser_plugin/cmake)
+[1.114s] -- Found TinyXML2: /usr/lib/x86_64-linux-gnu/libtinyxml2.so  
+[1.135s] [31mCMake Error at CMakeLists.txt:22 (find_package):
+[1.135s]   By not providing "Findsdformat_vendor.cmake" in CMAKE_MODULE_PATH this
+[1.135s]   project has asked CMake to find a package configuration file provided by
+[1.135s]   "sdformat_vendor", but CMake did not find one.
+[1.135s] 
+[1.135s]   Could not find a package configuration file provided by "sdformat_vendor"
+[1.136s]   with any of the following names:
+[1.136s] 
+[1.136s]     sdformat_vendorConfig.cmake
+[1.136s]     sdformat_vendor-config.cmake
+[1.136s] 
+[1.136s]   Add the installation prefix of "sdformat_vendor" to CMAKE_PREFIX_PATH or
+[1.136s]   set "sdformat_vendor_DIR" to a directory containing one of the above files.
+[1.136s]   If "sdformat_vendor" provides a separate development package or SDK, be
+[1.137s]   sure it has been installed.
+[1.137s] 
+[1.137s] [0m
+[1.137s] -- Configuring incomplete, errors occurred!
+[1.137s] See also "/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_urdf/CMakeFiles/CMakeOutput.log".
+[1.148s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_urdf' returned '1': CMAKE_PREFIX_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/opt/ros/humble:${CMAKE_PREFIX_PATH} PKG_CONFIG_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/x86_64-linux-gnu/pkgconfig:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/pkgconfig /usr/bin/cmake /home/mlu/Documents/Programming/Robotics/shi2d2/src/sdformat_urdf/sdformat_urdf -DCMAKE_INSTALL_PREFIX=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_urdf

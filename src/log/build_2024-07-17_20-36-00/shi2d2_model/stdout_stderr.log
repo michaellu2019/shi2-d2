@@ -1,0 +1,6 @@
+-- Install configuration: ""
+-- Installing: /config
+[31mCMake Error at cmake_install.cmake:54 (file):
+  file INSTALL cannot make directory "/config": Permission denied.
+
+[0m

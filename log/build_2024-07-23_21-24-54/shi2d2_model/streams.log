@@ -1,0 +1,51 @@
+[0.024s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model': CMAKE_PREFIX_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model -- -j20 -l20
+[0.086s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model' returned '0': CMAKE_PREFIX_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model -- -j20 -l20
+[0.130s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model': CMAKE_PREFIX_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model
+[0.141s] -- Install configuration: ""
+[0.141s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config
+[0.142s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/joint_names_shi2d2_model.yaml
+[0.142s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch
+[0.142s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gpt_rviz.launch.py
+[0.142s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/rviz.launch.py
+[0.143s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo_classic.launch.py
+[0.143s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/display.launch
+[0.143s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo.launch
+[0.143s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gpt_gazebo.launch.py
+[0.143s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo.launch.py
+[0.143s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes
+[0.143s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/head_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_foot_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/body_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_lower_hip_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_upper_hip_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/upper_neck_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_foot_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_upper_hip_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_lower_hip_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/lower_neck_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_upper_leg_link.STL
+[0.144s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_upper_leg_link.STL
+[0.145s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/robot_base.stl
+[0.146s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_lower_leg_link.STL
+[0.148s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_lower_leg_link.STL
+[0.148s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/textures
+[0.149s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf
+[0.150s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.urdf
+[0.151s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/test.urdf
+[0.151s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.csv
+[0.151s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/package_run_dependencies/shi2d2_model
+[0.151s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/parent_prefix_path/shi2d2_model
+[0.151s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.sh
+[0.153s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.dsv
+[0.154s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/path.sh
+[0.154s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/path.dsv
+[0.155s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.bash
+[0.155s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.sh
+[0.155s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.zsh
+[0.155s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.dsv
+[0.156s] -- Installing: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/package.dsv
+[0.156s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/packages/shi2d2_model
+[0.156s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig.cmake
+[0.158s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig-version.cmake
+[0.159s] -- Up-to-date: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/package.xml
+[0.159s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model' returned '0': CMAKE_PREFIX_PATH=/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model
