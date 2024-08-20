@@ -1,8 +1,12 @@
+.vscode
 .cproject
 .project
 .pydevproject
 cmake_install.cmake
 build/
+install/
+log/
+logs/
 bin/
 lib/
 msg_gen/

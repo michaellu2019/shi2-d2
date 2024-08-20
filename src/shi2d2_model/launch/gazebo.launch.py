@@ -7,6 +7,7 @@
 # - https://youtu.be/4QKsDf1c4hc
 # - https://youtu.be/PM_1Nb9u-N0
 # - https://youtu.be/H6YPkXmkdPg
+# - https://robotics.stackexchange.com/questions/93267/joint-state-publisher-produces-empty-messages
 
 import os
 

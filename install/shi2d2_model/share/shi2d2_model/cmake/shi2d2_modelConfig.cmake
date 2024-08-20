@@ -1,1 +1,0 @@
-/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_core/shi2d2_modelConfig.cmake

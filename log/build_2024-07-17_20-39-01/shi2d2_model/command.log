@@ -1,2 +1,0 @@
-Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model': /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model -- -j20 -l20
-Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model' returned '2': /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model -- -j20 -l20
