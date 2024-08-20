@@ -1,0 +1,1 @@
+ament_cmake_symlink_install_targets("TARGET_FILES" "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller/head_controller" "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller/tf_publisher" "TARGETS" "head_controller" "tf_publisher" "DESTINATION" "lib/shi2d2_controller")

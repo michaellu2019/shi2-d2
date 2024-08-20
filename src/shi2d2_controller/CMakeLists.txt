@@ -9,15 +9,20 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(trajectory_msgs REQUIRED)
+find_package(tf2 REQUIRED)
+find_package(tf2_ros REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
 add_executable(head_controller src/head_controller.cpp)
 ament_target_dependencies(head_controller rclcpp trajectory_msgs)
+add_executable(tf_publisher src/tf_publisher.cpp)
+ament_target_dependencies(tf_publisher rclcpp tf2 tf2_ros)
 
 install(TARGETS 
   head_controller
+  tf_publisher
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

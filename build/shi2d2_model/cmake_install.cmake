@@ -43,75 +43,7 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model" TYPE DIRECTORY FILES
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/config"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/launch"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/meshes"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/rviz"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/textures"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/urdf"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/sdf"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/worlds"
-    )
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/package_run_dependencies" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_index/share/ament_index/resource_index/package_run_dependencies/shi2d2_model")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/parent_prefix_path" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_index/share/ament_index/resource_index/parent_prefix_path/shi2d2_model")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model/environment" TYPE FILE FILES "/opt/ros/humble/share/ament_cmake_core/cmake/environment_hooks/environment/ament_prefix_path.sh")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model/environment" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/ament_prefix_path.dsv")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model/environment" TYPE FILE FILES "/opt/ros/humble/share/ament_cmake_core/cmake/environment_hooks/environment/path.sh")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model/environment" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/path.dsv")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/local_setup.bash")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/local_setup.sh")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/local_setup.zsh")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/local_setup.dsv")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/package.dsv")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ament_index/resource_index/packages" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_index/share/ament_index/resource_index/packages/shi2d2_model")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model/cmake" TYPE FILE FILES
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_core/shi2d2_modelConfig.cmake"
-    "/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_core/shi2d2_modelConfig-version.cmake"
-    )
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/shi2d2_model" TYPE FILE FILES "/home/mlu/Documents/Programming/Robotics/shi2d2/src/shi2d2_model/package.xml")
+  include("/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)

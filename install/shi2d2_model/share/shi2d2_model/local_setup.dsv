@@ -1,2 +1,1 @@
-source;share/shi2d2_model/environment/ament_prefix_path.sh
-source;share/shi2d2_model/environment/path.sh
+/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model/ament_cmake_environment_hooks/local_setup.dsv

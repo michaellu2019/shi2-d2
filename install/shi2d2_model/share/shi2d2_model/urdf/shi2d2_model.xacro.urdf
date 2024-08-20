@@ -823,13 +823,13 @@
   <gazebo>
       <!-- hmmm, this needs to be last or else "[gz_ros2_control]: 
       Error parsing URDF in ign_ros2_control plugin, plugin not active : no ros2_control tag"??? -->
-      <plugin 
+      <!-- <plugin 
           filename="ign_ros2_control-system" 
-          name="ign_ros2_control::IgnitionROS2ControlPlugin">
+          name="ign_ros2_control::IgnitionROS2ControlPlugin"> -->
           <!-- <robot_param>robot_description</robot_param> -->
           <!-- <robot_param_node>robot_state_publisher</robot_param_node> -->
-          <parameters>$(find shi2d2_model)/config/shi2d2_controller.yaml</parameters>
+          <!-- <parameters>$(find shi2d2_model)/config/shi2d2_controller.yaml</parameters> -->
           <!-- <controller_manager_name>controller_manager</controller_manager_name>   -->
-      </plugin>
+      <!-- </plugin> -->
   </gazebo>
 </robot>

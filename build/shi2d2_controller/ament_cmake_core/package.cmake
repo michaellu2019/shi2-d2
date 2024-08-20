@@ -1,7 +1,7 @@
 set(_AMENT_PACKAGE_NAME "shi2d2_controller")
 set(shi2d2_controller_VERSION "0.0.0")
 set(shi2d2_controller_MAINTAINER " <mlu0708@mit.edu>")
-set(shi2d2_controller_BUILD_DEPENDS "rclcpp" "trajectory_msgs")
+set(shi2d2_controller_BUILD_DEPENDS "tf2" "tf2_ros" "geometry_msgs" "rclcpp" "trajectory_msgs")
 set(shi2d2_controller_BUILDTOOL_DEPENDS "ament_cmake")
 set(shi2d2_controller_BUILD_EXPORT_DEPENDS "rclcpp" "trajectory_msgs")
 set(shi2d2_controller_BUILDTOOL_EXPORT_DEPENDS )

@@ -1,0 +1,108 @@
+[0.018s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model -- -j20 -l20
+[0.092s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model -- -j20 -l20
+[0.139s] Invoking command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model
+[0.151s] -- Install configuration: ""
+[0.152s] -- Execute custom install script
+[0.155s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/diff_drive_config.yaml
+[0.155s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/joint_names_shi2d2_model.yaml
+[0.155s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/ros_gz_bridge_config.yaml
+[0.155s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/shi2d2_controller.yaml
+[0.156s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/test_controller.yaml
+[0.157s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/car.launch.py
+[0.157s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/display.launch
+[0.158s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo.launch
+[0.158s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo.launch.py
+[0.158s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo_classic.launch.py
+[0.158s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gpt_gazebo.launch.py
+[0.158s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gpt_rviz.launch.py
+[0.159s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/harvey_gazebo.launch.py
+[0.159s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/rviz.launch.py
+[0.160s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/body_link.STL
+[0.160s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/head_link.STL
+[0.161s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_foot_link.STL
+[0.161s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_lower_hip_link.STL
+[0.161s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_lower_leg_link.STL
+[0.163s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_upper_hip_link.STL
+[0.163s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_upper_leg_link.STL
+[0.163s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/lower_neck_link.STL
+[0.163s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_foot_link.STL
+[0.164s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_lower_hip_link.STL
+[0.164s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_lower_leg_link.STL
+[0.164s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_upper_hip_link.STL
+[0.164s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_upper_leg_link.STL
+[0.164s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/robot_base.stl
+[0.164s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/upper_neck_link.STL
+[0.165s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/diff_drive.rviz
+[0.165s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/rviz_basic_settings.rviz
+[0.165s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/rviz_settings.rviz
+[0.165s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/rviz_settings_2.rviz
+[0.165s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/urdf_gazebo_config.rviz
+[0.167s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/dum.urdf
+[0.167s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/dummy.urdf
+[0.168s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/gazebo/shi2d2_gazebo_colors.xacro
+[0.168s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/gazebo/shi2d2_gazebo_plugins.xacro
+[0.169s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/gazebo/shi2d2_ros2_control.xacro
+[0.169s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.csv
+[0.169s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.urdf
+[0.170s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.urdf.xacro
+[0.170s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model_gazebo.urdf
+[0.170s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model_og.urdf
+[0.170s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model_xacro_nonsense.urdf
+[0.170s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/test.urdf
+[0.171s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/test_control.urdf.xacro
+[0.171s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/model.config
+[0.172s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/model.sdf
+[0.172s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/rrobot.sdf
+[0.172s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/shi2d2_model.sdf
+[0.172s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/test.sdf
+[0.173s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/blank.world
+[0.173s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/cafe.world
+[0.173s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/diff_drive.sdf
+[0.173s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/empty.world
+[0.173s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/farm.world
+[0.173s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/neighborhood.world
+[0.174s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/package_run_dependencies/shi2d2_model
+[0.174s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/parent_prefix_path/shi2d2_model
+[0.174s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.sh
+[0.175s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.dsv
+[0.175s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/path.sh
+[0.175s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/path.dsv
+[0.176s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.bash
+[0.177s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.sh
+[0.177s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.zsh
+[0.177s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.dsv
+[0.177s] -- Symlinking: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/package.dsv
+[0.190s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/packages/shi2d2_model
+[0.190s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig.cmake
+[0.190s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig-version.cmake
+[0.191s] -- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/package.xml
+[0.194s] Invoked command in '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model
+[0.229s] Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/colcon_parallel_executor/executor/parallel.py", line 75, in execute
+    loop.run_until_complete(future)
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 636, in run_until_complete
+    self.run_forever()
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 603, in run_forever
+    self._run_once()
+  File "/usr/lib/python3.10/asyncio/base_events.py", line 1871, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/usr/lib/python3.10/selectors.py", line 469, in select
+    fd_event_list = self._selector.poll(timeout, max_ev)
+KeyboardInterrupt
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/colcon_core/executor/__init__.py", line 91, in __call__
+    rc = await self.task(*args, **kwargs)
+  File "/usr/lib/python3/dist-packages/colcon_core/task/__init__.py", line 93, in __call__
+    return await task_method(*args, **kwargs)
+  File "/usr/lib/python3/dist-packages/colcon_ros/task/ament_cmake/build.py", line 65, in build
+    has_install_target = await has_target(args.build_base, 'install')
+  File "/usr/lib/python3/dist-packages/colcon_cmake/task/cmake/__init__.py", line 57, in has_target
+    return target in await get_makefile_targets(path)
+  File "/usr/lib/python3/dist-packages/colcon_cmake/task/cmake/__init__.py", line 77, in get_makefile_targets
+    output = await check_output([
+  File "/usr/lib/python3/dist-packages/colcon_core/subprocess.py", line 129, in check_output
+    assert not rc, f'Expected {args} to pass: {stderr_data}'
+AssertionError: Expected ['/usr/bin/cmake', '--build', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model', '--target', 'help'] to pass: 

@@ -1,0 +1,283 @@
+[0.000000] (-) TimerEvent: {}
+[0.000607] (shi2d2_controller) JobQueued: {'identifier': 'shi2d2_controller', 'dependencies': OrderedDict()}
+[0.000786] (shi2d2_model) JobQueued: {'identifier': 'shi2d2_model', 'dependencies': OrderedDict()}
+[0.000835] (shi2d2_controller) JobStarted: {'identifier': 'shi2d2_controller'}
+[0.007469] (shi2d2_model) JobStarted: {'identifier': 'shi2d2_model'}
+[0.016436] (shi2d2_controller) JobProgress: {'identifier': 'shi2d2_controller', 'progress': 'cmake'}
+[0.019703] (shi2d2_controller) JobProgress: {'identifier': 'shi2d2_controller', 'progress': 'build'}
+[0.019847] (shi2d2_controller) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller', '--', '-j20', '-l20'], 'cwd': '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'mlu'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/mlu'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '2452'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_colcon_cd_root', '/opt/ros/humble/'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install:/home/mlu/Documents/Programming/Robotics/dum2d2/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'mlu'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/x86_64-linux-gnu/pkgconfig:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'mlu'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/mlu:@/tmp/.ICE-unix/1764,unix/mlu:/tmp/.ICE-unix/1764'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/5125fb2f_9e75_4752_91c3_f926ad4ad80d'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.P5PIS2'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.98'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller'), ('TURTLEBOT3_MODEL', 'waffe'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller')]), 'shell': False}
+[0.026674] (shi2d2_model) JobProgress: {'identifier': 'shi2d2_model', 'progress': 'cmake'}
+[0.027548] (shi2d2_model) JobProgress: {'identifier': 'shi2d2_model', 'progress': 'build'}
+[0.028067] (shi2d2_model) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model', '--', '-j20', '-l20'], 'cwd': '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'mlu'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/mlu'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '2452'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_colcon_cd_root', '/opt/ros/humble/'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install:/home/mlu/Documents/Programming/Robotics/dum2d2/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'mlu'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/x86_64-linux-gnu/pkgconfig:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'mlu'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/mlu:@/tmp/.ICE-unix/1764,unix/mlu:/tmp/.ICE-unix/1764'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/5125fb2f_9e75_4752_91c3_f926ad4ad80d'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.P5PIS2'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.98'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model'), ('TURTLEBOT3_MODEL', 'waffe'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller')]), 'shell': False}
+[0.062014] (shi2d2_controller) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.9 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.087764] (shi2d2_model) CommandEnded: {'returncode': 0}
+[0.099632] (-) TimerEvent: {}
+[0.122337] (shi2d2_model) JobProgress: {'identifier': 'shi2d2_model', 'progress': 'install'}
+[0.135787] (shi2d2_model) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model'], 'cwd': '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'mlu'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/mlu'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '2452'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_colcon_cd_root', '/opt/ros/humble/'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install:/home/mlu/Documents/Programming/Robotics/dum2d2/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'mlu'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/x86_64-linux-gnu/pkgconfig:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'mlu'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/mlu:@/tmp/.ICE-unix/1764,unix/mlu:/tmp/.ICE-unix/1764'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/5125fb2f_9e75_4752_91c3_f926ad4ad80d'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.P5PIS2'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.98'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_model'), ('TURTLEBOT3_MODEL', 'waffe'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller')]), 'shell': False}
+[0.146242] (shi2d2_model) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[0.147485] (shi2d2_model) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[0.148444] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/joint_names_shi2d2_model.yaml\n'}
+[0.148687] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/ros_gz_bridge_config.yaml\n'}
+[0.149034] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/shi2d2_controller.yaml\n'}
+[0.149268] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/config/test_controller.yaml\n'}
+[0.149665] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/display.launch\n'}
+[0.149821] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo.launch\n'}
+[0.150038] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo.launch.py\n'}
+[0.150139] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gazebo_classic.launch.py\n'}
+[0.150318] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gpt_gazebo.launch.py\n'}
+[0.150407] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/gpt_rviz.launch.py\n'}
+[0.150493] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/harvey_gazebo.launch.py\n'}
+[0.150579] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/launch/rviz.launch.py\n'}
+[0.150742] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/body_link.STL\n'}
+[0.150929] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/head_link.STL\n'}
+[0.151197] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_foot_link.STL\n'}
+[0.151402] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_lower_hip_link.STL\n'}
+[0.151600] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_lower_leg_link.STL\n'}
+[0.151704] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_upper_hip_link.STL\n'}
+[0.151885] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/left_upper_leg_link.STL\n'}
+[0.152102] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/lower_neck_link.STL\n'}
+[0.152206] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_foot_link.STL\n'}
+[0.152691] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_lower_hip_link.STL\n'}
+[0.152869] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_lower_leg_link.STL\n'}
+[0.152957] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_upper_hip_link.STL\n'}
+[0.153036] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/right_upper_leg_link.STL\n'}
+[0.153118] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/robot_base.stl\n'}
+[0.153201] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/meshes/upper_neck_link.STL\n'}
+[0.153361] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/rviz_basic_settings.rviz\n'}
+[0.154253] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/rviz_settings.rviz\n'}
+[0.154531] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/rviz_settings_2.rviz\n'}
+[0.154719] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/rviz/urdf_gazebo_config.rviz\n'}
+[0.154821] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/dum.urdf\n'}
+[0.154970] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/dummy.urdf\n'}
+[0.155070] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/gazebo/shi2d2_gazebo_colors.xacro\n'}
+[0.155185] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/gazebo/shi2d2_gazebo_plugins.xacro\n'}
+[0.155299] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/gazebo/shi2d2_ros2_control.xacro\n'}
+[0.155423] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.csv\n'}
+[0.155551] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.urdf\n'}
+[0.155660] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model.urdf.xacro\n'}
+[0.155748] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model_gazebo.urdf\n'}
+[0.155876] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model_og.urdf\n'}
+[0.155985] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/shi2d2_model_xacro_nonsense.urdf\n'}
+[0.156074] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/test.urdf\n'}
+[0.156155] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/urdf/test_control.urdf.xacro\n'}
+[0.156290] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/rrobot.sdf\n'}
+[0.156534] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/shi2d2_model.sdf\n'}
+[0.156772] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/sdf/test.sdf\n'}
+[0.156928] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/blank.world\n'}
+[0.157051] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/cafe.world\n'}
+[0.157176] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/empty.world\n'}
+[0.157301] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/farm.world\n'}
+[0.157467] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/worlds/neighborhood.world\n'}
+[0.157683] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/package_run_dependencies/shi2d2_model\n'}
+[0.157923] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/parent_prefix_path/shi2d2_model\n'}
+[0.158145] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.sh\n'}
+[0.158352] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/ament_prefix_path.dsv\n'}
+[0.158551] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/path.sh\n'}
+[0.158753] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/environment/path.dsv\n'}
+[0.158954] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.bash\n'}
+[0.159150] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.sh\n'}
+[0.159344] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.zsh\n'}
+[0.159529] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/local_setup.dsv\n'}
+[0.159665] (shi2d2_model) StdoutLine: {'line': b'-- Symlinking: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/package.dsv\n'}
+[0.173196] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/ament_index/resource_index/packages/shi2d2_model\n'}
+[0.173504] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig.cmake\n'}
+[0.173600] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/cmake/shi2d2_modelConfig-version.cmake\n'}
+[0.173745] (shi2d2_model) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model/share/shi2d2_model/package.xml\n'}
+[0.176047] (shi2d2_model) CommandEnded: {'returncode': 0}
+[0.199824] (-) TimerEvent: {}
+[0.232747] (shi2d2_model) JobEnded: {'identifier': 'shi2d2_model', 'rc': 0}
+[0.269171] (shi2d2_controller) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[0.280405] (shi2d2_controller) StdoutLine: {'line': b'-- Found rclcpp: 16.0.9 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[0.300051] (-) TimerEvent: {}
+[0.329032] (shi2d2_controller) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.5 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[0.332607] (shi2d2_controller) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.5 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.340738] (shi2d2_controller) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.5 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[0.358156] (shi2d2_controller) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.381085] (shi2d2_controller) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.400258] (-) TimerEvent: {}
+[0.457278] (shi2d2_controller) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[0.459553] (shi2d2_controller) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.6 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[0.500449] (-) TimerEvent: {}
+[0.600846] (-) TimerEvent: {}
+[0.634369] (shi2d2_controller) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[0.701003] (-) TimerEvent: {}
+[0.801477] (-) TimerEvent: {}
+[0.843461] (shi2d2_controller) StdoutLine: {'line': b'-- Found trajectory_msgs: 4.2.4 (/opt/ros/humble/share/trajectory_msgs/cmake)\n'}
+[0.901697] (-) TimerEvent: {}
+[1.002201] (-) TimerEvent: {}
+[1.011581] (shi2d2_controller) StdoutLine: {'line': b'-- Found tf2: 0.25.7 (/opt/ros/humble/share/tf2/cmake)\n'}
+[1.035809] (shi2d2_controller) StdoutLine: {'line': b'-- Found tf2_ros: 0.25.7 (/opt/ros/humble/share/tf2_ros/cmake)\n'}
+[1.102426] (-) TimerEvent: {}
+[1.202832] (-) TimerEvent: {}
+[1.303367] (-) TimerEvent: {}
+[1.403790] (-) TimerEvent: {}
+[1.504275] (-) TimerEvent: {}
+[1.550636] (shi2d2_controller) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[1.604506] (-) TimerEvent: {}
+[1.642671] (shi2d2_controller) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[1.642909] (shi2d2_controller) StdoutLine: {'line': b'-- Configured cppcheck include dirs: \n'}
+[1.642989] (shi2d2_controller) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[1.643362] (shi2d2_controller) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[1.644286] (shi2d2_controller) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[1.644466] (shi2d2_controller) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[1.644713] (shi2d2_controller) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[1.645922] (shi2d2_controller) StdoutLine: {'line': b'-- Configuring done\n'}
+[1.664373] (shi2d2_controller) StdoutLine: {'line': b'-- Generating done\n'}
+[1.667379] (shi2d2_controller) StdoutLine: {'line': b'-- Build files have been written to: /home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller\n'}
+[1.704354] (shi2d2_controller) StdoutLine: {'line': b'\x1b[35m\x1b[1mConsolidate compiler generated dependencies of target head_controller\x1b[0m\n'}
+[1.704595] (-) TimerEvent: {}
+[1.717263] (shi2d2_controller) StdoutLine: {'line': b'[ 25%] \x1b[32mBuilding CXX object CMakeFiles/tf_publisher.dir/src/tf_publisher.cpp.o\x1b[0m\n'}
+[1.731945] (shi2d2_controller) StdoutLine: {'line': b'[ 75%] Built target head_controller\n'}
+[1.804788] (-) TimerEvent: {}
+[1.905208] (-) TimerEvent: {}
+[2.005712] (-) TimerEvent: {}
+[2.106179] (-) TimerEvent: {}
+[2.206611] (-) TimerEvent: {}
+[2.307044] (-) TimerEvent: {}
+[2.407438] (-) TimerEvent: {}
+[2.507740] (-) TimerEvent: {}
+[2.608188] (-) TimerEvent: {}
+[2.708739] (-) TimerEvent: {}
+[2.809248] (-) TimerEvent: {}
+[2.909697] (-) TimerEvent: {}
+[3.010167] (-) TimerEvent: {}
+[3.110671] (-) TimerEvent: {}
+[3.211159] (-) TimerEvent: {}
+[3.311582] (-) TimerEvent: {}
+[3.411995] (-) TimerEvent: {}
+[3.512423] (-) TimerEvent: {}
+[3.612772] (-) TimerEvent: {}
+[3.713188] (-) TimerEvent: {}
+[3.813607] (-) TimerEvent: {}
+[3.914045] (-) TimerEvent: {}
+[4.014468] (-) TimerEvent: {}
+[4.114904] (-) TimerEvent: {}
+[4.215351] (-) TimerEvent: {}
+[4.315802] (-) TimerEvent: {}
+[4.416282] (-) TimerEvent: {}
+[4.516699] (-) TimerEvent: {}
+[4.617119] (-) TimerEvent: {}
+[4.717532] (-) TimerEvent: {}
+[4.817944] (-) TimerEvent: {}
+[4.918347] (-) TimerEvent: {}
+[5.018705] (-) TimerEvent: {}
+[5.119162] (-) TimerEvent: {}
+[5.219647] (-) TimerEvent: {}
+[5.320090] (-) TimerEvent: {}
+[5.420521] (-) TimerEvent: {}
+[5.520834] (-) TimerEvent: {}
+[5.621181] (-) TimerEvent: {}
+[5.721525] (-) TimerEvent: {}
+[5.822077] (-) TimerEvent: {}
+[5.922506] (-) TimerEvent: {}
+[6.022888] (-) TimerEvent: {}
+[6.123368] (-) TimerEvent: {}
+[6.223721] (-) TimerEvent: {}
+[6.324145] (-) TimerEvent: {}
+[6.424489] (-) TimerEvent: {}
+[6.524854] (-) TimerEvent: {}
+[6.625227] (-) TimerEvent: {}
+[6.725821] (-) TimerEvent: {}
+[6.826737] (-) TimerEvent: {}
+[6.927513] (-) TimerEvent: {}
+[7.028150] (-) TimerEvent: {}
+[7.128876] (-) TimerEvent: {}
+[7.229532] (-) TimerEvent: {}
+[7.329961] (-) TimerEvent: {}
+[7.430558] (-) TimerEvent: {}
+[7.531201] (-) TimerEvent: {}
+[7.631882] (-) TimerEvent: {}
+[7.732449] (-) TimerEvent: {}
+[7.833094] (-) TimerEvent: {}
+[7.933633] (-) TimerEvent: {}
+[8.034250] (-) TimerEvent: {}
+[8.134819] (-) TimerEvent: {}
+[8.235335] (-) TimerEvent: {}
+[8.335872] (-) TimerEvent: {}
+[8.436632] (-) TimerEvent: {}
+[8.537419] (-) TimerEvent: {}
+[8.638038] (-) TimerEvent: {}
+[8.738502] (-) TimerEvent: {}
+[8.838954] (-) TimerEvent: {}
+[8.939410] (-) TimerEvent: {}
+[9.039884] (-) TimerEvent: {}
+[9.140357] (-) TimerEvent: {}
+[9.240857] (-) TimerEvent: {}
+[9.341323] (-) TimerEvent: {}
+[9.441761] (-) TimerEvent: {}
+[9.542195] (-) TimerEvent: {}
+[9.642646] (-) TimerEvent: {}
+[9.743093] (-) TimerEvent: {}
+[9.843521] (-) TimerEvent: {}
+[9.943958] (-) TimerEvent: {}
+[10.044413] (-) TimerEvent: {}
+[10.144850] (-) TimerEvent: {}
+[10.245304] (-) TimerEvent: {}
+[10.345739] (-) TimerEvent: {}
+[10.446175] (-) TimerEvent: {}
+[10.546624] (-) TimerEvent: {}
+[10.647116] (-) TimerEvent: {}
+[10.747574] (-) TimerEvent: {}
+[10.848125] (-) TimerEvent: {}
+[10.948646] (-) TimerEvent: {}
+[11.049075] (-) TimerEvent: {}
+[11.149600] (-) TimerEvent: {}
+[11.250053] (-) TimerEvent: {}
+[11.350503] (-) TimerEvent: {}
+[11.450978] (-) TimerEvent: {}
+[11.551533] (-) TimerEvent: {}
+[11.652106] (-) TimerEvent: {}
+[11.752579] (-) TimerEvent: {}
+[11.853126] (-) TimerEvent: {}
+[11.953650] (-) TimerEvent: {}
+[12.054161] (-) TimerEvent: {}
+[12.154688] (-) TimerEvent: {}
+[12.255207] (-) TimerEvent: {}
+[12.355711] (-) TimerEvent: {}
+[12.456148] (-) TimerEvent: {}
+[12.556596] (-) TimerEvent: {}
+[12.657047] (-) TimerEvent: {}
+[12.757468] (-) TimerEvent: {}
+[12.857927] (-) TimerEvent: {}
+[12.958434] (-) TimerEvent: {}
+[13.058916] (-) TimerEvent: {}
+[13.159513] (-) TimerEvent: {}
+[13.260058] (-) TimerEvent: {}
+[13.360744] (-) TimerEvent: {}
+[13.461452] (-) TimerEvent: {}
+[13.562012] (-) TimerEvent: {}
+[13.611227] (shi2d2_controller) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable tf_publisher\x1b[0m\n'}
+[13.662144] (-) TimerEvent: {}
+[13.762586] (-) TimerEvent: {}
+[13.863156] (-) TimerEvent: {}
+[13.963592] (-) TimerEvent: {}
+[14.064044] (-) TimerEvent: {}
+[14.164733] (-) TimerEvent: {}
+[14.265265] (-) TimerEvent: {}
+[14.356916] (shi2d2_controller) StdoutLine: {'line': b'[100%] Built target tf_publisher\n'}
+[14.365376] (-) TimerEvent: {}
+[14.373067] (shi2d2_controller) CommandEnded: {'returncode': 0}
+[14.419369] (shi2d2_controller) JobProgress: {'identifier': 'shi2d2_controller', 'progress': 'install'}
+[14.419593] (shi2d2_controller) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller'], 'cwd': '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'mlu'), ('XDG_SESSION_TYPE', 'wayland'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('HOME', '/home/mlu'), ('DESKTOP_SESSION', 'ubuntu'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('GTK_MODULES', 'gail:atk-bridge'), ('SYSTEMD_EXEC_PID', '2452'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('COLORTERM', 'truecolor'), ('_colcon_cd_root', '/opt/ros/humble/'), ('IM_CONFIG_PHASE', '1'), ('WAYLAND_DISPLAY', 'wayland-0'), ('COLCON_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install:/home/mlu/Documents/Programming/Robotics/dum2d2/install'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'mlu'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('PKG_CONFIG_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/x86_64-linux-gnu/pkgconfig:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files/lib/pkgconfig'), ('XDG_SESSION_CLASS', 'user'), ('USERNAME', 'mlu'), ('TERM', 'xterm-256color'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_LOCALHOST_ONLY', '1'), ('PATH', '/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('SESSION_MANAGER', 'local/mlu:@/tmp/.ICE-unix/1764,unix/mlu:/tmp/.ICE-unix/1764'), ('XDG_MENU_PREFIX', 'gnome-'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/5125fb2f_9e75_4752_91c3_f926ad4ad80d'), ('GNOME_SETUP_DISPLAY', ':1'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'en_US.UTF-8'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('XMODIFIERS', '@im=ibus'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.P5PIS2'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('GNOME_TERMINAL_SERVICE', ':1.98'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('AMENT_PREFIX_PATH', '/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('QT_ACCESSIBILITY', '1'), ('GDMSESSION', 'ubuntu'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('QT_IM_MODULE', 'ibus'), ('PWD', '/home/mlu/Documents/Programming/Robotics/shi2d2/build/shi2d2_controller'), ('TURTLEBOT3_MODEL', 'waffe'), ('LC_ALL', 'en_US.UTF-8'), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('VTE_VERSION', '6800'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_model:/home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller:/home/mlu/Documents/Programming/Robotics/shi2d2/install/sdformat_test_files:/home/mlu/Documents/Programming/Robotics/dum2d2/install/shi2d2_urdf:/home/mlu/Documents/Programming/Robotics/dum2d2/install/motion_controller')]), 'shell': False}
+[14.431207] (shi2d2_controller) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[14.431788] (shi2d2_controller) StdoutLine: {'line': b'-- Execute custom install script\n'}
+[14.432383] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/lib/shi2d2_controller/head_controller\n'}
+[14.433026] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/package_run_dependencies/shi2d2_controller\n'}
+[14.433452] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/parent_prefix_path/shi2d2_controller\n'}
+[14.433905] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/ament_prefix_path.sh\n'}
+[14.434077] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/ament_prefix_path.dsv\n'}
+[14.434336] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/path.sh\n'}
+[14.434548] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/environment/path.dsv\n'}
+[14.434703] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.bash\n'}
+[14.434909] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.sh\n'}
+[14.435087] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.zsh\n'}
+[14.435230] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/local_setup.dsv\n'}
+[14.435388] (shi2d2_controller) StdoutLine: {'line': b'-- Symlinking: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/package.dsv\n'}
+[14.448296] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/ament_index/resource_index/packages/shi2d2_controller\n'}
+[14.448763] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/cmake/shi2d2_controllerConfig.cmake\n'}
+[14.448974] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/cmake/shi2d2_controllerConfig-version.cmake\n'}
+[14.449121] (shi2d2_controller) StdoutLine: {'line': b'-- Up-to-date symlink: /home/mlu/Documents/Programming/Robotics/shi2d2/install/shi2d2_controller/share/shi2d2_controller/package.xml\n'}
+[14.451315] (shi2d2_controller) CommandEnded: {'returncode': 0}
+[14.465526] (-) TimerEvent: {}
+[14.513758] (shi2d2_controller) JobEnded: {'identifier': 'shi2d2_controller', 'rc': 0}
+[14.515277] (-) EventReactorShutdown: {}

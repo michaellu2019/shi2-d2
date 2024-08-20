@@ -13,6 +13,7 @@ head_controller:
   ros__parameters:
     joints:
       - head_upper_neck_joint
+      
     command_interfaces:
       - position
     state_interfaces:

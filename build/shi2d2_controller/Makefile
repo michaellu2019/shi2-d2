@@ -210,6 +210,19 @@ head_controller/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/head_controller.dir/build.make CMakeFiles/head_controller.dir/build
 .PHONY : head_controller/fast
 
+#=============================================================================
+# Target rules for targets named tf_publisher
+
+# Build rule for target.
+tf_publisher: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 tf_publisher
+.PHONY : tf_publisher
+
+# fast build rule for target.
+tf_publisher/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tf_publisher.dir/build.make CMakeFiles/tf_publisher.dir/build
+.PHONY : tf_publisher/fast
+
 src/head_controller.o: src/head_controller.cpp.o
 .PHONY : src/head_controller.o
 
@@ -234,6 +247,30 @@ src/head_controller.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/head_controller.dir/build.make CMakeFiles/head_controller.dir/src/head_controller.cpp.s
 .PHONY : src/head_controller.cpp.s
 
+src/tf_publisher.o: src/tf_publisher.cpp.o
+.PHONY : src/tf_publisher.o
+
+# target to build an object file
+src/tf_publisher.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tf_publisher.dir/build.make CMakeFiles/tf_publisher.dir/src/tf_publisher.cpp.o
+.PHONY : src/tf_publisher.cpp.o
+
+src/tf_publisher.i: src/tf_publisher.cpp.i
+.PHONY : src/tf_publisher.i
+
+# target to preprocess a source file
+src/tf_publisher.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tf_publisher.dir/build.make CMakeFiles/tf_publisher.dir/src/tf_publisher.cpp.i
+.PHONY : src/tf_publisher.cpp.i
+
+src/tf_publisher.s: src/tf_publisher.cpp.s
+.PHONY : src/tf_publisher.s
+
+# target to generate assembly for a file
+src/tf_publisher.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/tf_publisher.dir/build.make CMakeFiles/tf_publisher.dir/src/tf_publisher.cpp.s
+.PHONY : src/tf_publisher.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -250,9 +287,13 @@ help:
 	@echo "... shi2d2_controller_uninstall"
 	@echo "... uninstall"
 	@echo "... head_controller"
+	@echo "... tf_publisher"
 	@echo "... src/head_controller.o"
 	@echo "... src/head_controller.i"
 	@echo "... src/head_controller.s"
+	@echo "... src/tf_publisher.o"
+	@echo "... src/tf_publisher.i"
+	@echo "... src/tf_publisher.s"
 .PHONY : help
 
 

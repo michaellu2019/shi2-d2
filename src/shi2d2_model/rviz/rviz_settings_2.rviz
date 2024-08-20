@@ -6,9 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /RobotModel1
-        - /RobotModel1/Status1
-        - /RobotModel1/Description Topic1
       Splitter Ratio: 0.5
     Tree Height: 1526
   - Class: rviz_common/Selection
@@ -149,7 +146,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: body_link
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
