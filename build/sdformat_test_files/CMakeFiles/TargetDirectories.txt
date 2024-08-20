@@ -1,6 +1,0 @@
-/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_test_files/CMakeFiles/edit_cache.dir
-/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_test_files/CMakeFiles/rebuild_cache.dir
-/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_test_files/CMakeFiles/list_install_components.dir
-/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_test_files/CMakeFiles/install.dir
-/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_test_files/CMakeFiles/install/local.dir
-/home/mlu/Documents/Programming/Robotics/shi2d2/build/sdformat_test_files/CMakeFiles/install/strip.dir
