@@ -22,12 +22,16 @@ class HeadController : public rclcpp::Node
       auto message = trajectory_msgs::msg::JointTrajectory();
 
       message.joint_names.push_back("head_upper_neck_joint");
+      message.joint_names.push_back("upper_neck_lower_neck_joint");
+      message.joint_names.push_back("lower_neck_body_joint");
       auto point = trajectory_msgs::msg::JointTrajectoryPoint();
-      double head_upper_neck_joint_angle = 1.57 * sin(count_ * 1.0);
+      double head_upper_neck_joint_angle = 1.57 * sin(count_ * 0.5);
+      double neck_joint_angle = 3.14/4 * sin(count_ * 0.5);
       // double head_upper_neck_joint_angle = 0.0;
       point.positions.push_back(head_upper_neck_joint_angle);
+      point.positions.push_back(-neck_joint_angle);
+      point.positions.push_back(neck_joint_angle);
       point.time_from_start.sec = 1.0;
-      point.time_from_start.nanosec = 0.0;
       message.points.push_back(point);
       publisher_->publish(message);
 

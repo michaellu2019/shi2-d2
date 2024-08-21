@@ -17,12 +17,15 @@ find_package(tf2_ros REQUIRED)
 
 add_executable(head_controller src/head_controller.cpp)
 ament_target_dependencies(head_controller rclcpp trajectory_msgs)
-add_executable(tf_publisher src/tf_publisher.cpp)
-ament_target_dependencies(tf_publisher rclcpp tf2 tf2_ros)
+add_executable(left_leg_controller src/left_leg_controller.cpp)
+ament_target_dependencies(left_leg_controller rclcpp trajectory_msgs)
+add_executable(right_leg_controller src/right_leg_controller.cpp)
+ament_target_dependencies(right_leg_controller rclcpp trajectory_msgs)
 
 install(TARGETS 
   head_controller
-  tf_publisher
+  left_leg_controller
+  right_leg_controller
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
