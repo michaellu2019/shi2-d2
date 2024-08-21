@@ -3,64 +3,11 @@
     <gazebo>
         <self_collide>1</self_collide>
 
-        <!-- <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
-        </plugin> -->
-
-        <!-- <plugin
-            filename="gz-sim-pose-publisher-system"
-            name="gz::sim::systems::PosePublisher">
-            <publish_link_pose>true</publish_link_pose>
-            <use_pose_vector_msg>true</use_pose_vector_msg>
-            <static_publisher>true</static_publisher>
-            <static_update_frequency>1</static_update_frequency>
-        </plugin> -->
-
-        <!-- <plugin filename="libignition-gazebo-pose-publisher-system"
-            name="ignition::gazebo::systems::PosePublisher">
-            <publish_link_pose>true</publish_link_pose>
-            <publish_sensor_pose>false</publish_sensor_pose>
-            <publish_collision_pose>false</publish_collision_pose>
-            <publish_visual_pose>false</publish_visual_pose>
-            <publish_nested_model_pose>true</publish_nested_model_pose>
-            <use_pose_vector_msg>true</use_pose_vector_msg>
-            <update_frequency>0</update_frequency>
-            <static_publisher>true</static_publisher>
-            <static_update_frequency>60</static_update_frequency>
-        </plugin>  -->
-
-        <!-- <plugin filename="libignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
-            <publish_link_pose>false</publish_link_pose>
-            <publish_model_pose>false</publish_model_pose>
-            <publish_nested_model_pose>true</publish_nested_model_pose>
-            <use_pose_vector_msg>true</use_pose_vector_msg>
-        </plugin> -->
-
-        <!-- <plugin filename="ignition-gazebo-joint-state-publisher-system" name="ignition::gazebo::systems::JointStatePublisher">
-            <topic>joint_states</topic>
-            <joint_name>head_upper_neck_joint</joint_name>
-            <joint_name>upper_neck_lower_neck_joint</joint_name>
-            <joint_name>lower_neck_body_joint</joint_name>
-
-            <joint_name>left_upper_hip_body_joint</joint_name>
-            <joint_name>left_lower_hip_left_upper_hip_joint</joint_name>
-            <joint_name>left_upper_leg_left_lower_hip_joint</joint_name>
-            <joint_name>left_lower_leg_left_upper_leg_joint</joint_name>
-            <joint_name>left_foot_left_lower_leg_joint</joint_name>
-
-            <joint_name>right_upper_hip_body_joint</joint_name>
-            <joint_name>right_lower_hip_right_upper_hip_joint</joint_name>
-            <joint_name>right_upper_leg_right_lower_hip_joint</joint_name>
-            <joint_name>right_lower_leg_right_upper_leg_joint</joint_name>
-            <joint_name>right_foot_right_lower_leg_joint</joint_name>
-        </plugin> -->
-
         <plugin filename="ignition-gazebo-pose-publisher-system" name="ignition::gazebo::systems::PosePublisher">
             <publish_link_pose>false</publish_link_pose>
             <publish_model_pose>false</publish_model_pose>
             <publish_nested_model_pose>false</publish_nested_model_pose>
             <use_pose_vector_msg>true</use_pose_vector_msg>
-            <!-- <static_publisher>true</static_publisher> -->
-            <!-- <static_update_frequency>1</static_update_frequency> -->
         </plugin>
 
         <plugin filename="ignition-gazebo-odometry-publisher-system" name="ignition::gazebo::systems::OdometryPublisher">
@@ -73,12 +20,5 @@
             <robot_param>robot_description</robot_param>
             <robot_param_node>robot_state_publisher</robot_param_node>
         </plugin>
-            <!-- <controller_manager_name>controller_manager</controller_manager_name>   -->
-
-        <!-- <plugin 
-            filename="ignition-gazebo-joint-position-controller-system" 
-            name="ignition::gazebo::systems::JointPositionController">
-            <joint_name>head_upper_neck_joint</joint_name>
-        </plugin>     -->
     </gazebo>
 </robot>

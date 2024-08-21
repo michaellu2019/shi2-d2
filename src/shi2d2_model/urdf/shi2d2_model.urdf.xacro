@@ -9,20 +9,6 @@
   <xacro:property name="effort" value="1000.0" />
   <xacro:property name="velocity" value="30.0" />
 
-  <!-- <link name="world"/>
-  <joint name="body_world_joint" type="floating">
-    <origin rpy="0 0 0" xyz="0 0 1"/>
-    <parent link="world"/>
-    <child link="body_link"/>
-  </joint> -->
-
-  <!-- <link name="shi2d2"></link>
-  <joint name="virtual_joint" type="fixed">
-      <parent link="shi2d2" />
-      <child link="body_link" />
-      <origin rpy="0 0 0" xyz="0 0 0" />
-  </joint> -->
-
   <link name="body_link">
     <inertial>
         <origin xyz="-0.13606 0 0.011359" rpy="0 0 0" />
