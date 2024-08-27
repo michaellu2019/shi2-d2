@@ -10,12 +10,13 @@
 # - https://robotics.stackexchange.com/questions/93267/joint-state-publisher-produces-empty-messages
 
 import os
+import numpy as np
+import xacro
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
-import xacro
 
 def generate_launch_description():   
     # Get the package share directory and relevant files
@@ -46,7 +47,7 @@ def generate_launch_description():
     )
 
     # spawn the urdf model in the world
-    robot_spawn_pose = (0, 0, 0.345*5, 0, 0, 0)
+    robot_spawn_pose = (0, 0, 0.345*5, 0, 0, np.pi)
     doc = xacro.parse(open(robot_xacro_file))
     xacro.process_doc(doc)
     spawn_entity = Node(
@@ -57,7 +58,12 @@ def generate_launch_description():
             "-allow_renaming", "true",
             "-name", "shi2d2", 
             "-topic", "/robot_description",
-            "-z", str(robot_spawn_pose[2])
+            "-x", str(robot_spawn_pose[0]),
+            "-y", str(robot_spawn_pose[1]),
+            "-z", str(robot_spawn_pose[2]),
+            "-R", str(robot_spawn_pose[3]),
+            "-P", str(robot_spawn_pose[4]),
+            "-Y", str(robot_spawn_pose[5]),
             ],
         output="screen"
     )
@@ -115,7 +121,7 @@ def generate_launch_description():
         spawn_entity,
         bridge,
         robot_state_publisher,
-        start_rviz_cmd,
+        # start_rviz_cmd,
         start_joint_state_broadcaster,
         start_head_controller_cmd,
         start_leg_controller_cmd,
