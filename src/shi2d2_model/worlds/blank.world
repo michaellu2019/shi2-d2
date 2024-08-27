@@ -18,7 +18,7 @@
       name="ignition::gazebo::systems::SceneBroadcaster">
     </plugin>
 
-    <gravity>0.0 0.0 0.0</gravity>
+    <gravity>0.0 0.0 -9.8</gravity>
 
     <light type="directional" name="sun">
       <cast_shadows>true</cast_shadows>

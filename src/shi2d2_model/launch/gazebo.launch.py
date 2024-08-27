@@ -105,13 +105,9 @@ def generate_launch_description():
         cmd=["ros2", "control", "load_controller", "--set-state", "active",
             "head_controller"],
         output="screen")
-    start_left_leg_controller_cmd = ExecuteProcess(
+    start_leg_controller_cmd = ExecuteProcess(
         cmd=["ros2", "control", "load_controller", "--set-state", "active",
-            "left_leg_controller"],
-        output="screen")
-    start_right_leg_controller_cmd = ExecuteProcess(
-        cmd=["ros2", "control", "load_controller", "--set-state", "active",
-            "right_leg_controller"],
+            "leg_controller"],
         output="screen")
 
     return LaunchDescription([
@@ -122,6 +118,5 @@ def generate_launch_description():
         start_rviz_cmd,
         start_joint_state_broadcaster,
         start_head_controller_cmd,
-        start_left_leg_controller_cmd,
-        start_right_leg_controller_cmd,
+        start_leg_controller_cmd,
     ])
