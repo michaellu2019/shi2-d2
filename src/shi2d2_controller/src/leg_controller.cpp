@@ -31,45 +31,20 @@ class LegController : public rclcpp::Node
       auto joint_traj = std::make_shared<trajectory_msgs::msg::JointTrajectory>();
       auto joint_traj_point = std::make_shared<trajectory_msgs::msg::JointTrajectoryPoint>();
 
-      double left_leg_joint_angle = 3.14/4;// * sin(count_ * 0.5);
-      double right_leg_joint_angle = -3.14/4;// * sin(count_ * 0.5);
-
-      // message.joint_names.push_back("left_upper_hip_body_joint");
-      // point.positions.push_back(left_leg_joint_angle);
-      // message.joint_names.push_back("left_lower_hip_left_upper_hip_joint");
-      // point.positions.push_back(left_leg_joint_angle);
-      // message.joint_names.push_back("left_upper_leg_left_lower_hip_joint");
-      // point.positions.push_back(left_leg_joint_angle);
-      // message.joint_names.push_back("left_lower_leg_left_upper_leg_joint");
-      // point.positions.push_back(left_leg_joint_angle);
-      // message.joint_names.push_back("left_foot_left_lower_leg_joint");
-      // point.positions.push_back(left_leg_joint_angle);
+      double left_leg_joint_angle = 3.14/4 * sin(count_ * 0.5);
+      double right_leg_joint_angle = -3.14/4 * sin(count_ * 0.5);
       add_joint_position(joint_traj, joint_traj_point, "left_upper_hip_body_joint", left_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "left_lower_hip_left_upper_hip_joint", left_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "left_upper_leg_left_lower_hip_joint", left_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "left_lower_leg_left_upper_leg_joint", left_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "left_foot_left_lower_leg_joint", left_leg_joint_angle);
-
-      // message.joint_names.push_back("right_upper_hip_body_joint");
-      // point.positions.push_back(right_leg_joint_angle);
-      // message.joint_names.push_back("right_lower_hip_right_upper_hip_joint");
-      // point.positions.push_back(right_leg_joint_angle);
-      // message.joint_names.push_back("right_upper_leg_right_lower_hip_joint");
-      // point.positions.push_back(right_leg_joint_angle);
-      // message.joint_names.push_back("right_lower_leg_right_upper_leg_joint");
-      // point.positions.push_back(right_leg_joint_angle);
-      // message.joint_names.push_back("right_foot_right_lower_leg_joint");
-      // point.positions.push_back(right_leg_joint_angle);
+      
       add_joint_position(joint_traj, joint_traj_point, "right_upper_hip_body_joint", right_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "right_lower_hip_right_upper_hip_joint", right_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "right_upper_leg_right_lower_hip_joint", right_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "right_lower_leg_right_upper_leg_joint", right_leg_joint_angle);
       add_joint_position(joint_traj, joint_traj_point, "right_foot_right_lower_leg_joint", right_leg_joint_angle);
       
-      // point.time_from_start.sec = 1.0;
-      // message.points.push_back(point);
-      // publisher_->publish(message);
-
       joint_traj_point->time_from_start.sec = 1.0;
       joint_traj->points.push_back(*joint_traj_point);
       publisher_->publish(*joint_traj);
