@@ -8,6 +8,7 @@
 # - https://youtu.be/PM_1Nb9u-N0
 # - https://youtu.be/H6YPkXmkdPg
 # - https://robotics.stackexchange.com/questions/93267/joint-state-publisher-produces-empty-messages
+# - https://moveit.picknik.ai/main/doc/examples/setup_assistant/setup_assistant_tutorial.html
 
 import os
 import numpy as np
@@ -17,6 +18,9 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
+
+from moveit_configs_utils import MoveItConfigsBuilder
+from moveit_configs_utils.launches import generate_demo_launch
 
 def generate_launch_description():   
     # Get the package share directory and relevant files

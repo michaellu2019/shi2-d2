@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--This does not replace URDF, and is not an extension of URDF.
+    This is a format for representing semantic information about the robot structure.
+    A URDF file must exist for this robot as well, where the joints and the links that are referenced are defined
+-->
+<robot name="shi2d2">
+    <!--GROUPS: Representation of a set of joints and links. This can be useful for specifying DOF to plan for, defining arms, end effectors, etc-->
+    <!--LINKS: When a link is specified, the parent joint of that link (if it exists) is automatically included-->
+    <!--JOINTS: When a joint is specified, the child link of that joint (which will always exist) is automatically included-->
+    <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
+    <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
+    <group name="head_group">
+        <joint name="lower_neck_body_joint"/>
+        <joint name="upper_neck_lower_neck_joint"/>
+        <joint name="head_upper_neck_joint"/>
+    </group>
+    <group name="left_leg_group">
+        <joint name="left_foot_left_lower_leg_joint"/>
+        <joint name="left_lower_leg_left_upper_leg_joint"/>
+        <joint name="left_upper_leg_left_lower_hip_joint"/>
+        <joint name="left_lower_hip_left_upper_hip_joint"/>
+        <joint name="left_upper_hip_body_joint"/>
+    </group>
+    <group name="right_leg_group">
+        <joint name="right_upper_hip_body_joint"/>
+        <joint name="right_lower_hip_right_upper_hip_joint"/>
+        <joint name="right_upper_leg_right_lower_hip_joint"/>
+        <joint name="right_lower_leg_right_upper_leg_joint"/>
+        <joint name="right_foot_right_lower_leg_joint"/>
+    </group>
+    <!--GROUP STATES: Purpose: Define a named state for a particular group, in terms of joint values. This is useful to define states like 'folded arms'-->
+    <group_state name="bricked_up" group="head_group">
+        <joint name="head_upper_neck_joint" value="0"/>
+        <joint name="lower_neck_body_joint" value="0"/>
+        <joint name="upper_neck_lower_neck_joint" value="0"/>
+    </group_state>
+    <group_state name="bricked_up" group="left_leg_group">
+        <joint name="left_foot_left_lower_leg_joint" value="0"/>
+        <joint name="left_lower_hip_left_upper_hip_joint" value="0"/>
+        <joint name="left_lower_leg_left_upper_leg_joint" value="0"/>
+        <joint name="left_upper_hip_body_joint" value="0"/>
+        <joint name="left_upper_leg_left_lower_hip_joint" value="0"/>
+    </group_state>
+    <group_state name="bricked_up" group="right_leg_group">
+        <joint name="right_foot_right_lower_leg_joint" value="0"/>
+        <joint name="right_lower_hip_right_upper_hip_joint" value="0"/>
+        <joint name="right_lower_leg_right_upper_leg_joint" value="0"/>
+        <joint name="right_upper_hip_body_joint" value="0"/>
+        <joint name="right_upper_leg_right_lower_hip_joint" value="0"/>
+    </group_state>
+    <group_state name="primed" group="head_group">
+        <joint name="head_upper_neck_joint" value="0"/>
+        <joint name="lower_neck_body_joint" value="-0.5235987755982988"/>
+        <joint name="upper_neck_lower_neck_joint" value="-0.5235987755982988"/>
+    </group_state>
+    <group_state name="primed" group="left_leg_group">
+        <joint name="left_foot_left_lower_leg_joint" value="0.7853981633974483"/>
+        <joint name="left_lower_hip_left_upper_hip_joint" value="0"/>
+        <joint name="left_lower_leg_left_upper_leg_joint" value="-1.5707963267948966"/>
+        <joint name="left_upper_hip_body_joint" value="0"/>
+        <joint name="left_upper_leg_left_lower_hip_joint" value="0.7853981633974483"/>
+    </group_state>
+    <group_state name="primed" group="right_leg_group">
+        <joint name="right_foot_right_lower_leg_joint" value="0.7853981633974483"/>
+        <joint name="right_lower_hip_right_upper_hip_joint" value="0"/>
+        <joint name="right_lower_leg_right_upper_leg_joint" value="-1.5707963267948966"/>
+        <joint name="right_upper_hip_body_joint" value="0"/>
+        <joint name="right_upper_leg_right_lower_hip_joint" value="-0.7853981633974483"/>
+    </group_state>
+    <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
+    <virtual_joint name="world_body_joint" type="floating" parent_frame="world" child_link="body_link"/>
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="body_link" link2="left_upper_hip_link" reason="Adjacent"/>
+    <disable_collisions link1="body_link" link2="lower_neck_link" reason="Adjacent"/>
+    <disable_collisions link1="body_link" link2="right_upper_hip_link" reason="Adjacent"/>
+    <disable_collisions link1="head_link" link2="lower_neck_link" reason="Never"/>
+    <disable_collisions link1="head_link" link2="upper_neck_link" reason="Adjacent"/>
+    <disable_collisions link1="left_foot_link" link2="left_lower_hip_link" reason="Never"/>
+    <disable_collisions link1="left_foot_link" link2="left_lower_leg_link" reason="Adjacent"/>
+    <disable_collisions link1="left_foot_link" link2="left_upper_hip_link" reason="Never"/>
+    <disable_collisions link1="left_lower_hip_link" link2="left_lower_leg_link" reason="Never"/>
+    <disable_collisions link1="left_lower_hip_link" link2="left_upper_hip_link" reason="Adjacent"/>
+    <disable_collisions link1="left_lower_hip_link" link2="left_upper_leg_link" reason="Adjacent"/>
+    <disable_collisions link1="left_lower_hip_link" link2="lower_neck_link" reason="Never"/>
+    <disable_collisions link1="left_lower_hip_link" link2="right_lower_hip_link" reason="Never"/>
+    <disable_collisions link1="left_lower_hip_link" link2="right_upper_hip_link" reason="Never"/>
+    <disable_collisions link1="left_lower_hip_link" link2="upper_neck_link" reason="Never"/>
+    <disable_collisions link1="left_lower_leg_link" link2="left_upper_hip_link" reason="Never"/>
+    <disable_collisions link1="left_lower_leg_link" link2="left_upper_leg_link" reason="Adjacent"/>
+    <disable_collisions link1="left_lower_leg_link" link2="lower_neck_link" reason="Never"/>
+    <disable_collisions link1="left_lower_leg_link" link2="upper_neck_link" reason="Never"/>
+    <disable_collisions link1="left_upper_hip_link" link2="lower_neck_link" reason="Never"/>
+    <disable_collisions link1="left_upper_hip_link" link2="right_lower_hip_link" reason="Never"/>
+    <disable_collisions link1="left_upper_hip_link" link2="right_upper_hip_link" reason="Never"/>
+    <disable_collisions link1="left_upper_hip_link" link2="upper_neck_link" reason="Never"/>
+    <disable_collisions link1="left_upper_leg_link" link2="lower_neck_link" reason="Never"/>
+    <disable_collisions link1="left_upper_leg_link" link2="upper_neck_link" reason="Never"/>
+    <disable_collisions link1="lower_neck_link" link2="right_foot_link" reason="Never"/>
+    <disable_collisions link1="lower_neck_link" link2="right_lower_hip_link" reason="Never"/>
+    <disable_collisions link1="lower_neck_link" link2="right_lower_leg_link" reason="Never"/>
+    <disable_collisions link1="lower_neck_link" link2="right_upper_hip_link" reason="Never"/>
+    <disable_collisions link1="lower_neck_link" link2="right_upper_leg_link" reason="Never"/>
+    <disable_collisions link1="lower_neck_link" link2="upper_neck_link" reason="Adjacent"/>
+    <disable_collisions link1="right_foot_link" link2="right_lower_hip_link" reason="Never"/>
+    <disable_collisions link1="right_foot_link" link2="right_lower_leg_link" reason="Adjacent"/>
+    <disable_collisions link1="right_foot_link" link2="right_upper_hip_link" reason="Never"/>
+    <disable_collisions link1="right_lower_hip_link" link2="right_lower_leg_link" reason="Never"/>
+    <disable_collisions link1="right_lower_hip_link" link2="right_upper_hip_link" reason="Adjacent"/>
+    <disable_collisions link1="right_lower_hip_link" link2="right_upper_leg_link" reason="Adjacent"/>
+    <disable_collisions link1="right_lower_hip_link" link2="upper_neck_link" reason="Never"/>
+    <disable_collisions link1="right_lower_leg_link" link2="right_upper_hip_link" reason="Never"/>
+    <disable_collisions link1="right_lower_leg_link" link2="right_upper_leg_link" reason="Adjacent"/>
+    <disable_collisions link1="right_lower_leg_link" link2="upper_neck_link" reason="Never"/>
+    <disable_collisions link1="right_upper_hip_link" link2="upper_neck_link" reason="Never"/>
+    <disable_collisions link1="right_upper_leg_link" link2="upper_neck_link" reason="Never"/>
+</robot>

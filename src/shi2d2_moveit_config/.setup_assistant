@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: shi2d2_model
+    relative_path: urdf/shi2d2_model.urdf.xacro
+  srdf:
+    relative_path: config/shi2d2.srdf
+  package_settings:
+    author_name: Michael Lu
+    author_email: mlu0708@mit.edu
+    generated_timestamp: 1726872350
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
