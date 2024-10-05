@@ -2,12 +2,4 @@
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="shi2d2">
     <!-- Import shi2d2 urdf file -->
     <xacro:include filename="$(find shi2d2_model)/urdf/shi2d2_model.urdf.xacro" />
-
-    <!-- <xacro:arg name="initial_positions_file" default="initial_positions.yaml" /> -->
-
-    <!-- Import control_xacro -->
-    <!-- <xacro:include filename="shi2d2.ros2_control.xacro" />
-
-    <xacro:shi2d2_ros2_control name="FakeSystem" initial_positions_file="$(arg initial_positions_file)"/> -->
-
 </robot>

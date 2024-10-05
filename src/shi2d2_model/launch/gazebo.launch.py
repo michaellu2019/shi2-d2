@@ -10,6 +10,7 @@
 # - https://robotics.stackexchange.com/questions/93267/joint-state-publisher-produces-empty-messages
 # - https://moveit.picknik.ai/main/doc/examples/setup_assistant/setup_assistant_tutorial.html
 # - https://automaticaddison.com/how-to-configure-moveit-2-for-a-simulated-robot-arm/#Create_a_Launch_File
+# - https://moveit.picknik.ai/main/doc/how_to_guides/moveit_launch_files/moveit_launch_files_tutorial.html
 
 import os
 import numpy as np
@@ -59,7 +60,7 @@ def generate_launch_description():
 
     # launch the gazebo ignition world
     ign_gazebo = ExecuteProcess(
-        cmd=["ign", "gazebo", world_file],
+        cmd=["ign", "gazebo", "-r", world_file],
         output="screen"
     )
 
@@ -149,8 +150,7 @@ def generate_launch_description():
         ],
     )
 
-    # start ros2 control controllers and state broadcasters
-
+    # start ros2 controllers and state broadcasters
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
@@ -219,15 +219,15 @@ def generate_launch_description():
         spawn_entity,
         bridge,
         robot_state_publisher,
-        # move_group,
+        move_group,
         rviz,
-        joint_state_broadcaster,
-        head_group_controller,
-        left_leg_group_controller,
-        right_leg_group_controller,
-        # controller_manager,
-        # moveit_joint_state_broadcaster,
-        # moveit_head_group_controller,
-        # moveit_left_leg_group_controller,
-        # moveit_right_leg_group_controller,
+        # joint_state_broadcaster,
+        # head_group_controller,
+        # left_leg_group_controller,
+        # right_leg_group_controller,
+        controller_manager,
+        moveit_joint_state_broadcaster,
+        moveit_head_group_controller,
+        moveit_left_leg_group_controller,
+        moveit_right_leg_group_controller,
     ])

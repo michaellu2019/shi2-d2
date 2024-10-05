@@ -10,43 +10,10 @@
 class LegIKController : public rclcpp::Node
 {
   public:
-    // LegIKController() : Node("leg_ik_controller"),
-    //       robot_model_loader_(std::make_shared<rclcpp::Node>(this->get_name()), "shi2d2"),
-    //       robot_model_(robot_model_loader_.getModel()),
-    //       robot_state_(std::make_shared<moveit::core::RobotState>(robot_model_)),
-    //       planning_group_("left_leg_group")
-    // {   
-    //     joint_model_group_ = robot_model_->getJointModelGroup(planning_group_);
-    //     this->sampleSolveIK();
-    // }
-
-    // void sampleSolveIK()
-    // {
-    //     moveit::planning_interface::MoveGroupInterface move_group_interface(std::make_shared<rclcpp::Node>(this->get_name()), planning_group_);
-        
-    //     // get current pose, increase its z coordinate by 5 cm and solve IK to see if the new pose is reachable
-    //     auto current_pose = move_group_interface.getCurrentPose();
-    //     geometry_msgs::msg::Pose target_pose;
-    //     target_pose.position.x = current_pose.pose.position.x;
-    //     target_pose.position.y = current_pose.pose.position.y;
-    //     target_pose.position.z = current_pose.pose.position.z + 0.05; // Fixed to directly modify the z coordinate
-        
-    //     bool found_ik = robot_state_->setFromIK(joint_model_group_, target_pose);
-    //     if (found_ik)
-    //     {
-    //         RCLCPP_INFO(this->get_logger(), "IK solution found.");
-    //     }
-    //     else
-    //     {
-    //         RCLCPP_INFO(this->get_logger(), "IK solution not found.");
-    //     }
-    // }
-
     LegIKController() : Node("leg_ik_controller"),
-                        left_leg_move_group_interface_(std::make_shared<rclcpp::Node>(this->get_name()), "left_leg_group")
+                        left_leg_move_group_interface_(std::make_shared<rclcpp::Node>(this->get_name()), "left_leg_group"),
+                        right_leg_move_group_interface_(std::make_shared<rclcpp::Node>(this->get_name()), "right_leg_group")
     {
-      // moveit::planning_interface::MoveGroupInterface left_leg_move_group_interface_(std::make_shared<rclcpp::Node>(this->get_name()), "left_leg_group");
-
       // test_target_pose();
       test_named_target_pose("primed");
     }
@@ -54,13 +21,17 @@ class LegIKController : public rclcpp::Node
   private:
     void test_named_target_pose(const std::string& target_pose_name) {
       left_leg_move_group_interface_.setNamedTarget(target_pose_name);
+      right_leg_move_group_interface_.setNamedTarget(target_pose_name);
 
-      moveit::planning_interface::MoveGroupInterface::Plan plan;
-      bool success = (left_leg_move_group_interface_.plan(plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+      moveit::planning_interface::MoveGroupInterface::Plan left_leg_plan;
+      bool left_leg_success = (left_leg_move_group_interface_.plan(left_leg_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+      moveit::planning_interface::MoveGroupInterface::Plan right_leg_plan;
+      bool right_leg_success = (right_leg_move_group_interface_.plan(right_leg_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
 
-      if (success) {
+      if (left_leg_success && right_leg_success) {
         RCLCPP_INFO(this->get_logger(), "Yipeeeeee!"); 
-        left_leg_move_group_interface_.execute(plan);
+        left_leg_move_group_interface_.execute(left_leg_plan);
+        right_leg_move_group_interface_.execute(right_leg_plan);
       } else {
         RCLCPP_INFO(this->get_logger(), "Planning failed!"); 
       }
@@ -91,16 +62,8 @@ class LegIKController : public rclcpp::Node
       }
     }
 
-    // using moveit::planning_interface::MoveGroupInterface;
     moveit::planning_interface::MoveGroupInterface left_leg_move_group_interface_;
-    // moveit::planning_interface::MoveGroupInterface left_leg_move_group_interface;
-    // moveit::planning_interface::MoveGroupInterface left_leg_move_group_interface(move_group_node, PLANNING_GROUP);
-
-    // robot_model_loader::RobotModelLoader robot_model_loader_;
-    // moveit::core::RobotModelPtr robot_model_;
-    // moveit::core::RobotStatePtr robot_state_;
-    // std::string planning_group_;
-    // const moveit::core::JointModelGroup* joint_model_group_;
+    moveit::planning_interface::MoveGroupInterface right_leg_move_group_interface_;
 };
 
 int main(int argc, char ** argv)
