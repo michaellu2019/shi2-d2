@@ -22,18 +22,49 @@ class LegIKController : public rclcpp::Node
     void test_named_target_pose(const std::string& target_pose_name) {
       left_leg_move_group_interface_.setNamedTarget(target_pose_name);
       right_leg_move_group_interface_.setNamedTarget(target_pose_name);
+      RCLCPP_INFO(this->get_logger(), "Go go go!"); 
 
-      moveit::planning_interface::MoveGroupInterface::Plan left_leg_plan;
-      bool left_leg_success = (left_leg_move_group_interface_.plan(left_leg_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
-      moveit::planning_interface::MoveGroupInterface::Plan right_leg_plan;
-      bool right_leg_success = (right_leg_move_group_interface_.plan(right_leg_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+      std::thread left_leg_thread(&LegIKController::plan_and_execute, this, std::ref(left_leg_move_group_interface_), target_pose_name);
+      std::thread right_leg_thread(&LegIKController::plan_and_execute, this, std::ref(right_leg_move_group_interface_), target_pose_name);
 
-      if (left_leg_success && right_leg_success) {
-        RCLCPP_INFO(this->get_logger(), "Yipeeeeee!"); 
-        left_leg_move_group_interface_.execute(left_leg_plan);
-        right_leg_move_group_interface_.execute(right_leg_plan);
+      left_leg_thread.join();
+      right_leg_thread.join();
+
+      // left_leg_move_group_interface_.asyncMove();
+      // right_leg_move_group_interface_.asyncMove();
+
+    //   moveit::planning_interface::MoveGroupInterface::Plan left_leg_plan;
+    //   bool left_leg_success = (left_leg_move_group_interface_.plan(left_leg_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+    //   moveit::planning_interface::MoveGroupInterface::Plan right_leg_plan;
+    //   bool right_leg_success = (right_leg_move_group_interface_.plan(right_leg_plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+
+    //   if (left_leg_success && right_leg_success) {
+    //     RCLCPP_INFO(this->get_logger(), "Yipeeeeee!"); 
+    //     left_leg_move_group_interface_.asyncExecute(left_leg_plan);
+    //     right_leg_move_group_interface_.asyncExecute(right_leg_plan);
+    //   } else {
+    //     RCLCPP_INFO(this->get_logger(), "Planning failed!"); 
+    //   }
+    }
+
+    void plan_and_execute(moveit::planning_interface::MoveGroupInterface& move_group_interface, const std::string& target_pose_name) {
+      move_group_interface.setNamedTarget(target_pose_name);
+      move_group_interface.asyncMove();
+      return;
+
+      moveit::planning_interface::MoveGroupInterface::Plan plan;
+      bool success = (move_group_interface.plan(plan) == moveit::planning_interface::MoveItErrorCode::SUCCESS);
+
+      if (success) {
+        RCLCPP_INFO(this->get_logger(), "Planning successful for %s. Executing plan...", move_group_interface.getName().c_str());
+        move_group_interface.asyncMove();
+        // if (result == moveit::planning_interface::MoveItErrorCode::SUCCESS) {
+        //   RCLCPP_INFO(this->get_logger(), "Execution successful for %s.", move_group_interface.getName().c_str());
+        // } else {
+        //   RCLCPP_ERROR(this->get_logger(), "Execution failed for %s.", move_group_interface.getName().c_str());
+        // }
       } else {
-        RCLCPP_INFO(this->get_logger(), "Planning failed!"); 
+        RCLCPP_ERROR(this->get_logger(), "Planning failed for %s!", move_group_interface.getName().c_str());
       }
     }
 

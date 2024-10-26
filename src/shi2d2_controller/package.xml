@@ -15,6 +15,9 @@
   <build_depend>tf2_ros</build_depend>
   <build_depend>geometry_msgs</build_depend>
   <build_depend>moveit_ros_planning_interface</build_depend>
+  <build_depend>shi2d2_left_leg_group_ikfast_plugin</build_depend>
+  <build_depend>shi2d2_right_leg_group_ikfast_plugin</build_depend>
+  <build_depend>shi2d2_leg_group_ikfast_plugin</build_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

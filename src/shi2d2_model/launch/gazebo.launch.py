@@ -60,7 +60,7 @@ def generate_launch_description():
 
     # launch the gazebo ignition world
     ign_gazebo = ExecuteProcess(
-        cmd=["ign", "gazebo", "-r", world_file],
+        cmd=["ign", "gazebo", "-r", "-s", world_file],
         output="screen"
     )
 
