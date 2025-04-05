@@ -1,6 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<library path="shi2d2_left_leg_group_moveit_ikfast_plugin">
-  <class name="shi2d2_left_leg_group/IKFastKinematicsPlugin" type="shi2d2_left_leg_group::IKFastKinematicsPlugin" base_class_type="kinematics::KinematicsBase">
-    <description>IKFast61 plugin for closed-form kinematics of shi2d2 left_leg_group</description>
-  </class>
-</library>
