@@ -11,6 +11,7 @@
 # - https://moveit.picknik.ai/main/doc/examples/setup_assistant/setup_assistant_tutorial.html
 # - https://automaticaddison.com/how-to-configure-moveit-2-for-a-simulated-robot-arm/#Create_a_Launch_File
 # - https://moveit.picknik.ai/main/doc/how_to_guides/moveit_launch_files/moveit_launch_files_tutorial.html
+# - https://gazebosim.org/docs/harmonic/migration_from_ignition/
 
 import os
 import numpy as np
@@ -48,19 +49,20 @@ def generate_launch_description():
     moveit_rviz_config_file = os.path.join(moveit_pkg_share_path, "config", "moveit.rviz")
 
     # configure gazebo environment variables to find plugins and resourcs
-    if "IGN_GAZEBO_RESOURCE_PATH" in os.environ:
-        os.environ["IGN_GAZEBO_RESOURCE_PATH"] += model_pkg_share_path[:-len(f"/{model_pkg_name}")]
+    if "GZ_SIM_RESOURCE_PATH" in os.environ:
+        os.environ["GZ_SIM_RESOURCE_PATH"] += model_pkg_share_path[:-len(f"/{model_pkg_name}")]
     else:
-        os.environ["IGN_GAZEBO_RESOURCE_PATH"] = model_pkg_share_path[:-len(f"/{model_pkg_name}")]
+        os.environ["GZ_SIM_RESOURCE_PATH"] = model_pkg_share_path[:-len(f"/{model_pkg_name}")]
 
-    if "IGN_GAZEBO_SYSTEM_PLUGIN_PATH" in os.environ:
-        os.environ["IGN_GAZEBO_SYSTEM_PLUGIN_PATH"] += f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
+    if "GZ_SIM_SYSTEM_PLUGIN_PATH" in os.environ:
+        os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] += f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
     else:
-        os.environ["IGN_GAZEBO_SYSTEM_PLUGIN_PATH"] = f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
+        os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] = f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
 
-    # launch the gazebo ignition world
-    ign_gazebo = ExecuteProcess(
-        cmd=["ign", "gazebo", "-r", "-s", world_file],
+    # launch the gazebo world
+    gazebo = ExecuteProcess(
+        # cmd=["gz", "sim", "-r", "-s", world_file],
+        cmd=["gz", "sim", "-r", world_file],
         output="screen"
     )
 
@@ -215,19 +217,19 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        ign_gazebo,
+        gazebo,
         spawn_entity,
         bridge,
         robot_state_publisher,
-        move_group,
-        rviz,
-        # joint_state_broadcaster,
-        # head_group_controller,
-        # left_leg_group_controller,
-        # right_leg_group_controller,
-        controller_manager,
-        moveit_joint_state_broadcaster,
-        moveit_head_group_controller,
-        moveit_left_leg_group_controller,
-        moveit_right_leg_group_controller,
+        # move_group,
+        # rviz,
+        joint_state_broadcaster,
+        # controller_manager,
+        head_group_controller,
+        left_leg_group_controller,
+        right_leg_group_controller,
+        # moveit_joint_state_broadcaster,
+        # moveit_head_group_controller,
+        # moveit_left_leg_group_controller,
+        # moveit_right_leg_group_controller,
     ])
