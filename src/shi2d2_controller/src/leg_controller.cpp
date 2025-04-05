@@ -106,7 +106,7 @@ class LegController : public rclcpp::Node
 
       count_++;
 
-      // RCLCPP_INFO(this->get_logger(), "Publishing: '%f' and '%f", left_leg_joint_angle, right_leg_joint_angle);
+      RCLCPP_INFO(this->get_logger(), "Publishing: '%f' and '%f", left_leg_joint_angle, right_leg_joint_angle);
     }
 
     void clock_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg)
