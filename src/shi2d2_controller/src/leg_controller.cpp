@@ -5,12 +5,17 @@
 #include "trajectory_msgs/msg/joint_trajectory.hpp"
 #include "trajectory_msgs/msg/joint_trajectory_point.hpp"
 #include "rosgraph_msgs/msg/clock.hpp"
+#include "geometry_msgs/msg/pose.hpp"
+#include "moveit/robot_model_loader/robot_model_loader.h"
+#include "urdf/model.h"
+#include "srdfdom/model.h"
 
 // #include "shi2d2_left_leg_group_ikfast_plugin/shi2d2_left_leg_group_ik_fast_moveit_plugin.cpp"
 // #include "shi2d2_left_leg_group_ikfast_plugin/ikfast.h"
 #include "shi2d2_leg_group_ikfast_plugin/ikfast.h"
+// #include "shi2d2_leg_group_ikfast_plugin/shi2d2_left_leg_group_ik_fast_moveit_plugin.cpp"
 
-using namespace std::chrono_literals;
+// using namespace std::chrono_literals;
 
 class LegController : public rclcpp::Node
 {
@@ -19,7 +24,7 @@ class LegController : public rclcpp::Node
     {
       left_leg_joint_traj_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("left_leg_group_controller/joint_trajectory", 10);
       right_leg_joint_traj_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("right_leg_group_controller/joint_trajectory", 10);
-      timer_ = this->create_wall_timer(100ms, std::bind(&LegController::timer_callback, this));
+      timer_ = this->create_wall_timer(std::chrono::milliseconds(100), std::bind(&LegController::timer_callback, this));
 
       start_time_ = rclcpp::Time();
       clock_subscriber_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", 10,
@@ -38,6 +43,39 @@ class LegController : public rclcpp::Node
       right_leg_controller_joint_angles_["right_upper_leg_right_lower_hip_joint"] = 0.0;
       right_leg_controller_joint_angles_["right_lower_leg_right_upper_leg_joint"] = 0.0;
       right_leg_controller_joint_angles_["right_foot_right_lower_leg_joint"] = 0.0;
+
+      /*
+      // test_ikfast_class_ = std::make_shared<TestIKFastClass>();
+      test_A_ = std::make_shared<A>();
+
+      const std::string urdf_file_path = "../../shi2d2_moveit_config/config/shi2d2.urdf.xacro";
+      const std::string srdf_file_path = "../../shi2d2_moveit_config/config/shi2d2.srdf";
+
+      urdf::ModelInterfaceSharedPtr urdf_model = urdf::parseURDFFile(urdf_file_path);
+      if (!urdf_model)
+      {
+        throw std::runtime_error("Failed to load URDF model");
+      }
+
+      // Load SRDF model
+      srdf::Model srdf_model;
+      if (!srdf_model.initFile(*urdf_model, srdf_file_path))
+      {
+        throw std::runtime_error("Failed to load SRDF model");
+      }
+
+      // Create RobotModel
+      moveit::core::RobotModel robot_model;
+      robot_model.buildModel(*urdf_model, srdf_model);
+
+
+      // bool initialize(const rclcpp::Node::SharedPtr& node, const moveit::core::RobotModel& robot_model,
+      //                 const std::string& group_name, const std::string& base_frame,
+      //                 const std::vector<std::string>& tip_frames, double search_discretization) override;
+      left_leg_ikfast_kinematics_plugin_ = std::make_shared<IKFastKinematicsPlugin>();
+      left_leg_ikfast_kinematics_plugin_->initialize(shared_from_this(), &robot_model, "left_leg_group", "left_upper_hip_link", "left_foot_link", 0.01);
+
+      */
     }
 
   private:
@@ -50,6 +88,25 @@ class LegController : public rclcpp::Node
 
     void timer_callback()
     {
+      // int a = 1;
+      // int x = test_A_->get_id();
+      // test_A_->double_id();
+      // RCLCPP_INFO(this->get_logger(), "Test Class ID: %d", x);
+
+      // int x = 3;
+      // int y = test_triple_num(x);
+      // RCLCPP_INFO(this->get_logger(), "Test Triple Num: %d", y);
+      // int x = test_ikfast_class_->get_id();
+      // RCLCPP_INFO(this->get_logger(), "Test Class ID: %d", x);
+      // bool
+      // getPositionIK(const geometry_msgs::msg::Pose& ik_pose, const std::vector<double>& ik_seed_state,
+      //               std::vector<double>& solution, moveit_msgs::msg::MoveItErrorCodes& error_code,
+      //               const kinematics::KinematicsQueryOptions& options = kinematics::KinematicsQueryOptions()) const override;
+                    
+      // getPositionIK();
+
+      return;
+
       auto message = trajectory_msgs::msg::JointTrajectory();
       auto point = trajectory_msgs::msg::JointTrajectoryPoint();
       auto left_leg_joint_traj = std::make_shared<trajectory_msgs::msg::JointTrajectory>();
@@ -135,6 +192,9 @@ class LegController : public rclcpp::Node
 
     std::map<std::string, double> left_leg_controller_joint_angles_;
     std::map<std::string, double> right_leg_controller_joint_angles_;
+
+    std::shared_ptr<IKFastKinematicsPlugin> left_leg_ikfast_kinematics_plugin_;
+    std::shared_ptr<A> test_A_;
 };
 
 int main(int argc, char ** argv)

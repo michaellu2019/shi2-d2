@@ -13,7 +13,7 @@ find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(shi2d2_left_leg_group_ikfast_plugin REQUIRED)
-# find_package(shi2d2_right_leg_group_ikfast_plugin REQUIRED)
+find_package(shi2d2_right_leg_group_ikfast_plugin REQUIRED)
 find_package(shi2d2_leg_group_ikfast_plugin REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
@@ -28,15 +28,15 @@ find_package(shi2d2_leg_group_ikfast_plugin REQUIRED)
 # ament_target_dependencies(head_controller rclcpp trajectory_msgs)
 add_executable(leg_controller src/leg_controller.cpp)
 ament_target_dependencies(leg_controller rclcpp trajectory_msgs shi2d2_leg_group_ikfast_plugin)# shi2d2_left_leg_group_ikfast_plugin)# shi2d2_right_leg_group_ikfast_plugin)
-# add_executable(leg_ik_controller src/leg_ik_controller.cpp)
-# ament_target_dependencies(leg_ik_controller rclcpp moveit_ros_planning_interface trajectory_msgs)
+add_executable(leg_ik_controller src/leg_ik_controller.cpp)
+ament_target_dependencies(leg_ik_controller rclcpp moveit_ros_planning_interface trajectory_msgs)
 
 # target_link_libraries(leg_controller shi2d2_left_leg_group_ikfast_plugin::shi2d2_left_leg_group_ikfast_plugin)
 
 install(TARGETS 
   # head_controller
   leg_controller
-  # leg_ik_controller
+  leg_ik_controller
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
