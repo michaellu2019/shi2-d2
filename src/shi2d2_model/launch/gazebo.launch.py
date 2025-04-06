@@ -32,21 +32,10 @@ def generate_launch_description():
 
     rviz_config_file = os.path.join(model_pkg_share_path, "rviz", "shi2d2_rviz_settings.rviz")
     bridge_config_file = os.path.join(model_pkg_share_path, "config", "ros_gz_bridge_config.yaml")
+    controller_config_file = os.path.join(model_pkg_share_path, "config", "shi2d2_controller.yaml")
     world_file = os.path.join(model_pkg_share_path, "worlds", "blank.world")
     robot_xacro_file = os.path.join(model_pkg_share_path, "urdf", "shi2d2_model.urdf.xacro")
-
-    moveit_pkg_name = "shi2d2_moveit_config"
-    moveit_pkg_share_path = get_package_share_directory(moveit_pkg_name)
-    print(f"Model Package share path: {moveit_pkg_share_path}")
-
-    moveit_controllers_file = os.path.join(moveit_pkg_share_path, "config", "moveit_controllers.yaml")
-    moveit_ros2_control_file = os.path.join(moveit_pkg_share_path, "config", "ros2_controllers.yaml")
-    moveit_srdf_file = os.path.join(moveit_pkg_share_path, "config", "shi2d2.srdf")
-    moveit_joint_limits_file_path = os.path.join(moveit_pkg_share_path, "config", "joint_limits.yaml")
-    moveit_kinematics_file_path = os.path.join(moveit_pkg_share_path, "config", "kinematics.yaml")
-    moveit_pilz_cartesian_limits_file_path = os.path.join(moveit_pkg_share_path, "config", "pilz_cartesian_limits.yaml")
-    moveit_initial_positions_file_path = os.path.join(moveit_pkg_share_path, "config", "initial_positions.yaml")
-    moveit_rviz_config_file = os.path.join(moveit_pkg_share_path, "config", "moveit.rviz")
+    # robot_xacro_file = os.path.join(model_pkg_share_path, "urdf", "shi2d2_model.xacro.urdf")
 
     # configure gazebo environment variables to find plugins and resourcs
     if "GZ_SIM_RESOURCE_PATH" in os.environ:
@@ -54,10 +43,10 @@ def generate_launch_description():
     else:
         os.environ["GZ_SIM_RESOURCE_PATH"] = model_pkg_share_path[:-len(f"/{model_pkg_name}")]
 
-    if "GZ_SIM_SYSTEM_PLUGIN_PATH" in os.environ:
-        os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] += f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
-    else:
-        os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] = f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
+    # if "GZ_SIM_SYSTEM_PLUGIN_PATH" in os.environ:
+    #     os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] += f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
+    # else:
+    #     os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] = f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
 
     # launch the gazebo world
     gazebo = ExecuteProcess(
@@ -97,7 +86,7 @@ def generate_launch_description():
         parameters=[
             {"use_sim_time": True},
             {"robot_description": doc.toxml()},
-            {"rate": 50},
+            # {"rate": 50},
         ]
     )
 
@@ -112,33 +101,6 @@ def generate_launch_description():
         output="screen"
     )
 
-    # start move it
-    moveit_config = (
-        MoveItConfigsBuilder("shi2d2", package_name="shi2d2_moveit_config")
-        .trajectory_execution(file_path=moveit_controllers_file)
-        .robot_description_semantic(file_path=moveit_srdf_file)
-        .joint_limits(file_path=moveit_joint_limits_file_path)
-        .robot_description_kinematics(file_path=moveit_kinematics_file_path)
-        .planning_scene_monitor(
-            publish_robot_description=False,
-            publish_robot_description_semantic=True,
-            publish_planning_scene=True,
-        )
-        .pilz_cartesian_limits(file_path=moveit_pilz_cartesian_limits_file_path)
-        .to_moveit_configs()
-    )
-
-    move_group = Node(
-        package="moveit_ros_move_group",
-        executable="move_group",
-        output="screen",
-        parameters=[
-            moveit_config.to_dict(),
-            {"use_sim_time": True},
-            {"start_state": {}}
-        ],
-    )
-
     # launch rviz
     rviz = Node(
         package="rviz2",
@@ -148,7 +110,7 @@ def generate_launch_description():
         arguments=["-d", rviz_config_file],
         parameters=[
             {"use_sim_time": True},
-            {"start_state": {"content": moveit_initial_positions_file_path}},
+            # {"start_state": {"content": moveit_initial_positions_file_path}},
         ],
     )
 
@@ -156,53 +118,32 @@ def generate_launch_description():
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[moveit_ros2_control_file],
+        # parameters=[moveit_ros2_control_file],
         remappings=[("/controller_manager/robot_description", "/robot_description")],
         output="both"
     )
-    moveit_joint_state_broadcaster = Node(
+
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster"],
+    )
+
+    joint_trajectory_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
+            "joint_trajectory_controller",
+            "--param-file",
+            controller_config_file
         ],
     )
-
-    moveit_head_group_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["head_group_controller", "-c", "/controller_manager"],
-    )
-    moveit_left_leg_group_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["left_leg_group_controller", "-c", "/controller_manager"],
-    )
-    moveit_right_leg_group_controller = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["right_leg_group_controller", "-c", "/controller_manager"],
-    )
-    # joint_state_broadcaster = ExecuteProcess(
-    #     cmd=["ros2", "control", "load_controller", "--set-state", "active",
-    #         "joint_state_broadcaster"],
-    #     output="screen",)
-
-    # start_head_controller_cmd = ExecuteProcess(
-    #     cmd=["ros2", "control", "load_controller", "--set-state", "active",
-    #         "head_controller"],
-    #     output="screen")
-    # start_leg_controller_cmd = ExecuteProcess(
-    #     cmd=["ros2", "control", "load_controller", "--set-state", "active",
-    #         "leg_controller"],
-    #     output="screen")
 
     joint_state_broadcaster = ExecuteProcess(
         cmd=["ros2", "control", "load_controller", "--set-state", "active",
             "joint_state_broadcaster"],
         output="screen",)
+    
     head_group_controller = ExecuteProcess(
         cmd=["ros2", "control", "load_controller", "--set-state", "active", "head_group_controller"],
         output="screen",
@@ -221,15 +162,12 @@ def generate_launch_description():
         spawn_entity,
         bridge,
         robot_state_publisher,
-        # move_group,
         # rviz,
-        joint_state_broadcaster,
+        joint_state_broadcaster_spawner,
+        # joint_trajectory_controller_spawner,
+        # joint_state_broadcaster,
         # controller_manager,
         head_group_controller,
         left_leg_group_controller,
         right_leg_group_controller,
-        # moveit_joint_state_broadcaster,
-        # moveit_head_group_controller,
-        # moveit_left_leg_group_controller,
-        # moveit_right_leg_group_controller,
     ])

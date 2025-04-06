@@ -5,9 +5,9 @@
      Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
      For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
 <robot xmlns:xacro="http://ros.org/wiki/xacro" name="shi2d2">
-  <!-- <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_ros2_control.xacro" /> -->
-  <xacro:include filename="$(find shi2d2_moveit_config)/config/shi2d2.ros2_control.xacro" />
-  <xacro:shi2d2_ros2_control name="GazeboSystem" type="system" initial_positions_file="$(find shi2d2_moveit_config)/config/initial_positions.yaml"/>
+  <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_ros2_control.xacro" />
+  <!-- <xacro:include filename="$(find shi2d2_moveit_config)/config/shi2d2.ros2_control.xacro" /> -->
+  <!-- <xacro:shi2d2_ros2_control name="GazeboSystem" initial_positions_file="$(find shi2d2_moveit_config)/config/initial_positions.yaml"/> -->
 
   <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_gazebo_plugins.xacro" />
   <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_gazebo_colors.xacro" />

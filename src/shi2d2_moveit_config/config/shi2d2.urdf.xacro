@@ -1,5 +1,0 @@
-<?xml version="1.0"?>
-<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="shi2d2">
-    <!-- Import shi2d2 urdf file -->
-    <xacro:include filename="$(find shi2d2_model)/urdf/shi2d2_model.urdf.xacro" />
-</robot>
