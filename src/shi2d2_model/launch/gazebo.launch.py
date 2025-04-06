@@ -115,13 +115,13 @@ def generate_launch_description():
     )
 
     # start ros2 controllers and state broadcasters
-    controller_manager = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        # parameters=[moveit_ros2_control_file],
-        remappings=[("/controller_manager/robot_description", "/robot_description")],
-        output="both"
-    )
+    # controller_manager = Node(
+    #     package="controller_manager",
+    #     executable="ros2_control_node",
+    #     # parameters=[moveit_ros2_control_file],
+    #     remappings=[("/controller_manager/robot_description", "/robot_description")],
+    #     output="both"
+    # )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
@@ -129,33 +129,45 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster"],
     )
 
-    joint_trajectory_controller_spawner = Node(
+    # joint_trajectory_controller_spawner = Node(
+    #     package="controller_manager",
+    #     executable="spawner",
+    #     arguments=[
+    #         "joint_trajectory_controller",
+    #         "--param-file",
+    #         controller_config_file
+    #     ],
+    # )
+
+    joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=[
-            "joint_trajectory_controller",
-            "--param-file",
-            controller_config_file
-        ],
+        arguments=["joint_state_broadcaster"],
     )
 
-    joint_state_broadcaster = ExecuteProcess(
-        cmd=["ros2", "control", "load_controller", "--set-state", "active",
-            "joint_state_broadcaster"],
-        output="screen",)
+    head_group_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["head_group_controller", "left_leg_group_controller", "right_leg_group_controller"],
+    )
+
+    # joint_state_broadcaster = ExecuteProcess(
+    #     cmd=["ros2", "control", "load_controller", "--set-state", "active",
+    #         "joint_state_broadcaster"],
+    #     output="screen",)
     
-    head_group_controller = ExecuteProcess(
-        cmd=["ros2", "control", "load_controller", "--set-state", "active", "head_group_controller"],
-        output="screen",
-    )
-    left_leg_group_controller = ExecuteProcess(
-        cmd=["ros2", "control", "load_controller", "--set-state", "active", "left_leg_group_controller"],
-        output="screen",
-    )
-    right_leg_group_controller = ExecuteProcess(
-        cmd=["ros2", "control", "load_controller", "--set-state", "active", "right_leg_group_controller"],
-        output="screen",
-    )
+    # head_group_controller = ExecuteProcess(
+    #     cmd=["ros2", "control", "load_controller", "--set-state", "active", "head_group_controller"],
+    #     output="screen",
+    # )
+    # left_leg_group_controller = ExecuteProcess(
+    #     cmd=["ros2", "control", "load_controller", "--set-state", "active", "left_leg_group_controller"],
+    #     output="screen",
+    # )
+    # right_leg_group_controller = ExecuteProcess(
+    #     cmd=["ros2", "control", "load_controller", "--set-state", "active", "right_leg_group_controller"],
+    #     output="screen",
+    # )
 
     return LaunchDescription([
         gazebo,
@@ -164,10 +176,11 @@ def generate_launch_description():
         robot_state_publisher,
         # rviz,
         joint_state_broadcaster_spawner,
+        head_group_controller_spawner,
         # joint_trajectory_controller_spawner,
         # joint_state_broadcaster,
         # controller_manager,
-        head_group_controller,
-        left_leg_group_controller,
-        right_leg_group_controller,
+        # head_group_controller,
+        # left_leg_group_controller,
+        # right_leg_group_controller,
     ])
