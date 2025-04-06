@@ -6,16 +6,16 @@
       <real_time_factor>1.0</real_time_factor>
     </physics>
     <plugin
-      filename="libignition-gazebo-physics-system.so"
-      name="ignition::gazebo::systems::Physics">
+      filename="libgz-sim-physics-system.so"
+      name="gz::sim::systems::Physics">
     </plugin>
     <plugin
-      filename="libignition-gazebo-user-commands-system.so"
-      name="ignition::gazebo::systems::UserCommands">
+      filename="libgz-sim-user-commands-system.so"
+      name="gz::sim::systems::UserCommands">
     </plugin>
     <plugin
-      filename="libignition-gazebo-scene-broadcaster-system.so"
-      name="ignition::gazebo::systems::SceneBroadcaster">
+      filename="libgz-sim-scene-broadcaster-system.so"
+      name="gz::sim::systems::SceneBroadcaster">
     </plugin>
 
     <gravity>0.0 0.0 -9.8</gravity>

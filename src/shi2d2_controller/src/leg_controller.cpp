@@ -8,7 +8,7 @@
 
 // #include "shi2d2_left_leg_group_ikfast_plugin/shi2d2_left_leg_group_ik_fast_moveit_plugin.cpp"
 // #include "shi2d2_left_leg_group_ikfast_plugin/ikfast.h"
-#include "shi2d2_leg_group_ikfast_plugin/ikfast.h"
+// #include "shi2d2_leg_group_ikfast_plugin/ikfast.h"
 
 using namespace std::chrono_literals;
 
@@ -106,7 +106,7 @@ class LegController : public rclcpp::Node
 
       count_++;
 
-      // RCLCPP_INFO(this->get_logger(), "Publishing: '%f' and '%f", left_leg_joint_angle, right_leg_joint_angle);
+      RCLCPP_INFO(this->get_logger(), "Publishing: '%f' and '%f", left_leg_joint_angle, right_leg_joint_angle);
     }
 
     void clock_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg)

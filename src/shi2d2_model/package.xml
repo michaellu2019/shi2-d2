@@ -20,6 +20,7 @@ for shi2d2_model robot</p>
   <depend>gazebo</depend>
   <depend>gazebo_ros</depend>
   <depend>xacro</depend>
+  <exec_depend>control_msgs</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
