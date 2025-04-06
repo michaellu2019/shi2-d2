@@ -32,21 +32,15 @@ def generate_launch_description():
 
     rviz_config_file = os.path.join(model_pkg_share_path, "rviz", "shi2d2_rviz_settings.rviz")
     bridge_config_file = os.path.join(model_pkg_share_path, "config", "ros_gz_bridge_config.yaml")
-    controller_config_file = os.path.join(model_pkg_share_path, "config", "shi2d2_controller.yaml")
+    # controller_config_file = os.path.join(model_pkg_share_path, "config", "shi2d2_controller.yaml")
     world_file = os.path.join(model_pkg_share_path, "worlds", "blank.world")
     robot_xacro_file = os.path.join(model_pkg_share_path, "urdf", "shi2d2_model.urdf.xacro")
-    # robot_xacro_file = os.path.join(model_pkg_share_path, "urdf", "shi2d2_model.xacro.urdf")
 
     # configure gazebo environment variables to find plugins and resourcs
     if "GZ_SIM_RESOURCE_PATH" in os.environ:
         os.environ["GZ_SIM_RESOURCE_PATH"] += model_pkg_share_path[:-len(f"/{model_pkg_name}")]
     else:
         os.environ["GZ_SIM_RESOURCE_PATH"] = model_pkg_share_path[:-len(f"/{model_pkg_name}")]
-
-    # if "GZ_SIM_SYSTEM_PLUGIN_PATH" in os.environ:
-    #     os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] += f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
-    # else:
-    #     os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] = f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
 
     # launch the gazebo world
     gazebo = ExecuteProcess(
@@ -86,7 +80,7 @@ def generate_launch_description():
         parameters=[
             {"use_sim_time": True},
             {"robot_description": doc.toxml()},
-            # {"rate": 50},
+            {"rate": 50},
         ]
     )
 
@@ -110,34 +104,14 @@ def generate_launch_description():
         arguments=["-d", rviz_config_file],
         parameters=[
             {"use_sim_time": True},
-            # {"start_state": {"content": moveit_initial_positions_file_path}},
         ],
     )
-
-    # start ros2 controllers and state broadcasters
-    # controller_manager = Node(
-    #     package="controller_manager",
-    #     executable="ros2_control_node",
-    #     # parameters=[moveit_ros2_control_file],
-    #     remappings=[("/controller_manager/robot_description", "/robot_description")],
-    #     output="both"
-    # )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["joint_state_broadcaster"],
     )
-
-    # joint_trajectory_controller_spawner = Node(
-    #     package="controller_manager",
-    #     executable="spawner",
-    #     arguments=[
-    #         "joint_trajectory_controller",
-    #         "--param-file",
-    #         controller_config_file
-    #     ],
-    # )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
@@ -151,24 +125,6 @@ def generate_launch_description():
         arguments=["head_group_controller", "left_leg_group_controller", "right_leg_group_controller"],
     )
 
-    # joint_state_broadcaster = ExecuteProcess(
-    #     cmd=["ros2", "control", "load_controller", "--set-state", "active",
-    #         "joint_state_broadcaster"],
-    #     output="screen",)
-    
-    # head_group_controller = ExecuteProcess(
-    #     cmd=["ros2", "control", "load_controller", "--set-state", "active", "head_group_controller"],
-    #     output="screen",
-    # )
-    # left_leg_group_controller = ExecuteProcess(
-    #     cmd=["ros2", "control", "load_controller", "--set-state", "active", "left_leg_group_controller"],
-    #     output="screen",
-    # )
-    # right_leg_group_controller = ExecuteProcess(
-    #     cmd=["ros2", "control", "load_controller", "--set-state", "active", "right_leg_group_controller"],
-    #     output="screen",
-    # )
-
     return LaunchDescription([
         gazebo,
         spawn_entity,
@@ -177,10 +133,4 @@ def generate_launch_description():
         # rviz,
         joint_state_broadcaster_spawner,
         head_group_controller_spawner,
-        # joint_trajectory_controller_spawner,
-        # joint_state_broadcaster,
-        # controller_manager,
-        # head_group_controller,
-        # left_leg_group_controller,
-        # right_leg_group_controller,
     ])
