@@ -13,6 +13,8 @@
 # - https://moveit.picknik.ai/main/doc/how_to_guides/moveit_launch_files/moveit_launch_files_tutorial.html
 # - https://gazebosim.org/docs/harmonic/migration_from_ignition/
 
+# source install/setup.bash && colcon build && ros2 launch shi2d2_model gazebo.launch.py
+
 import os
 import numpy as np
 import xacro
@@ -21,8 +23,6 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import ExecuteProcess
 from launch_ros.actions import Node
-
-from moveit_configs_utils import MoveItConfigsBuilder
 
 def generate_launch_description():   
     # Get the package share directory and relevant files
@@ -41,6 +41,11 @@ def generate_launch_description():
         os.environ["GZ_SIM_RESOURCE_PATH"] += model_pkg_share_path[:-len(f"/{model_pkg_name}")]
     else:
         os.environ["GZ_SIM_RESOURCE_PATH"] = model_pkg_share_path[:-len(f"/{model_pkg_name}")]
+
+    if "GZ_SIM_SYSTEM_PLUGIN_PATH" in os.environ:
+        os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] += f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
+    else:
+        os.environ["GZ_SIM_SYSTEM_PLUGIN_PATH"] = f"/opt/ros/{os.environ['ROS_DISTRO']}/lib/"
 
     # launch the gazebo world
     gazebo = ExecuteProcess(
