@@ -47,36 +47,36 @@
   <gazebo reference="left_upper_hip_link">
     <visual>
       <material>
-        <ambient>${body_color}</ambient>
-        <diffuse>${body_color}</diffuse>
-        <specular>${body_color}</specular>
+        <ambient>${left_leg_color}</ambient>
+        <diffuse>${left_leg_color}</diffuse>
+        <specular>${left_leg_color}</specular>
       </material>
     </visual>
   </gazebo>
   <gazebo reference="left_lower_hip_link">
     <visual>
       <material>
-        <ambient>${body_color}</ambient>
-        <diffuse>${body_color}</diffuse>
-        <specular>${body_color}</specular>
+        <ambient>${left_leg_color}</ambient>
+        <diffuse>${left_leg_color}</diffuse>
+        <specular>${left_leg_color}</specular>
       </material>
     </visual>
   </gazebo>
   <gazebo reference="right_upper_hip_link">
     <visual>
       <material>
-        <ambient>${body_color}</ambient>
-        <diffuse>${body_color}</diffuse>
-        <specular>${body_color}</specular>
+        <ambient>${right_leg_color}</ambient>
+        <diffuse>${right_leg_color}</diffuse>
+        <specular>${right_leg_color}</specular>
       </material>
     </visual>
   </gazebo>
   <gazebo reference="right_lower_hip_link">
     <visual>
       <material>
-        <ambient>${body_color}</ambient>
-        <diffuse>${body_color}</diffuse>
-        <specular>${body_color}</specular>
+        <ambient>${right_leg_color}</ambient>
+        <diffuse>${right_leg_color}</diffuse>
+        <specular>${right_leg_color}</specular>
       </material>
     </visual>
   </gazebo>
