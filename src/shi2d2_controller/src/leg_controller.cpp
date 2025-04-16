@@ -19,7 +19,7 @@ class LegController : public rclcpp::Node
     {
       left_leg_joint_traj_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("left_leg_group_controller/joint_trajectory", 10);
       right_leg_joint_traj_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("right_leg_group_controller/joint_trajectory", 10);
-      timer_ = this->create_wall_timer(100ms, std::bind(&LegController::timer_callback, this));
+      timer_ = this->create_wall_timer(10ms, std::bind(&LegController::timer_callback, this));
 
       start_time_ = rclcpp::Time();
       clock_subscriber_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", 10,
@@ -27,17 +27,53 @@ class LegController : public rclcpp::Node
             clock_callback(msg);
         });
       
-      left_leg_controller_joint_angles_["left_upper_hip_body_joint"] = 0.0;
-      left_leg_controller_joint_angles_["left_lower_hip_left_upper_hip_joint"] = 0.0;
-      left_leg_controller_joint_angles_["left_upper_leg_left_lower_hip_joint"] = 0.0;
-      left_leg_controller_joint_angles_["left_lower_leg_left_upper_leg_joint"] = 0.0;
-      left_leg_controller_joint_angles_["left_foot_left_lower_leg_joint"] = 0.0;
+      const int NUM_LEG_JOINTS = 5;
+      std::vector<std::string> left_leg_joints = {"left_upper_hip_body_joint", "left_lower_hip_left_upper_hip_joint",
+                                                  "left_upper_leg_left_lower_hip_joint", "left_lower_leg_left_upper_leg_joint",
+                                                  "left_foot_left_lower_leg_joint"};
+      std::vector<std::string> right_leg_joints = {"right_upper_hip_body_joint", "right_lower_hip_right_upper_hip_joint",
+                                                  "right_upper_leg_right_lower_hip_joint", "right_lower_leg_right_upper_leg_joint",
+                                                  "right_foot_right_lower_leg_joint"};
 
-      right_leg_controller_joint_angles_["right_upper_hip_body_joint"] = 0.0;
-      right_leg_controller_joint_angles_["right_lower_hip_right_upper_hip_joint"] = 0.0;
-      right_leg_controller_joint_angles_["right_upper_leg_right_lower_hip_joint"] = 0.0;
-      right_leg_controller_joint_angles_["right_lower_leg_right_upper_leg_joint"] = 0.0;
-      right_leg_controller_joint_angles_["right_foot_right_lower_leg_joint"] = 0.0;
+      for (int i = 0; i < NUM_LEG_JOINTS; i++) {
+        std::cout << i << ": " << left_leg_joints[i] << " and " << right_leg_joints[i] << std::endl;
+        left_leg_joint_traj_.joint_names.push_back(left_leg_joints[i]);
+        left_leg_joint_traj_point_.positions.push_back(0.0);
+        right_leg_joint_traj_.joint_names.push_back(right_leg_joints[i]);
+        right_leg_joint_traj_point_.positions.push_back(0.0);
+      }
+      
+      // left_leg_controller_joint_angles_["left_upper_hip_body_joint"] = 0.0;
+      // left_leg_controller_joint_angles_["left_lower_hip_left_upper_hip_joint"] = 0.0;
+      // left_leg_controller_joint_angles_["left_upper_leg_left_lower_hip_joint"] = 0.0;
+      // left_leg_controller_joint_angles_["left_lower_leg_left_upper_leg_joint"] = 0.0;
+      // left_leg_controller_joint_angles_["left_foot_left_lower_leg_joint"] = 0.0;
+
+      // right_leg_controller_joint_angles_["right_upper_hip_body_joint"] = 0.0;
+      // right_leg_controller_joint_angles_["right_lower_hip_right_upper_hip_joint"] = 0.0;
+      // right_leg_controller_joint_angles_["right_upper_leg_right_lower_hip_joint"] = 0.0;
+      // right_leg_controller_joint_angles_["right_lower_leg_right_upper_leg_joint"] = 0.0;
+      // right_leg_controller_joint_angles_["right_foot_right_lower_leg_joint"] = 0.0;
+
+
+      // std::map<std::string, double>::iterator left_leg_controller_joint_angles_iter = left_leg_controller_joint_angles_.begin();
+      // std::map<std::string, double>::iterator right_leg_controller_joint_angles_iter = right_leg_controller_joint_angles_.begin();
+
+      // // Iterate through the map and print the elements
+      // while (left_leg_controller_joint_angles_iter != left_leg_controller_joint_angles_.end()) {
+      //   left_leg_joint_traj_.joint_names.push_back(left_leg_controller_joint_angles_iter->first);
+      //   left_leg_joint_traj_point_.positions.push_back(left_leg_controller_joint_angles_iter->second);
+      //   ++left_leg_controller_joint_angles_iter;
+      // }
+
+      // // Iterate through the map and print the elements
+      // while (right_leg_controller_joint_angles_iter != right_leg_controller_joint_angles_.end()) {
+      //   right_leg_joint_traj_.joint_names.push_back(right_leg_controller_joint_angles_iter->first);
+      //   right_leg_joint_traj_point_.positions.push_back(right_leg_controller_joint_angles_iter->second);
+      //   ++right_leg_controller_joint_angles_iter;
+      // }
+      
+      RCLCPP_INFO(this->get_logger(), "FINISHED INIT...");
     }
 
   private:
@@ -48,25 +84,43 @@ class LegController : public rclcpp::Node
       point->positions.push_back(joint_angle);
     }
 
+    void set_leg_angles()
+    {
+      // auto leg_joint_traj = std::make_shared<trajectory_msgs::msg::JointTrajectory>();
+      // auto leg_joint_traj_point = std::make_shared<trajectory_msgs::msg::JointTrajectoryPoint>();
+
+
+    }
+
     void timer_callback()
     {
-      auto message = trajectory_msgs::msg::JointTrajectory();
-      auto point = trajectory_msgs::msg::JointTrajectoryPoint();
-      auto left_leg_joint_traj = std::make_shared<trajectory_msgs::msg::JointTrajectory>();
-      auto left_leg_joint_traj_point = std::make_shared<trajectory_msgs::msg::JointTrajectoryPoint>();
-      auto right_leg_joint_traj = std::make_shared<trajectory_msgs::msg::JointTrajectory>();
-      auto right_leg_joint_traj_point = std::make_shared<trajectory_msgs::msg::JointTrajectoryPoint>();
+      // auto left_leg_joint_traj = std::make_shared<trajectory_msgs::msg::JointTrajectory>();
+      // auto left_leg_joint_traj_point = std::make_shared<trajectory_msgs::msg::JointTrajectoryPoint>();
+      // auto right_leg_joint_traj = std::make_shared<trajectory_msgs::msg::JointTrajectory>();
+      // auto right_leg_joint_traj_point = std::make_shared<trajectory_msgs::msg::JointTrajectoryPoint>();
 
       double left_leg_joint_angle = M_PI/4.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI) - M_PI/4.0;
       double right_leg_joint_angle = M_PI/4.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI) - M_PI/4.0;
 
-      left_leg_controller_joint_angles_["left_upper_leg_left_lower_hip_joint"] = -0.5 * left_leg_joint_angle;
-      left_leg_controller_joint_angles_["left_lower_leg_left_upper_leg_joint"] = left_leg_joint_angle;
-      left_leg_controller_joint_angles_["left_foot_left_lower_leg_joint"] = -0.5 * left_leg_joint_angle;
+      // RCLCPP_INFO(this->get_logger(), "Publishing 1: '%f' and '%f", left_leg_joint_angle, right_leg_joint_angle);
 
-      right_leg_controller_joint_angles_["right_upper_leg_right_lower_hip_joint"] = 0.5 * right_leg_joint_angle;
-      right_leg_controller_joint_angles_["right_lower_leg_right_upper_leg_joint"] = right_leg_joint_angle;
-      right_leg_controller_joint_angles_["right_foot_right_lower_leg_joint"] = -0.5 * right_leg_joint_angle;
+      // left_leg_controller_joint_angles_["left_upper_leg_left_lower_hip_joint"] = -0.5 * left_leg_joint_angle;
+      // left_leg_controller_joint_angles_["left_lower_leg_left_upper_leg_joint"] = left_leg_joint_angle;
+      // left_leg_controller_joint_angles_["left_foot_left_lower_leg_joint"] = -0.5 * left_leg_joint_angle;
+
+      // right_leg_controller_joint_angles_["right_upper_leg_right_lower_hip_joint"] = 0.5 * right_leg_joint_angle;
+      // right_leg_controller_joint_angles_["right_lower_leg_right_upper_leg_joint"] = right_leg_joint_angle;
+      // right_leg_controller_joint_angles_["right_foot_right_lower_leg_joint"] = -0.5 * right_leg_joint_angle;
+
+      left_leg_joint_traj_point_.positions[2] = -0.5 * left_leg_joint_angle;
+      left_leg_joint_traj_point_.positions[3] = left_leg_joint_angle;
+      left_leg_joint_traj_point_.positions[4] = -0.5 * left_leg_joint_angle;
+
+      right_leg_joint_traj_point_.positions[2] = 0.5 * right_leg_joint_angle;
+      right_leg_joint_traj_point_.positions[3] = right_leg_joint_angle;
+      right_leg_joint_traj_point_.positions[4] = -0.5 * right_leg_joint_angle;
+
+      // RCLCPP_INFO(this->get_logger(), "Publishing 2: '%d' and '%d", left_leg_joint_traj_point_.positions.size(), right_leg_joint_traj_point_.positions.size());
 
       // add_joint_position(joint_traj, joint_traj_point, "left_upper_hip_body_joint", 0.0);
       // add_joint_position(joint_traj, joint_traj_point, "left_lower_hip_left_upper_hip_joint", 0.0);
@@ -80,33 +134,48 @@ class LegController : public rclcpp::Node
       // add_joint_position(joint_traj, joint_traj_point, "right_lower_leg_right_upper_leg_joint", right_leg_joint_angle);
       // add_joint_position(joint_traj, joint_traj_point, "right_foot_right_lower_leg_joint", -0.5 * right_leg_joint_angle);
 
-      std::map<std::string, double>::iterator left_leg_controller_joint_angles_iter = left_leg_controller_joint_angles_.begin();
-      std::map<std::string, double>::iterator right_leg_controller_joint_angles_iter = right_leg_controller_joint_angles_.begin();
+      // std::map<std::string, double>::iterator left_leg_controller_joint_angles_iter = left_leg_controller_joint_angles_.begin();
+      // std::map<std::string, double>::iterator right_leg_controller_joint_angles_iter = right_leg_controller_joint_angles_.begin();
 
-      // Iterate through the map and print the elements
-      while (left_leg_controller_joint_angles_iter != left_leg_controller_joint_angles_.end()) {
-        left_leg_joint_traj->joint_names.push_back(left_leg_controller_joint_angles_iter->first);
-        left_leg_joint_traj_point->positions.push_back(left_leg_controller_joint_angles_iter->second);
-        ++left_leg_controller_joint_angles_iter;
-      }
+      // // Iterate through the map and print the elements
+      // while (left_leg_controller_joint_angles_iter != left_leg_controller_joint_angles_.end()) {
+      //   left_leg_joint_traj->joint_names.push_back(left_leg_controller_joint_angles_iter->first);
+      //   left_leg_joint_traj_point->positions.push_back(left_leg_controller_joint_angles_iter->second);
+      //   ++left_leg_controller_joint_angles_iter;
+      // }
       
-      left_leg_joint_traj_point->time_from_start.nanosec = 0.01e9;
-      left_leg_joint_traj->points.push_back(*left_leg_joint_traj_point);
-      left_leg_joint_traj_publisher_->publish(*left_leg_joint_traj);
+      // left_leg_joint_traj_point->time_from_start.nanosec = 0.01e9;
+      // left_leg_joint_traj->points.push_back(*left_leg_joint_traj_point);
+      // left_leg_joint_traj_publisher_->publish(*left_leg_joint_traj);
 
-      while (right_leg_controller_joint_angles_iter != right_leg_controller_joint_angles_.end()) {
-        right_leg_joint_traj->joint_names.push_back(right_leg_controller_joint_angles_iter->first);
-        right_leg_joint_traj_point->positions.push_back(right_leg_controller_joint_angles_iter->second);
-        ++right_leg_controller_joint_angles_iter;
-      }
+      // int i = 0;
+      // while (right_leg_controller_joint_angles_iter != right_leg_controller_joint_angles_.end()) {
+      //   right_leg_joint_traj->joint_names.push_back(right_leg_controller_joint_angles_iter->first);
+      //   right_leg_joint_traj_point->positions.push_back(right_leg_controller_joint_angles_iter->second);
+      //   std::cout << "JA: " << i << " - " << right_leg_controller_joint_angles_iter->first << " and " 
+      //             << right_leg_controller_joint_angles_iter->second << std::endl;
+      //   ++right_leg_controller_joint_angles_iter;
+      //   i++;
+      // }
       
-      right_leg_joint_traj_point->time_from_start.nanosec = 0.01e9;
-      right_leg_joint_traj->points.push_back(*right_leg_joint_traj_point);
-      right_leg_joint_traj_publisher_->publish(*right_leg_joint_traj);
+      // right_leg_joint_traj_point->time_from_start.nanosec = 0.01e9;
+      // right_leg_joint_traj->points.push_back(*right_leg_joint_traj_point);
+      // right_leg_joint_traj_publisher_->publish(*right_leg_joint_traj);
+
+      // SDFSFDSFS
+      left_leg_joint_traj_point_.time_from_start.nanosec = 0.01e9;
+      left_leg_joint_traj_.points.push_back(left_leg_joint_traj_point_);
+      left_leg_joint_traj_publisher_->publish(left_leg_joint_traj_);
+      left_leg_joint_traj_.points.clear();
+
+      right_leg_joint_traj_point_.time_from_start.nanosec = 0.01e9;
+      right_leg_joint_traj_.points.push_back(right_leg_joint_traj_point_);
+      right_leg_joint_traj_publisher_->publish(right_leg_joint_traj_);
+      right_leg_joint_traj_.points.clear();
 
       count_++;
 
-      RCLCPP_INFO(this->get_logger(), "Publishing: '%f' and '%f", left_leg_joint_angle, right_leg_joint_angle);
+      // RCLCPP_INFO(this->get_logger(), "Publishing: '%f' and '%f", left_leg_joint_angle, right_leg_joint_angle);
     }
 
     void clock_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg)
@@ -135,6 +204,11 @@ class LegController : public rclcpp::Node
 
     std::map<std::string, double> left_leg_controller_joint_angles_;
     std::map<std::string, double> right_leg_controller_joint_angles_;
+
+    trajectory_msgs::msg::JointTrajectory left_leg_joint_traj_ = trajectory_msgs::msg::JointTrajectory();
+    trajectory_msgs::msg::JointTrajectoryPoint left_leg_joint_traj_point_ = trajectory_msgs::msg::JointTrajectoryPoint();
+    trajectory_msgs::msg::JointTrajectory right_leg_joint_traj_ = trajectory_msgs::msg::JointTrajectory();
+    trajectory_msgs::msg::JointTrajectoryPoint right_leg_joint_traj_point_ = trajectory_msgs::msg::JointTrajectoryPoint();
 };
 
 int main(int argc, char ** argv)
