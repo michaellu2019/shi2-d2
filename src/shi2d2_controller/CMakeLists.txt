@@ -17,9 +17,9 @@ find_package(moveit_ros_planning_interface REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-# include_directories(
-
-# )
+include_directories(
+  include
+)
 
 add_executable(head_controller src/head_controller.cpp)
 ament_target_dependencies(head_controller rclcpp trajectory_msgs)
