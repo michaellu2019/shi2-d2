@@ -39,31 +39,52 @@ class LegController : public rclcpp::Node
   private:
     void solve_leg_ik(int leg_id, FootPose foot_pose, LegJointAngles &leg_joint_angles)
     {
-
       std::cout << " X: " << foot_pose.position.x
                 << " Y: " << foot_pose.position.y
                 << " Z: " << foot_pose.position.z
-                << " YAW: " << foot_pose.rotation.yaw
+                << " YAW: " << (foot_pose.rotation.yaw * 180.0/M_PI)
                 << std::endl;
 
-      double x = foot_pose.position.x + BODY_TO_FOOT_DISTANCE_MM.x;
-      double y = -foot_pose.position.y + BODY_TO_FOOT_DISTANCE_MM.y;
+      // shift from origin at foot to origin at body-upper-hip joint
+      double x = -foot_pose.position.x + BODY_TO_FOOT_DISTANCE_MM.x;
+      double y = foot_pose.position.y + BODY_TO_FOOT_DISTANCE_MM.y;
       double z = -foot_pose.position.z + BODY_TO_FOOT_DISTANCE_MM.z - UPPER_HIP_LINK_LENGTH_MM - FOOT_LINK_LENGTH_MM;
       double pitch = foot_pose.rotation.pitch;
       double yaw = foot_pose.rotation.yaw;
 
+      // if foot has non-zero yaw orientation, rotate the goal position to align with the new orientation
+      if (yaw != 0) {
+        double x0 = foot_pose.position.x + BODY_TO_FOOT_DISTANCE_MM.x;
+        double y0 = foot_pose.position.y + BODY_TO_FOOT_DISTANCE_MM.y;
+        // double y0 = y;
+        x = (cos(-yaw) * x0 + sin(-yaw) * y0) * -1;
+        y = (-sin(-yaw) * x0 + cos(-yaw) * y0) * 1;
+        
+        std::cout << " X0: " << x0
+                  << " Y0: " << y0
+                  << std::endl;
+
+        // x = foot_pose.position.x + BODY_TO_FOOT_DISTANCE_MM.y * sin(-yaw);
+        // y = foot_pose.position.y + (BODY_TO_FOOT_DISTANCE_MM.y - BODY_TO_FOOT_DISTANCE_MM.y * cos(-yaw));
+
+        // x = -x + BODY_TO_FOOT_DISTANCE_MM.x;
+        // y = -y + BODY_TO_FOOT_DISTANCE_MM.y;
+      }
+
       std::cout << " TX: " << x
                 << " TY: " << y
                 << " TZ: " << z
-                << " TYAW: " << yaw
+                << " TYAW: " << (yaw * 180.0/M_PI)
                 << std::endl;
+
+      leg_joint_angles.upper_hip_body_joint_angle = yaw;
 
       double knee_bend_angle_num = x*x + z*z - UPPER_LEG_LINK_LENGTH_MM*UPPER_LEG_LINK_LENGTH_MM - LOWER_HIP_LINK_LENGTH_MM*LOWER_HIP_LINK_LENGTH_MM;
       double knee_bend_angle_den = -2 * UPPER_LEG_LINK_LENGTH_MM * LOWER_LEG_LINK_LENGTH_MM;
       double knee_bend_angle = acos(knee_bend_angle_num/knee_bend_angle_den);
 
-      std::cout << "NUM: " << knee_bend_angle_num << " DEN: " << knee_bend_angle_den << std::endl;
-      std::cout << " KNEE BEND: " << (knee_bend_angle * 180.0/M_PI) << std::endl;
+      // std::cout << "NUM: " << knee_bend_angle_num << " DEN: " << knee_bend_angle_den << std::endl;
+      // std::cout << " KNEE BEND: " << (knee_bend_angle * 180.0/M_PI) << std::endl;
 
       leg_joint_angles.lower_leg_upper_leg_joint_angle = -(M_PI - knee_bend_angle);
       leg_joint_angles.upper_leg_lower_hip_joint_angle = atan2(x, z) + asin(LOWER_LEG_LINK_LENGTH_MM * sin(knee_bend_angle)/sqrt(x*x + z*z));
@@ -74,10 +95,12 @@ class LegController : public rclcpp::Node
       
       leg_joint_angles.lower_hip_upper_hip_joint_angle = hip_roll_angle1 + hip_roll_angle2 - M_PI/2.0;
 
-      std::cout << " HIP2: " << (leg_joint_angles.lower_hip_upper_hip_joint_angle * 180.0/M_PI)
+      std::cout << " HIP1: " << (leg_joint_angles.upper_hip_body_joint_angle * 180.0/M_PI)
+                << " HIP2: " << (leg_joint_angles.lower_hip_upper_hip_joint_angle * 180.0/M_PI)
                 << " HIP3: " << (leg_joint_angles.upper_leg_lower_hip_joint_angle * 180.0/M_PI)
                 << " KNEE: " << (leg_joint_angles.lower_leg_upper_leg_joint_angle * 180.0/M_PI) 
                 << " ANKLE: " << (leg_joint_angles.foot_lower_leg_joint_angle * 180.0/M_PI)
+                << "\n"
                 << std::endl;
     }
 
@@ -92,9 +115,9 @@ class LegController : public rclcpp::Node
 
     void set_leg_joint_angle(int leg_id, int joint_id, double angle) {
       if (leg_id == LEFT_LEG) {
-        left_leg_joint_traj_point_.positions[joint_id] = angle;
+        left_leg_joint_traj_point_.positions[joint_id] = angle * LEFT_LEG_JOINT_SIGNS[joint_id] + LEFT_LEG_JOINT_OFFSETS[joint_id];
       } else if (leg_id == RIGHT_LEG) {
-        right_leg_joint_traj_point_.positions[joint_id] = angle;
+        right_leg_joint_traj_point_.positions[joint_id] = angle * RIGHT_LEG_JOINT_SIGNS[joint_id] + RIGHT_LEG_JOINT_OFFSETS[joint_id];
       }
     }
 
@@ -124,12 +147,23 @@ class LegController : public rclcpp::Node
       // set_leg_joint_angle(RIGHT_LEG, RIGHT_UPPER_LEG_RIGHT_LOWER_HIP_JOINT, 0.5 * right_leg_joint_angle);
       // set_leg_joint_angle(RIGHT_LEG, RIGHT_LOWER_LEG_RIGHT_UPPER_LEG_JOINT, right_leg_joint_angle);
       // set_leg_joint_angle(RIGHT_LEG, RIGHT_FOOT_RIGHT_LOWER_LEG_JOINT, -0.5 * right_leg_joint_angle);
-      double fx = ((int) count_/200) % 2 == 0 ? 40.0 : 0.0;
-      double fy = ((int) count_/200) % 2 == 0 ? 20.0 : 0.0;
-      double fz = ((int) count_/200) % 2 == 0 ? 20.0 : 60.0;
+
+
+      double yaw = ((int) count_/200) % 2 == 0 ? 0 : M_PI/6;
+
+      double fx = ((int) count_/200) % 2 == 0 ? 0.0 : 0.0;
+      double fy = ((int) count_/200) % 2 == 0 ? 0.0 : 0.0;
+      // double fx = ((int) count_/200) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
+      // double fy = ((int) count_/200) % 2 == 0 ? 0.0 : (40.0 * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
+      double fz = ((int) count_/200) % 2 == 0 ? 80.0 : 80.0;
+
+      // double yaw = 0;
+      // double fx = 40.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI);
+      // double fy = 0.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI);
+      // double fz = 80.0;
 
       Position foot_position = {fx, fy, fz};
-      Rotation foot_rotation = {0.0, 0.0, 0.0};
+      Rotation foot_rotation = {0.0, 0.0, yaw};
       FootPose foot_pose = {foot_position, foot_rotation};
 
       LegJointAngles left_leg_joint_angles;
