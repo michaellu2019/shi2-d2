@@ -88,7 +88,7 @@ const Position BODY_TO_FOOT_DISTANCE_MM = {0.0, LOWER_HIP_LINK_LENGTH_MM,
 
 double LEFT_LEG_JOINT_SIGNS[] = {1.0, -1.0, 1.0, 1.0, 1.0};
 double LEFT_LEG_JOINT_OFFSETS[] = {0.0, 0.0, 0.0, 0.0, 0.0};
-double RIGHT_LEG_JOINT_SIGNS[] = {1.0, 1.0, 1.0, 1.0, 1.0};
+double RIGHT_LEG_JOINT_SIGNS[] = {-1.0, 1.0, -1.0, 1.0, 1.0};
 double RIGHT_LEG_JOINT_OFFSETS[] = {0.0, 0.0, 0.0, 0.0, 0.0};
 
 #endif
