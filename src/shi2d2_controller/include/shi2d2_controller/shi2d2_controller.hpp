@@ -85,28 +85,5 @@ const double STEP_PERIOD_MS = 500;
 
 // speed at which foot travels when sliding along ground for first half of step
 const double STEP_SLIDE_SPEED_MM_P_S = STEP_LENGTH_MM/(STEP_PERIOD_MS * 0.5);
-// speed at which foot travels when lifting off ground for second half of step
-// https://en.wikipedia.org/wiki/Perimeter_of_an_ellipse
-// const double STEP_LIFT_DISTANCE_TERM_A = 53/3 * STEP_LENGTH_MM/2 + 717/35 * STEP_HEIGHT_MM;
-// const double STEP_LIFT_DISTANCE_MM = M_PI * (53/3 * )
-// const double STEP_LIFT_SPEED_MM_P_S = (158.65 * 0.5)/(STEP_PERIOD_MS * 0.5);
-
-// Position foot_step_position1 = {0.0, 0.0, DEFAULT_FOOT_Z_MM};
-// Rotation foot_step_rotation1 = {0.0, 0.0, 0.0};
-// FootPose foot_step_pose1 = {foot_step_position1, foot_step_rotation1};
-
-// Position foot_step_position2 = {-STEP_LENGTH_MM, 0.0, DEFAULT_FOOT_Z_MM};
-// Rotation foot_step_rotation2 = {0.0, 0.0, 0.0};
-// FootPose foot_step_pose2 = {foot_step_position2, foot_step_rotation2};
-
-// Position foot_step_position3 = {-STEP_LENGTH_MM * (2.0/3.0), 0.0, DEFAULT_FOOT_Z_MM - STEP_HEIGHT_MM};
-// Rotation foot_step_rotation3 = {0.0, 0.0, 0.0};
-// FootPose foot_step_pose3 = {foot_step_position3, foot_step_rotation3};
-
-// Position foot_step_position4 = {-STEP_LENGTH_MM * (1.0/3.0), 0.0, DEFAULT_FOOT_Z_MM - STEP_HEIGHT_MM};
-// Rotation foot_step_rotation4 = {0.0, 0.0, 0.0};
-// FootPose foot_step_pose4 = {foot_step_position4, foot_step_rotation4};
-
-// FootPose forward_gait[] = {foot_step_pose1, foot_step_pose2, foot_step_pose3, foot_step_pose4};
 
 #endif

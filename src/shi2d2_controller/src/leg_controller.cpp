@@ -132,14 +132,17 @@ class LegController : public rclcpp::Node
       
       double yaw = ((int) count_/200) % 2 == 0 ? 0.0 : M_PI/6.0 * 0.0;
 
+      // hip flexors ik test
       // double fx = ((int) count_/200) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
       // double fy = ((int) count_/200) % 2 == 0 ? 0.0 : (40.0 * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
       // double fz = ((int) count_/200) % 2 == 0 ? 80.0 : 80.0;
 
+      // squats ik test
       // double fx = ((int) count_/200) % 2 == 0 ? 0.0 : 0.0;
       // double fy = ((int) count_/200) % 2 == 0 ? 0.0 : 0.0;
       // double fz = ((int) count_/200) % 2 == 0 ? 0.0 : 80.0;
 
+      // leg extension ik test
       // double yaw = 0;
       // double fx = 40.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI);
       // double fy = 40.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 40.0*0.0;
@@ -148,16 +151,6 @@ class LegController : public rclcpp::Node
       // Position foot_position = {fx, fy, fz};
       // Rotation foot_rotation = {0.0, 0.0, yaw};
       // FootPose foot_pose = {foot_position, foot_rotation};
-
-      double left_foot_x = DEFAULT_FOOT_POSITION.x;
-      double left_foot_y = DEFAULT_FOOT_POSITION.y;
-      double left_foot_z = DEFAULT_FOOT_POSITION.z;
-      double left_foot_yaw = DEFAULT_FOOT_ROTATION.yaw;
-
-      double right_foot_x = DEFAULT_FOOT_POSITION.x;
-      double right_foot_y = DEFAULT_FOOT_POSITION.y;
-      double right_foot_z = DEFAULT_FOOT_POSITION.z;
-      double right_foot_yaw = DEFAULT_FOOT_ROTATION.yaw;
 
       int walk_start_tick = 0; // change to be nonzero at some point
       int step_tick = count_ - walk_start_tick;
@@ -179,7 +172,6 @@ class LegController : public rclcpp::Node
       std::cout << count_time_elapsed_ms << ": " << step_half_cycle_time_ms << ", " << step_half_cycle_count << std::endl;
       // std::cout << "SLIDE: " << step_slide_x << ", " << step_slide_z << " & " << step_lift_x << ", " << step_lift_z << std::endl;
       
-
       Position left_foot_position;
       Rotation left_foot_rotation;
       Position right_foot_position;
@@ -206,18 +198,6 @@ class LegController : public rclcpp::Node
       FootPose right_foot_pose = {right_foot_position, right_foot_rotation};
       LegJointAngles left_leg_joint_angles;
       LegJointAngles right_leg_joint_angles;
-
-      // left_leg_joint_angles.upper_hip_body_joint_angle = 25.0 * M_PI/180.0;
-      // left_leg_joint_angles.lower_hip_upper_hip_joint_angle = 25.0 * M_PI/180.0;
-      // left_leg_joint_angles.upper_leg_lower_hip_joint_angle = 25.0 * M_PI/180.0;
-      // left_leg_joint_angles.lower_leg_upper_leg_joint_angle = 25.0 * M_PI/180.0;
-      // left_leg_joint_angles.foot_lower_leg_joint_angle = 25.0 * M_PI/180.0;
-
-      // right_leg_joint_angles.upper_hip_body_joint_angle = 25.0 * M_PI/180.0;
-      // right_leg_joint_angles.lower_hip_upper_hip_joint_angle = 25.0 * M_PI/180.0;
-      // right_leg_joint_angles.upper_leg_lower_hip_joint_angle = 25.0 * M_PI/180.0;
-      // right_leg_joint_angles.lower_leg_upper_leg_joint_angle = 25.0 * M_PI/180.0;
-      // right_leg_joint_angles.foot_lower_leg_joint_angle = 25.0 * M_PI/180.0;
 
       solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
       solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
