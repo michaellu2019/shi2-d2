@@ -130,7 +130,7 @@ class LegController : public rclcpp::Node
         return;
       }
       
-      double yaw = ((int) count_/200) % 2 == 0 ? 0.0 : M_PI/6.0 * 0.0;
+      // double yaw = ((int) count_/200) % 2 == 0 ? 0.0 : M_PI/6.0 * 0.0;
 
       // hip flexors ik test
       // double fx = ((int) count_/200) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
@@ -154,20 +154,32 @@ class LegController : public rclcpp::Node
 
       int walk_start_tick = 0; // change to be nonzero at some point
       int step_tick = count_ - walk_start_tick;
+      double step_angle_rad = TURN_STEP_ANGLE_RAD * 1.0;
+      double step_length_mm = FORWARD_STEP_LENGTH_MM * 0.0;
+      double step_width_mm = SIDE_STEP_WIDTH_MM * 0.0;
+      double step_height_mm = STEP_HEIGHT_MM * 1.0;
+      double step_x_slide_speed_mm_p_s = step_length_mm/(STEP_PERIOD_MS * 0.5);
+      double step_y_slide_speed_mm_p_s = step_width_mm/(STEP_PERIOD_MS * 0.5);
+      double step_turn_speed_rad_p_s = step_angle_rad/(STEP_PERIOD_MS * 0.5);
 
       int count_time_elapsed_ms = (step_tick * CONTROLLER_LOOP_PERIOD_MS);
       int step_half_cycle_count = (count_time_elapsed_ms/((int) STEP_PERIOD_MS/2)) % 2;
       int step_half_cycle_time_ms = count_time_elapsed_ms % ((int) STEP_PERIOD_MS/2);
 
-      double step_slide_x = DEFAULT_FOOT_POSITION.x + STEP_LENGTH_MM/2 - STEP_SLIDE_SPEED_MM_P_S * step_half_cycle_time_ms;
-      double step_slide_y = DEFAULT_FOOT_POSITION.y;
+      double yaw = -step_angle_rad/2 + step_turn_speed_rad_p_s * step_half_cycle_time_ms;
+      double step_slide_x = DEFAULT_FOOT_POSITION.x * cos(-yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(-yaw);
+      double step_slide_y = (DEFAULT_FOOT_POSITION.x * -sin(-yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(-yaw)) - LOWER_HIP_LINK_LENGTH_MM;
+      // double step_slide_x = DEFAULT_FOOT_POSITION.x + step_length_mm/2 - step_x_slide_speed_mm_p_s * step_half_cycle_time_ms;
+      // double step_slide_y = DEFAULT_FOOT_POSITION.y + step_width_mm/2 - step_y_slide_speed_mm_p_s * step_half_cycle_time_ms;
       double step_slide_z = DEFAULT_FOOT_POSITION.z;
-      double step_slide_yaw = DEFAULT_FOOT_ROTATION.yaw;
+      double step_slide_yaw = yaw;
 
-      double step_lift_x = DEFAULT_FOOT_POSITION.x - STEP_LENGTH_MM * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
-      double step_lift_y = DEFAULT_FOOT_POSITION.y;
-      double step_lift_z = DEFAULT_FOOT_POSITION.z + STEP_LENGTH_MM * sin(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
-      double step_lift_yaw = DEFAULT_FOOT_ROTATION.yaw;
+      double step_lift_x = DEFAULT_FOOT_POSITION.x * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw);
+      double step_lift_y = (DEFAULT_FOOT_POSITION.x * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
+      // double step_lift_x = DEFAULT_FOOT_POSITION.x - step_length_mm * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      // double step_lift_y = DEFAULT_FOOT_POSITION.y - step_width_mm * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      double step_lift_z = DEFAULT_FOOT_POSITION.z + step_height_mm * sin(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      double step_lift_yaw = yaw;
       
       std::cout << count_time_elapsed_ms << ": " << step_half_cycle_time_ms << ", " << step_half_cycle_count << std::endl;
       // std::cout << "SLIDE: " << step_slide_x << ", " << step_slide_z << " & " << step_lift_x << ", " << step_lift_z << std::endl;
@@ -179,13 +191,13 @@ class LegController : public rclcpp::Node
 
       if (step_half_cycle_count == 0) {
         left_foot_position = {step_slide_x, step_slide_y, step_slide_z};
-        left_foot_rotation = {0.0, 0.0, step_slide_yaw};
-        right_foot_position = {step_lift_x, step_lift_y, step_lift_z};
+        left_foot_rotation = {0.0, 0.0, -step_slide_yaw};
+        right_foot_position = {step_lift_x, -step_lift_y, step_lift_z};
         right_foot_rotation = {0.0, 0.0, step_lift_yaw};
       } else if (step_half_cycle_count == 1) {
         left_foot_position = {step_lift_x, step_lift_y, step_lift_z};
-        left_foot_rotation = {0.0, 0.0, step_lift_yaw};
-        right_foot_position = {step_slide_x, step_slide_y, step_slide_z};
+        left_foot_rotation = {0.0, 0.0, -step_lift_yaw};
+        right_foot_position = {step_slide_x, -step_slide_y, step_slide_z};
         right_foot_rotation = {0.0, 0.0, step_slide_yaw};
       } else {
         left_foot_position = DEFAULT_FOOT_POSITION;

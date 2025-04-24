@@ -79,11 +79,14 @@ Position DEFAULT_FOOT_POSITION = {-20.0, 0.0, 50.0};
 Rotation DEFAULT_FOOT_ROTATION = {0.0, 0.0, 0.0};
 FootPose DEFAULT_FOOT_POSE = {DEFAULT_FOOT_POSITION, DEFAULT_FOOT_ROTATION};
 
-const double STEP_LENGTH_MM = 30.0;
-const double STEP_HEIGHT_MM = 10.0;
+const double TURN_STEP_ANGLE_RAD = 15 * (M_PI/180.0);
+const double FORWARD_STEP_LENGTH_MM = 30.0;
+const double SIDE_STEP_WIDTH_MM = 20.0;
+const double STEP_HEIGHT_MM = 30.0;
 const double STEP_PERIOD_MS = 500;
 
 // speed at which foot travels when sliding along ground for first half of step
-const double STEP_SLIDE_SPEED_MM_P_S = STEP_LENGTH_MM/(STEP_PERIOD_MS * 0.5);
+// const double STEP_X_SLIDE_SPEED_MM_P_S = STEP_LENGTH_MM/(STEP_PERIOD_MS * 0.5);
+// const double STEP_Y_SLIDE_SPEED_MM_P_S = STEP_WIDTH_MM/(STEP_PERIOD_MS * 0.5);
 
 #endif
