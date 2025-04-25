@@ -2,6 +2,7 @@
 #include <cmath>
 
 #include "rclcpp/rclcpp.hpp"
+#include "std_msgs/msg/int8.hpp"
 #include "trajectory_msgs/msg/joint_trajectory.hpp"
 #include "trajectory_msgs/msg/joint_trajectory_point.hpp"
 #include "rosgraph_msgs/msg/clock.hpp"
@@ -13,7 +14,7 @@ using namespace std::chrono_literals;
 class LegController : public rclcpp::Node
 {
   public:
-    LegController() : Node("leg_controller"), count_(0)
+    LegController() : Node("leg_controller"), tick_count_(0)
     {
       left_leg_joint_traj_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("left_leg_group_controller/joint_trajectory", 10);
       right_leg_joint_traj_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>("right_leg_group_controller/joint_trajectory", 10);
@@ -25,12 +26,43 @@ class LegController : public rclcpp::Node
             clock_callback(msg);
         });
 
+      teleop_subscriber_ = this->create_subscription<std_msgs::msg::Int8>("teleop_commands", CONTROLLER_LOOP_PERIOD_MS,
+        [this](std_msgs::msg::Int8::SharedPtr msg) {
+            teleop_callback(msg);
+        });
+
       init_robot();
       
       RCLCPP_INFO(this->get_logger(), "FINISHED INIT...");
     }
 
+    ~LegController()
+    {
+      return;
+    }
+
   private:
+  void init_robot()
+    {
+      for (int i = 0; i < NUM_LEG_JOINTS; i++) {
+        std::cout << i << ": " << LEFT_LEG_JOINTS[i] << " and " << RIGHT_LEG_JOINTS[i] << std::endl;
+        left_leg_joint_traj_.joint_names.push_back(LEFT_LEG_JOINTS[i]);
+        left_leg_joint_traj_point_.positions.push_back(0.0);
+        right_leg_joint_traj_.joint_names.push_back(RIGHT_LEG_JOINTS[i]);
+        right_leg_joint_traj_point_.positions.push_back(0.0);
+      }
+
+      LegJointAngles left_leg_joint_angles;
+      LegJointAngles right_leg_joint_angles;
+
+      solve_leg_ik(LEFT_LEG, DEFAULT_FOOT_POSE, left_leg_joint_angles);
+      solve_leg_ik(RIGHT_LEG, DEFAULT_FOOT_POSE, right_leg_joint_angles);
+      set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
+      set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
+      
+      write_leg_angles();
+    }
+
     void solve_leg_ik(int leg_id, FootPose foot_pose, LegJointAngles &leg_joint_angles)
     {
       // shift from origin at foot to origin at body-upper-hip joint
@@ -73,6 +105,32 @@ class LegController : public rclcpp::Node
       //           << std::endl;
     }
 
+    void test_leg_ik(int leg_id, FootPose &foot_pose)
+    {
+
+      // hip flexors ik test
+      // double yaw = ((int) tick_count_/200) % 2 == 0 ? 0.0 : M_PI/6.0 * 0.0;
+      // double fx = ((int) tick_count_/200) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
+      // double fy = ((int) tick_count_/200) % 2 == 0 ? 0.0 : (40.0 * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
+      // double fz = ((int) tick_count_/200) % 2 == 0 ? 80.0 : 80.0;
+
+      // squats ik test
+      double fx = ((int) tick_count_/200) % 2 == 0 ? 0.0 : 0.0;
+      double fy = ((int) tick_count_/200) % 2 == 0 ? 0.0 : 0.0;
+      double fz = ((int) tick_count_/200) % 2 == 0 ? 0.0 : 80.0;
+      double yaw = 0;
+
+      // leg extension ik test
+      // double fx = 40.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI);
+      // double fy = 40.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 40.0*0.0;
+      // double fz = 20.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 40.0 + 20.0;
+      // double yaw = 0;
+
+      Position foot_position = {fx, fy, fz};
+      Rotation foot_rotation = {0.0, 0.0, yaw};
+      foot_pose = {foot_position, foot_rotation};
+    }
+
     void set_leg_joint_angles(int leg_id, LegJointAngles &leg_joint_angles)
     {
       set_leg_joint_angle(leg_id, UPPER_HIP_BODY_JOINT, leg_joint_angles.upper_hip_body_joint_angle);
@@ -103,60 +161,12 @@ class LegController : public rclcpp::Node
       right_leg_joint_traj_.points.clear();
     }
 
-    void init_robot()
+    void walk_open_loop(int walking_direction, FootPose &left_foot_pose, FootPose &right_foot_pose)
     {
-      for (int i = 0; i < NUM_LEG_JOINTS; i++) {
-        std::cout << i << ": " << LEFT_LEG_JOINTS[i] << " and " << RIGHT_LEG_JOINTS[i] << std::endl;
-        left_leg_joint_traj_.joint_names.push_back(LEFT_LEG_JOINTS[i]);
-        left_leg_joint_traj_point_.positions.push_back(0.0);
-        right_leg_joint_traj_.joint_names.push_back(RIGHT_LEG_JOINTS[i]);
-        right_leg_joint_traj_point_.positions.push_back(0.0);
-      }
-
-      LegJointAngles left_leg_joint_angles;
-      LegJointAngles right_leg_joint_angles;
-
-      solve_leg_ik(LEFT_LEG, DEFAULT_FOOT_POSE, left_leg_joint_angles);
-      solve_leg_ik(RIGHT_LEG, DEFAULT_FOOT_POSE, right_leg_joint_angles);
-      set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
-      set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
-      
-      write_leg_angles();
-    }
-
-    void timer_callback()
-    {
-      if (sim_time_elapsed_sec_ < 2.0) {
-        return;
-      }
-      
-      // double yaw = ((int) count_/200) % 2 == 0 ? 0.0 : M_PI/6.0 * 0.0;
-
-      // hip flexors ik test
-      // double fx = ((int) count_/200) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
-      // double fy = ((int) count_/200) % 2 == 0 ? 0.0 : (40.0 * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
-      // double fz = ((int) count_/200) % 2 == 0 ? 80.0 : 80.0;
-
-      // squats ik test
-      // double fx = ((int) count_/200) % 2 == 0 ? 0.0 : 0.0;
-      // double fy = ((int) count_/200) % 2 == 0 ? 0.0 : 0.0;
-      // double fz = ((int) count_/200) % 2 == 0 ? 0.0 : 80.0;
-
-      // leg extension ik test
-      // double yaw = 0;
-      // double fx = 40.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI);
-      // double fy = 40.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 40.0*0.0;
-      // double fz = 20.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 40.0 + 20.0;
-
-      // Position foot_position = {fx, fy, fz};
-      // Rotation foot_rotation = {0.0, 0.0, yaw};
-      // FootPose foot_pose = {foot_position, foot_rotation};
-
-      int walk_start_tick = 0; // change to be nonzero at some point
-      int step_tick = count_ - walk_start_tick;
-      double step_angle_rad = TURN_STEP_ANGLE_RAD * 1.0;
-      double step_length_mm = FORWARD_STEP_LENGTH_MM * 0.0;
-      double step_width_mm = SIDE_STEP_WIDTH_MM * 0.0;
+      int step_tick = tick_count_ - walk_start_tick_;
+      double step_angle_rad = TURN_STEP_ANGLE_RAD * ((walking_direction == CLOCKWISE) - (walking_direction == COUNTERCLOCKWISE));
+      double step_length_mm = FORWARD_STEP_LENGTH_MM * ((walking_direction == FORWARD) - (walking_direction == BACKWARD));
+      double step_width_mm = SIDE_STEP_WIDTH_MM * ((walking_direction == LEFT) - (walking_direction == RIGHT));
       double step_height_mm = STEP_HEIGHT_MM * 1.0;
       double step_x_slide_speed_mm_p_s = step_length_mm/(STEP_PERIOD_MS * 0.5);
       double step_y_slide_speed_mm_p_s = step_width_mm/(STEP_PERIOD_MS * 0.5);
@@ -167,18 +177,23 @@ class LegController : public rclcpp::Node
       int step_half_cycle_time_ms = count_time_elapsed_ms % ((int) STEP_PERIOD_MS/2);
 
       double yaw = -step_angle_rad/2 + step_turn_speed_rad_p_s * step_half_cycle_time_ms;
-      double step_slide_x = DEFAULT_FOOT_POSITION.x * cos(-yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(-yaw);
-      double step_slide_y = (DEFAULT_FOOT_POSITION.x * -sin(-yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(-yaw)) - LOWER_HIP_LINK_LENGTH_MM;
-      // double step_slide_x = DEFAULT_FOOT_POSITION.x + step_length_mm/2 - step_x_slide_speed_mm_p_s * step_half_cycle_time_ms;
-      // double step_slide_y = DEFAULT_FOOT_POSITION.y + step_width_mm/2 - step_y_slide_speed_mm_p_s * step_half_cycle_time_ms;
+      
+      double step_slide_x = DEFAULT_FOOT_POSITION.x + step_length_mm/2 - step_x_slide_speed_mm_p_s * step_half_cycle_time_ms;
+      double step_slide_y = DEFAULT_FOOT_POSITION.y + step_width_mm/2 - step_y_slide_speed_mm_p_s * step_half_cycle_time_ms;
       double step_slide_z = DEFAULT_FOOT_POSITION.z;
+      if (yaw != 0) {
+        step_slide_x = DEFAULT_FOOT_POSITION.x * cos(-yaw) + (DEFAULT_FOOT_POSITION.y + LOWER_HIP_LINK_LENGTH_MM) * sin(-yaw);
+        step_slide_y = (DEFAULT_FOOT_POSITION.x * -sin(-yaw) + (DEFAULT_FOOT_POSITION.y + LOWER_HIP_LINK_LENGTH_MM) * cos(-yaw)) - (DEFAULT_FOOT_POSITION.y + LOWER_HIP_LINK_LENGTH_MM);
+      }
       double step_slide_yaw = yaw;
 
-      double step_lift_x = DEFAULT_FOOT_POSITION.x * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw);
-      double step_lift_y = (DEFAULT_FOOT_POSITION.x * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
-      // double step_lift_x = DEFAULT_FOOT_POSITION.x - step_length_mm * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
-      // double step_lift_y = DEFAULT_FOOT_POSITION.y - step_width_mm * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      double step_lift_x = DEFAULT_FOOT_POSITION.x - step_length_mm * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      double step_lift_y = DEFAULT_FOOT_POSITION.y - step_width_mm * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
       double step_lift_z = DEFAULT_FOOT_POSITION.z + step_height_mm * sin(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      if (yaw != 0) {
+        step_lift_x = DEFAULT_FOOT_POSITION.x * cos(yaw) + (DEFAULT_FOOT_POSITION.y + LOWER_HIP_LINK_LENGTH_MM) * sin(yaw);
+        step_lift_y = (DEFAULT_FOOT_POSITION.x * -sin(yaw) + (DEFAULT_FOOT_POSITION.y + LOWER_HIP_LINK_LENGTH_MM) * cos(yaw)) - (DEFAULT_FOOT_POSITION.y + LOWER_HIP_LINK_LENGTH_MM);
+      }
       double step_lift_yaw = yaw;
       
       std::cout << count_time_elapsed_ms << ": " << step_half_cycle_time_ms << ", " << step_half_cycle_count << std::endl;
@@ -206,10 +221,27 @@ class LegController : public rclcpp::Node
         right_foot_rotation = DEFAULT_FOOT_ROTATION;  
       }
 
-      FootPose left_foot_pose = {left_foot_position, left_foot_rotation};
-      FootPose right_foot_pose = {right_foot_position, right_foot_rotation};
+      left_foot_pose = {left_foot_position, left_foot_rotation};
+      right_foot_pose = {right_foot_position, right_foot_rotation};
+    }
+
+    void timer_callback()
+    {
+      if (sim_time_elapsed_sec_ < 2.0) {
+        return;
+      }
+
+      FootPose left_foot_pose = DEFAULT_FOOT_POSE;
+      FootPose right_foot_pose = DEFAULT_FOOT_POSE;
       LegJointAngles left_leg_joint_angles;
       LegJointAngles right_leg_joint_angles;
+
+      if ((tick_count_ - last_teleop_command_tick_) * CONTROLLER_LOOP_PERIOD_MS > TELEOP_COMMAND_TIMEOUT_MS) {
+        teleop_command_ = STOP;
+      }
+      if (teleop_command_ != STOP) {
+        walk_open_loop(teleop_command_, left_foot_pose, right_foot_pose);
+      }
 
       solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
       solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
@@ -218,7 +250,17 @@ class LegController : public rclcpp::Node
       
       write_leg_angles();
 
-      count_++;
+      tick_count_++;
+    }
+
+    void teleop_callback(std_msgs::msg::Int8::SharedPtr msg)
+    {
+      int walking_direction = msg->data;
+      if (walking_direction != teleop_command_) {
+        walk_start_tick_ = tick_count_;
+      }
+      last_teleop_command_tick_ = tick_count_;
+      teleop_command_ = walking_direction;
     }
 
     void clock_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg)
@@ -244,12 +286,17 @@ class LegController : public rclcpp::Node
     trajectory_msgs::msg::JointTrajectory right_leg_joint_traj_ = trajectory_msgs::msg::JointTrajectory();
     trajectory_msgs::msg::JointTrajectoryPoint right_leg_joint_traj_point_ = trajectory_msgs::msg::JointTrajectoryPoint();
 
-    size_t count_;
+    size_t tick_count_;
+    size_t walk_start_tick_;
 
     rclcpp::Subscription<rosgraph_msgs::msg::Clock>::SharedPtr clock_subscriber_;
     rclcpp::Time start_time_;
     rclcpp::Time sim_time_;
     double sim_time_elapsed_sec_;
+
+    rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr teleop_subscriber_;
+    int teleop_command_;
+    size_t last_teleop_command_tick_;
 
     std::map<std::string, double> left_leg_controller_joint_angles_;
     std::map<std::string, double> right_leg_controller_joint_angles_;

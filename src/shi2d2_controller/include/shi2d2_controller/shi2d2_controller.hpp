@@ -4,8 +4,9 @@
 #include <string>
 #include <vector>
 
-const double CONTROLLER_LOOP_PERIOD_MS = 10.0;
+const double CONTROLLER_LOOP_PERIOD_MS = 10;
 const double TRAJECTORY_TIME_FROM_START_NS = 0.01e9;
+const double TELEOP_COMMAND_TIMEOUT_MS = 200;
 
 enum LEG_ID {
   LEFT_LEG,
@@ -18,6 +19,16 @@ enum LEG_JOINT_ID {
   UPPER_LEG_LOWER_HIP_JOINT,
   LOWER_LEG_UPPER_LEG_JOINT,
   FOOT_LOWER_LEG_JOINT,
+};
+
+enum WALKING_DIRECTION {
+  STOP = 0,
+  FORWARD = 1,
+  BACKWARD = 2,
+  LEFT = 3,
+  RIGHT = 4,
+  COUNTERCLOCKWISE = 5,
+  CLOCKWISE = 6,
 };
 
 struct LegJointAngles {
@@ -80,7 +91,7 @@ Rotation DEFAULT_FOOT_ROTATION = {0.0, 0.0, 0.0};
 FootPose DEFAULT_FOOT_POSE = {DEFAULT_FOOT_POSITION, DEFAULT_FOOT_ROTATION};
 
 const double TURN_STEP_ANGLE_RAD = 15 * (M_PI/180.0);
-const double FORWARD_STEP_LENGTH_MM = 30.0;
+const double FORWARD_STEP_LENGTH_MM = 20.0;
 const double SIDE_STEP_WIDTH_MM = 20.0;
 const double STEP_HEIGHT_MM = 30.0;
 const double STEP_PERIOD_MS = 500;
