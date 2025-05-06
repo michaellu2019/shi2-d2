@@ -76,24 +76,30 @@ class LegController : public rclcpp::Node
       if (yaw != 0) {
         double x0 = foot_pose.position.x + BODY_TO_FOOT_DISTANCE_MM.x;
         double y0 = foot_pose.position.y + BODY_TO_FOOT_DISTANCE_MM.y;
-        x = (cos(-yaw) * x0 + sin(-yaw) * y0) * -1;
-        y = (-sin(-yaw) * x0 + cos(-yaw) * y0) * 1;
+        x = (x0 * cos(-yaw) + y0 * sin(-yaw)) * -1;
+        y = (-x0 * sin(-yaw) + y0 * cos(-yaw)) * 1;
       }
 
-      double leg_len_sq = x*x + y*y + z*z - (LOWER_HIP_LINK_LENGTH_MM*LOWER_HIP_LINK_LENGTH_MM * (x*x + y*y + z*z))/(y*y + z*z);
-      double foot_to_hip_len_sq = y*y + z*z;
+      // double leg_len_sq = x*x + y*y + z*z - (LOWER_HIP_LINK_LENGTH_MM*LOWER_HIP_LINK_LENGTH_MM * (x*x + y*y + z*z))/(y*y + z*z);
+      double projected_foot_to_hip_len_sq = y*y + z*z;
       
-      double hip_roll_angle1 = acos(LOWER_HIP_LINK_LENGTH_MM/sqrt(foot_to_hip_len_sq));
-      double hip_roll_angle2 = acos(z/sqrt(foot_to_hip_len_sq));
+      double hip_roll_angle1 = acos(LOWER_HIP_LINK_LENGTH_MM/sqrt(projected_foot_to_hip_len_sq));
+      double hip_roll_angle2 = acos(z/sqrt(projected_foot_to_hip_len_sq));
+
+      double foot_to_hip_len = sqrt(projected_foot_to_hip_len_sq) * sin(hip_roll_angle1);
+      double leg_len_sq = foot_to_hip_len*foot_to_hip_len + x*x;
       
       double knee_bend_angle_num = leg_len_sq - UPPER_LEG_LINK_LENGTH_MM*UPPER_LEG_LINK_LENGTH_MM - LOWER_LEG_LINK_LENGTH_MM*LOWER_LEG_LINK_LENGTH_MM;
       double knee_bend_angle_den = -2 * UPPER_LEG_LINK_LENGTH_MM * LOWER_LEG_LINK_LENGTH_MM;
       double knee_bend_angle = acos(knee_bend_angle_num/knee_bend_angle_den);
 
+      double shoulder_bend_angle1 = atan2(x, foot_to_hip_len);
+      double shoulder_bend_angle2 = asin(LOWER_LEG_LINK_LENGTH_MM * sin(knee_bend_angle)/sqrt(leg_len_sq));
+
       leg_joint_angles.upper_hip_body_joint_angle = yaw;
       leg_joint_angles.lower_hip_upper_hip_joint_angle = hip_roll_angle1 + hip_roll_angle2 - M_PI/2.0;
+      leg_joint_angles.upper_leg_lower_hip_joint_angle = shoulder_bend_angle1 + shoulder_bend_angle2;
       leg_joint_angles.lower_leg_upper_leg_joint_angle = -(M_PI - knee_bend_angle);
-      leg_joint_angles.upper_leg_lower_hip_joint_angle = atan2(x, z) + asin(LOWER_LEG_LINK_LENGTH_MM * sin(knee_bend_angle)/sqrt(leg_len_sq));
       leg_joint_angles.foot_lower_leg_joint_angle = -leg_joint_angles.upper_leg_lower_hip_joint_angle - leg_joint_angles.lower_leg_upper_leg_joint_angle + pitch;
 
       // std::cout << " HIP1: " << (leg_joint_angles.upper_hip_body_joint_angle * 180.0/M_PI)
