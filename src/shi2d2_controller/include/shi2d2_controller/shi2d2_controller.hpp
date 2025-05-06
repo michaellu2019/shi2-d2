@@ -78,7 +78,8 @@ const double UPPER_LEG_LINK_LENGTH_MM = 160;
 const double LOWER_LEG_LINK_LENGTH_MM = 100;
 const double FOOT_LINK_LENGTH_MM = 40;
 
-const Position BODY_TO_FOOT_DISTANCE_MM = {0.0, LOWER_HIP_LINK_LENGTH_MM, 
+const Position BODY_TO_FOOT_DISTANCE_MM = {0.0, 
+                                           LOWER_HIP_LINK_LENGTH_MM, 
                                            UPPER_HIP_LINK_LENGTH_MM + UPPER_LEG_LINK_LENGTH_MM + LOWER_LEG_LINK_LENGTH_MM + FOOT_LINK_LENGTH_MM};
 
 double LEFT_LEG_JOINT_SIGNS[] = {1.0, -1.0, 1.0, 1.0, 1.0};

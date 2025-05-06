@@ -68,11 +68,14 @@ class LegController : public rclcpp::Node
       // shift from origin at foot to origin at body-upper-hip joint
       double x = -foot_pose.position.x + BODY_TO_FOOT_DISTANCE_MM.x;
       double y = foot_pose.position.y + BODY_TO_FOOT_DISTANCE_MM.y;
-      double z = -foot_pose.position.z + BODY_TO_FOOT_DISTANCE_MM.z - UPPER_HIP_LINK_LENGTH_MM - FOOT_LINK_LENGTH_MM;
-      double pitch = foot_pose.rotation.pitch;
+      double z = -foot_pose.position.z + BODY_TO_FOOT_DISTANCE_MM.z - UPPER_HIP_LINK_LENGTH_MM;
+
+      double roll = 0.0; //foot_pose.rotation.roll; // TODO consider how foot roll influences x, y, z of foot placement
+      double pitch = 0.0; //foot_pose.rotation.pitch; // TODO consider how foot pitch influences x, y, z of foot placement
       double yaw = foot_pose.rotation.yaw;
 
-      // if foot has non-zero yaw orientation, rotate the goal position to align with the new orientation
+      // if foot has non-zero yaw orientation, rotate the goal foot position to align with the new orientation
+      // this simplifies the math for the rest of the IK solver
       if (yaw != 0) {
         double x0 = foot_pose.position.x + BODY_TO_FOOT_DISTANCE_MM.x;
         double y0 = foot_pose.position.y + BODY_TO_FOOT_DISTANCE_MM.y;
@@ -80,57 +83,70 @@ class LegController : public rclcpp::Node
         y = (-x0 * sin(-yaw) + y0 * cos(-yaw)) * 1;
       }
 
-      // double leg_len_sq = x*x + y*y + z*z - (LOWER_HIP_LINK_LENGTH_MM*LOWER_HIP_LINK_LENGTH_MM * (x*x + y*y + z*z))/(y*y + z*z);
-      double projected_foot_to_hip_len_sq = y*y + z*z;
+      // solve for hip roll angle
+      // "projected" indicates a distance projected to the "frontal", "coronal", or YZ plane of the robot
+      double projected_foot_to_roll_hip_dist = sqrt(y*y + z*z);
       
-      double hip_roll_angle1 = acos(LOWER_HIP_LINK_LENGTH_MM/sqrt(projected_foot_to_hip_len_sq));
-      double hip_roll_angle2 = acos(z/sqrt(projected_foot_to_hip_len_sq));
+      double hip_roll_angle1 = acos(LOWER_HIP_LINK_LENGTH_MM/projected_foot_to_roll_hip_dist);
+      double hip_roll_angle2 = acos(z/projected_foot_to_roll_hip_dist);
+      double hip_roll_angle = hip_roll_angle1 + hip_roll_angle2 - M_PI/2.0;
 
-      double foot_to_hip_len = sqrt(projected_foot_to_hip_len_sq) * sin(hip_roll_angle1);
-      double leg_len_sq = foot_to_hip_len*foot_to_hip_len + x*x;
+      // solve for the position of the ankle joint given the new hip roll angle
+      double x_ankle = x;
+      double y_ankle = y - FOOT_LINK_LENGTH_MM * sin(hip_roll_angle);
+      double z_ankle = z - FOOT_LINK_LENGTH_MM * cos(hip_roll_angle);
+
+      // solve for hip pitch, knee, and ankle angles
+      // find the relevant distances from the upper-leg-lower-hip joint to the ankle joint and foot
+      double projected_foot_to_hip_dist = projected_foot_to_roll_hip_dist * sin(hip_roll_angle1);
+      double projected_ankle_to_hip_dist = projected_foot_to_hip_dist - FOOT_LINK_LENGTH_MM;
+      double ankle_to_hip_dist = sqrt(x_ankle*x_ankle + projected_ankle_to_hip_dist*projected_ankle_to_hip_dist);
       
-      double knee_bend_angle_num = leg_len_sq - UPPER_LEG_LINK_LENGTH_MM*UPPER_LEG_LINK_LENGTH_MM - LOWER_LEG_LINK_LENGTH_MM*LOWER_LEG_LINK_LENGTH_MM;
+      // use the law of cosines to solve for the knee bend angle
+      double knee_bend_angle_num = ankle_to_hip_dist*ankle_to_hip_dist - UPPER_LEG_LINK_LENGTH_MM*UPPER_LEG_LINK_LENGTH_MM - LOWER_LEG_LINK_LENGTH_MM*LOWER_LEG_LINK_LENGTH_MM;
       double knee_bend_angle_den = -2 * UPPER_LEG_LINK_LENGTH_MM * LOWER_LEG_LINK_LENGTH_MM;
       double knee_bend_angle = acos(knee_bend_angle_num/knee_bend_angle_den);
 
-      double shoulder_bend_angle1 = atan2(x, foot_to_hip_len);
-      double shoulder_bend_angle2 = asin(LOWER_LEG_LINK_LENGTH_MM * sin(knee_bend_angle)/sqrt(leg_len_sq));
+      // use more trigonometry and the law of sines to solve for the hip pitch bend angle
+      double hip_bend_angle1 = atan2(x_ankle, projected_ankle_to_hip_dist);
+      double hip_bend_angle2 = asin(LOWER_LEG_LINK_LENGTH_MM/ankle_to_hip_dist * sin(knee_bend_angle));
 
       leg_joint_angles.upper_hip_body_joint_angle = yaw;
-      leg_joint_angles.lower_hip_upper_hip_joint_angle = hip_roll_angle1 + hip_roll_angle2 - M_PI/2.0;
-      leg_joint_angles.upper_leg_lower_hip_joint_angle = shoulder_bend_angle1 + shoulder_bend_angle2;
+      leg_joint_angles.lower_hip_upper_hip_joint_angle = hip_roll_angle;
+      leg_joint_angles.upper_leg_lower_hip_joint_angle = hip_bend_angle1 + hip_bend_angle2;
       leg_joint_angles.lower_leg_upper_leg_joint_angle = -(M_PI - knee_bend_angle);
       leg_joint_angles.foot_lower_leg_joint_angle = -leg_joint_angles.upper_leg_lower_hip_joint_angle - leg_joint_angles.lower_leg_upper_leg_joint_angle + pitch;
 
-      // std::cout << " HIP1: " << (leg_joint_angles.upper_hip_body_joint_angle * 180.0/M_PI)
-      //           << " HIP2: " << (leg_joint_angles.lower_hip_upper_hip_joint_angle * 180.0/M_PI)
-      //           << " HIP3: " << (leg_joint_angles.upper_leg_lower_hip_joint_angle * 180.0/M_PI)
-      //           << " KNEE: " << (leg_joint_angles.lower_leg_upper_leg_joint_angle * 180.0/M_PI) 
-      //           << " ANKLE: " << (leg_joint_angles.foot_lower_leg_joint_angle * 180.0/M_PI)
-      //           << "\n"
+      // std::cout << "HIP1: " << (leg_joint_angles.upper_hip_body_joint_angle * 180.0/M_PI)
+      //           << ", HIP2: " << (leg_joint_angles.lower_hip_upper_hip_joint_angle * 180.0/M_PI)
+      //           << ", HIP3: " << (leg_joint_angles.upper_leg_lower_hip_joint_angle * 180.0/M_PI)
+      //           << ", KNEE: " << (leg_joint_angles.lower_leg_upper_leg_joint_angle * 180.0/M_PI) 
+      //           << ", ANKLE: " << (leg_joint_angles.foot_lower_leg_joint_angle * 180.0/M_PI)
       //           << std::endl;
     }
 
     void test_leg_ik(int leg_id, FootPose &foot_pose)
     {
-
+      int swap_frequency = 200;
+    
       // hip flexors ik test
-      // double yaw = ((int) tick_count_/200) % 2 == 0 ? 0.0 : M_PI/6.0 * 0.0;
-      // double fx = ((int) tick_count_/200) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
-      // double fy = ((int) tick_count_/200) % 2 == 0 ? 0.0 : (40.0 * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
-      // double fz = ((int) tick_count_/200) % 2 == 0 ? 80.0 : 80.0;
+      // double yaw = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : M_PI/6.0;
+      // double fx = ((int) tick_count_/swap_frequency) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
+      // double fy = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : (40.0 * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
+      // double fz = ((int) tick_count_/swap_frequency) % 2 == 0 ? 80.0 : 80.0;
 
       // squats ik test
-      double fx = ((int) tick_count_/200) % 2 == 0 ? 0.0 : 0.0;
-      double fy = ((int) tick_count_/200) % 2 == 0 ? 0.0 : 0.0;
-      double fz = ((int) tick_count_/200) % 2 == 0 ? 0.0 : 80.0;
-      double yaw = 0;
+      // double fx = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 0.0;
+      // double fy = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 0.0;
+      // double fz = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 80.0;
+      // double yaw = 0;
 
       // leg extension ik test
-      // double fx = 40.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI);
-      // double fy = 40.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 40.0*0.0;
-      // double fz = 20.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 40.0 + 20.0;
-      // double yaw = 0;
+      double fx = 40.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI) + 0.0;
+      double fy = 0.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 0.0;
+      double fz = 0.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 60.0;
+      double yaw = 0;
+      std::cout << "TICK: " << tick_count_ << ", fx: " << fx << ", fy: " << fy << ", fz: " << fz << std::endl;
 
       Position foot_position = {fx, fy, fz};
       Rotation foot_rotation = {0.0, 0.0, yaw};
@@ -202,7 +218,7 @@ class LegController : public rclcpp::Node
       }
       double step_lift_yaw = yaw;
       
-      std::cout << count_time_elapsed_ms << ": " << step_half_cycle_time_ms << ", " << step_half_cycle_count << std::endl;
+      // std::cout << count_time_elapsed_ms << ": " << step_half_cycle_time_ms << ", " << step_half_cycle_count << std::endl;
       // std::cout << "SLIDE: " << step_slide_x << ", " << step_slide_z << " & " << step_lift_x << ", " << step_lift_z << std::endl;
       
       Position left_foot_position;
@@ -233,7 +249,7 @@ class LegController : public rclcpp::Node
 
     void timer_callback()
     {
-      if (sim_time_elapsed_sec_ < 2.0) {
+      if (sim_time_elapsed_sec_ < 1.0) {
         return;
       }
 
