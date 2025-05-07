@@ -4,11 +4,6 @@
   ros_type_name: "rosgraph_msgs/msg/Clock"
   gz_type_name: "gz.msgs.Clock"
   direction: GZ_TO_ROS
-- ros_topic_name: "/shi2d2/odometry"
-  gz_topic_name: "/model/shi2d2/odometry"
-  ros_type_name: "nav_msgs/msg/Odometry"
-  gz_type_name: "gz.msgs.Odometry"
-  direction: GZ_TO_ROS
 - ros_topic_name: "/tf"
   gz_topic_name: "/model/shi2d2/pose"
   ros_type_name: "tf2_msgs/msg/TFMessage"
@@ -18,4 +13,14 @@
   gz_topic_name: "/model/shi2d2/pose_static"
   ros_type_name: "tf2_msgs/msg/TFMessage"
   gz_type_name: "gz.msgs.Pose_V"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/shi2d2/odometry"
+  gz_topic_name: "/model/shi2d2/odometry"
+  ros_type_name: "nav_msgs/msg/Odometry"
+  gz_type_name: "gz.msgs.Odometry"
+  direction: GZ_TO_ROS
+- ros_topic_name: "/shi2d2/imu"
+  gz_topic_name: "/world/blank_world/model/shi2d2/link/body_link/sensor/imu_sensor/imu"
+  ros_type_name: "sensor_msgs/msg/Imu"
+  gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS

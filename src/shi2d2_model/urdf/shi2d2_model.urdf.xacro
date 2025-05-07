@@ -8,6 +8,7 @@
   <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_ros2_control.xacro" />
   <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_gazebo_plugins.xacro" />
   <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_gazebo_colors.xacro" />
+  <xacro:include filename="$(find shi2d2_model)/urdf/gazebo/shi2d2_gazebo_sensors.xacro" />
 
   <xacro:property name="effort" value="1000.0" />
   <xacro:property name="velocity" value="100.0" />

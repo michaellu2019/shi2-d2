@@ -124,10 +124,16 @@ def generate_launch_description():
         arguments=["joint_state_broadcaster"],
     )
 
-    head_group_controller_spawner = Node(
+    shi2d2_group_controller_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=["head_group_controller", "left_leg_group_controller", "right_leg_group_controller"],
+    )
+
+    shi2d2_controller = Node(
+        package="shi2d2_controller",
+        executable="leg_controller",
+        arguments=[],
     )
 
     return LaunchDescription([
@@ -135,7 +141,8 @@ def generate_launch_description():
         spawn_entity,
         bridge,
         robot_state_publisher,
-        # rviz,
+        rviz,
         joint_state_broadcaster_spawner,
-        head_group_controller_spawner,
+        shi2d2_group_controller_spawner,
+        shi2d2_controller,
     ])
