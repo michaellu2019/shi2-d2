@@ -9,7 +9,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int8.hpp"
 
-#include "shi2d2_teleop/teleop.hpp"
+#include "shi2d2_teleop/shi2d2_teleop.hpp"
 
 using namespace std::chrono_literals;
 

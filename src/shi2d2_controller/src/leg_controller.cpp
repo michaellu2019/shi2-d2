@@ -22,14 +22,11 @@ class LegController : public rclcpp::Node
 
       start_time_ = rclcpp::Time();
       clock_subscriber_ = this->create_subscription<rosgraph_msgs::msg::Clock>("/clock", CONTROLLER_LOOP_PERIOD_MS,
-        [this](rosgraph_msgs::msg::Clock::SharedPtr msg) {
-            clock_callback(msg);
-        });
+        std::bind(&LegController::clock_callback, this, std::placeholders::_1));
 
       teleop_subscriber_ = this->create_subscription<std_msgs::msg::Int8>("teleop_commands", CONTROLLER_LOOP_PERIOD_MS,
-        [this](std_msgs::msg::Int8::SharedPtr msg) {
-            teleop_callback(msg);
-        });
+        std::bind(&LegController::teleop_callback, this, std::placeholders::_1));
+
 
       init_robot();
       
@@ -70,9 +67,9 @@ class LegController : public rclcpp::Node
       double y = foot_pose.position.y + BODY_TO_FOOT_DISTANCE_MM.y;
       double z = -foot_pose.position.z + BODY_TO_FOOT_DISTANCE_MM.z - UPPER_HIP_LINK_LENGTH_MM;
 
-      double roll = 0.0; //foot_pose.rotation.roll; // TODO consider how foot roll influences x, y, z of foot placement
-      double pitch = 0.0; //foot_pose.rotation.pitch; // TODO consider how foot pitch influences x, y, z of foot placement
-      double yaw = foot_pose.rotation.yaw;
+      double roll = 0.0; //foot_pose.rotation.rx; // TODO consider how foot roll influences x, y, z of foot placement
+      double pitch = 0.0; //foot_pose.rotation.ry; // TODO consider how foot pitch influences x, y, z of foot placement
+      double yaw = foot_pose.rotation.rz;
 
       // if foot has non-zero yaw orientation, rotate the goal foot position to align with the new orientation
       // this simplifies the math for the rest of the IK solver
@@ -133,20 +130,21 @@ class LegController : public rclcpp::Node
       // double yaw = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : M_PI/6.0;
       // double fx = ((int) tick_count_/swap_frequency) % 2 == 0 ? 40.0 : (40.0 * cos(yaw) + LOWER_HIP_LINK_LENGTH_MM * sin(yaw));
       // double fy = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : (40.0 * -sin(yaw) + LOWER_HIP_LINK_LENGTH_MM * cos(yaw)) - LOWER_HIP_LINK_LENGTH_MM;
-      // double fz = ((int) tick_count_/swap_frequency) % 2 == 0 ? 80.0 : 80.0;
+      // double fz = ((int) tick_count_/swap_frequency) % 2 == 0 ? 60.0 : 60.0;
 
       // squats ik test
-      // double fx = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 0.0;
-      // double fy = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 0.0;
-      // double fz = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 80.0;
-      // double yaw = 0;
+      double yaw = 0;
+      double fx = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 0.0;
+      double fy = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 0.0;
+      // double fz = ((int) tick_count_/swap_frequency) % 2 == 0 ? 0.0 : 60.0;
+      double fz = 30.0 * sin(sim_time_elapsed_sec_ * (swap_frequency/160) * M_PI) + 30.0;
 
       // leg extension ik test
-      double fx = 40.0 * cos(sim_time_elapsed_sec_ * 1.5 * M_PI) + 0.0;
-      double fy = 0.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 0.0;
-      double fz = 0.0 * sin(sim_time_elapsed_sec_ * 1.5 * M_PI) + 60.0;
-      double yaw = 0;
-      std::cout << "TICK: " << tick_count_ << ", fx: " << fx << ", fy: " << fy << ", fz: " << fz << std::endl;
+      // double yaw = 0;
+      // double fx = 40.0 * cos(sim_time_elapsed_sec_ * (swap_frequency/160) * M_PI) + 0.0;
+      // double fy = 0.0 * sin(sim_time_elapsed_sec_ * (swap_frequency/160) * M_PI) + 0.0;
+      // double fz = 0.0 * sin(sim_time_elapsed_sec_ * (swap_frequency/160) * M_PI) + 60.0;
+      // std::cout << "TICK: " << tick_count_ << ", fx: " << fx << ", fy: " << fy << ", fz: " << fz << std::endl;
 
       Position foot_position = {fx, fy, fz};
       Rotation foot_rotation = {0.0, 0.0, yaw};
@@ -264,6 +262,9 @@ class LegController : public rclcpp::Node
       if (teleop_command_ != STOP) {
         walk_open_loop(teleop_command_, left_foot_pose, right_foot_pose);
       }
+
+      // test_leg_ik(LEFT_LEG, left_foot_pose);
+      // test_leg_ik(RIGHT_LEG, right_foot_pose);
 
       solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
       solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);

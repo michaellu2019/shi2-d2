@@ -1,5 +1,5 @@
-#ifndef TELEOP_HPP
-#define TELEOP_HPP
+#ifndef SHI2D2_TELEOP_HPP
+#define SHI2D2_TELEOP_HPP
 
 #include <string>
 #include <vector>

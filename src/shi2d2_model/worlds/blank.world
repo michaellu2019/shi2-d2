@@ -5,16 +5,13 @@
       <max_step_size>0.0035</max_step_size>
       <real_time_factor>1.0</real_time_factor>
     </physics>
-    <plugin
-      filename="libgz-sim-physics-system.so"
+    <plugin filename="libgz-sim-physics-system.so"
       name="gz::sim::systems::Physics">
     </plugin>
-    <plugin
-      filename="libgz-sim-user-commands-system.so"
+    <plugin filename="libgz-sim-user-commands-system.so"
       name="gz::sim::systems::UserCommands">
     </plugin>
-    <plugin
-      filename="libgz-sim-scene-broadcaster-system.so"
+    <plugin filename="libgz-sim-scene-broadcaster-system.so"
       name="gz::sim::systems::SceneBroadcaster">
     </plugin>
 
@@ -37,26 +34,26 @@
 
     <model name="ground_plane">
       <static>true</static>
-      <link name="link">
+      <link name="ground_plane_link">
         <collision name="collision">
-        <geometry>
-          <plane>
-          <normal>0 0 1</normal>
-          </plane>
-        </geometry>
+          <geometry>
+            <plane>
+            <normal>0 0 1</normal>
+            </plane>
+          </geometry>
         </collision>
         <visual name="visual">
-        <geometry>
-          <plane>
-          <normal>0 0 1</normal>
-          <size>100 100</size>
-          </plane>
-        </geometry>
-        <material>
-          <ambient>0.5 0.5 0.5 1</ambient>
-          <diffuse>1.0 1.0 1.0 1</diffuse>
-          <specular>0.0 0.0 0.0 1</specular>
-        </material>
+          <geometry>
+            <plane>
+            <normal>0 0 1</normal>
+            <size>100 100</size>
+            </plane>
+          </geometry>
+          <material>
+            <ambient>0.5 0.5 0.5 1</ambient>
+            <diffuse>1.0 1.0 1.0 1</diffuse>
+            <specular>0.0 0.0 0.0 1</specular>
+          </material>
         </visual>
       </link>
     </model>

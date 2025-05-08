@@ -46,9 +46,9 @@ struct Position {
 };
 
 struct Rotation {
-  double roll;
-  double pitch;
-  double yaw;
+  double rx;
+  double ry;
+  double rz;
 };
 
 struct FootPose {

@@ -13,6 +13,34 @@
   <xacro:property name="effort" value="1000.0" />
   <xacro:property name="velocity" value="100.0" />
 
+  <!-- virtual center of mass link and joint -->
+  <link name="com_link">
+    <inertial>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <mass value="0.0001" />
+        <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001" />
+    </inertial>
+    <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <sphere radius="0.01" />
+        </geometry>
+        <material name="red">
+          <color rgba="1 0 0 1" />
+        </material>
+    </visual>
+    <collision>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </collision>
+  </link>
+  <joint name="com_body_joint" type="fixed">
+    <!-- specifies location of center of mass relative to body link origin -->
+    <!-- curently derived from the negative of the xyz attribute of body_link's inertial property -->
+    <origin xyz="0.13606 0 -0.011359" rpy="0 0 0" />
+    <parent link="com_link" />
+    <child link="body_link" />
+  </joint>
+
   <link name="body_link">
     <inertial>
         <origin xyz="-0.13606 0 0.011359" rpy="0 0 0" />

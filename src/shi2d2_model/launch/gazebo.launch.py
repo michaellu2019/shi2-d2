@@ -12,6 +12,7 @@
 # - https://automaticaddison.com/how-to-configure-moveit-2-for-a-simulated-robot-arm/#Create_a_Launch_File
 # - https://moveit.picknik.ai/main/doc/how_to_guides/moveit_launch_files/moveit_launch_files_tutorial.html
 # - https://gazebosim.org/docs/harmonic/migration_from_ignition/
+# - https://robotics.stackexchange.com/questions/114671/odom-and-models-pose-giving-different-values-in-gazebo-sim
 
 # source install/setup.bash && colcon build && ros2 launch shi2d2_model gazebo.launch.py
 
@@ -21,7 +22,7 @@ import xacro
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import ExecuteProcess
+from launch.actions import ExecuteProcess, TimerAction
 from launch_ros.actions import Node
 
 def generate_launch_description():   
@@ -54,7 +55,7 @@ def generate_launch_description():
         output="screen"
     )
 
-    # spawn the urdf model in the world
+    # spawn the shi2d2 robot urdf model in the world
     robot_spawn_pose = (0, 0, 0.345*5, 0, 0, np.pi)
     doc = xacro.parse(open(robot_xacro_file))
     xacro.process_doc(doc)
@@ -75,6 +76,34 @@ def generate_launch_description():
             ],
         output="screen"
     )
+
+    # move the gazebo camera to focus on the shi2d2 robot
+    camera_position = {
+        "x": -1.12,
+        "y": -0.90,
+        "z": 0.69,
+    }
+    camera_orientation = {
+        "x": -0.042,
+        "y": 0.127,
+        "z": 0.314,
+        "w": 0.940,
+    }
+    camera_position_str = "{" + f"position: {camera_position}".replace("'", "")
+    camera_orientation_str = f"orientation: {camera_orientation}".replace("'", "") + "}"
+    camera_pose_str = f"pose: {camera_position_str} {camera_orientation_str}"
+    gazebo_camera = TimerAction(
+        period=2.0,  # Delay to ensure Gazebo is initialized
+        actions=[
+            ExecuteProcess(
+                cmd=["gz", "service", "-s", "/gui/move_to/pose", 
+                    "--reqtype", "gz.msgs.GUICamera", 
+                    "--reptype", "gz.msgs.Boolean", 
+                    "--timeout", "2000", 
+                    "--req", camera_pose_str],
+                output="screen"
+            )
+        ])
 
     # start robot state publisher
     robot_state_publisher = Node(
@@ -145,4 +174,5 @@ def generate_launch_description():
         joint_state_broadcaster_spawner,
         shi2d2_group_controller_spawner,
         shi2d2_controller,
+        gazebo_camera,
     ])

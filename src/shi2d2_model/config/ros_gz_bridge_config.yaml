@@ -20,7 +20,7 @@
   gz_type_name: "gz.msgs.Odometry"
   direction: GZ_TO_ROS
 - ros_topic_name: "/shi2d2/imu"
-  gz_topic_name: "/world/blank_world/model/shi2d2/link/body_link/sensor/imu_sensor/imu"
+  gz_topic_name: "/world/blank_world/model/shi2d2/link/com_link/sensor/imu_sensor/imu"
   ros_type_name: "sensor_msgs/msg/Imu"
   gz_type_name: "gz.msgs.IMU"
   direction: GZ_TO_ROS
