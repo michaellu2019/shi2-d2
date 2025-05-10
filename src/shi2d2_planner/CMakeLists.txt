@@ -7,6 +7,10 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+
+find_package(Eigen3 REQUIRED)
+find_package(NLopt REQUIRED)
+
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -18,17 +22,23 @@ find_package(geometry_msgs REQUIRED)
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
+
+
 include_directories(
   include
 )
 
 add_executable(locomotion_planner src/locomotion_planner.cpp)
-ament_target_dependencies(locomotion_planner rclcpp std_msgs sensor_msgs nav_msgs tf2 tf2_ros geometry_msgs)
+ament_target_dependencies(locomotion_planner Eigen3 NLopt rclcpp std_msgs sensor_msgs nav_msgs tf2 tf2_ros geometry_msgs)
 
 target_include_directories(locomotion_planner PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
 target_compile_features(locomotion_planner PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+# Link the NLopt library to your target
+target_link_libraries(locomotion_planner
+  nlopt
+)
 
 install(TARGETS 
   locomotion_planner

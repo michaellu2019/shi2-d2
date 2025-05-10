@@ -50,8 +50,8 @@ def generate_launch_description():
 
     # launch the gazebo world
     gazebo = ExecuteProcess(
-        # cmd=["gz", "sim", "-r", "-s", world_file],
-        cmd=["gz", "sim", "-r", world_file],
+        cmd=["gz", "sim", "-r", "-s", world_file],
+        # cmd=["gz", "sim", "-r", world_file],
         output="screen"
     )
 
@@ -170,7 +170,7 @@ def generate_launch_description():
         spawn_entity,
         bridge,
         robot_state_publisher,
-        rviz,
+        # rviz,
         joint_state_broadcaster_spawner,
         shi2d2_group_controller_spawner,
         shi2d2_controller,

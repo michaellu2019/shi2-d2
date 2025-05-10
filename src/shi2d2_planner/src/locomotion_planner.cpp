@@ -1,12 +1,13 @@
 #include <chrono>
 #include <cmath>
-#include <tf2/LinearMath/Quaternion.h>
-#include <tf2/LinearMath/Matrix3x3.h>
+#include <nlopt.hpp>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int8.hpp"
 #include "sensor_msgs/msg/imu.hpp"
 #include "nav_msgs/msg/odometry.hpp"
+#include "tf2/LinearMath/Quaternion.h"
+#include "tf2/LinearMath/Matrix3x3.h"
 #include "tf2_ros/transform_listener.h"
 #include "tf2_ros/buffer.h"
 #include "geometry_msgs/msg/transform_stamped.hpp"
@@ -35,6 +36,8 @@ public:
 
     tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+
+    zmp_mpc();
   }
 
   ~LocomotionPlanner()
@@ -50,6 +53,11 @@ private:
   }
 
   void get_robot_com()
+  {
+    
+  }
+
+  void get_robot_zmp()
   {
 
   }
@@ -80,14 +88,164 @@ private:
     body_state_.aly = 0.0;
     body_state_.alz = 0.0;
     
-    std::cout << std::fixed << std::setprecision(3)
-          << "Body State: X: [" 
-          << body_state_.x << ", " << body_state_.y << ", " << body_state_.z << ", "
-          << body_state_.rx << ", " << body_state_.ry << ", " << body_state_.rz << "] XD: ["
-          << body_state_.vx << ", " << body_state_.vy << ", " << body_state_.vz << ", "
-          << body_state_.wx << ", " << body_state_.wy << ", " << body_state_.wz << "] XDD:["
-          << body_state_.ax << ", " << body_state_.ay << ", " << body_state_.az << ", "
-          << body_state_.alx << ", " << body_state_.aly << ", " << body_state_.alz << "]" << std::endl;
+    // std::cout << std::fixed << std::setprecision(3)
+    //       << "Body State: X: [" 
+    //       << body_state_.x << ", " << body_state_.y << ", " << body_state_.z << ", "
+    //       << body_state_.rx << ", " << body_state_.ry << ", " << body_state_.rz << "] XD: ["
+    //       << body_state_.vx << ", " << body_state_.vy << ", " << body_state_.vz << ", "
+    //       << body_state_.wx << ", " << body_state_.wy << ", " << body_state_.wz << "] XDD:["
+    //       << body_state_.ax << ", " << body_state_.ay << ", " << body_state_.az << ", "
+    //       << body_state_.alx << ", " << body_state_.aly << ", " << body_state_.alz << "]" << std::endl;
+  }
+
+  static double zmp_mpc_cost_function(unsigned n, const double *u, double *grad, void *data)
+  {
+    ZMPMPCData *zmp_mpc_data = static_cast<ZMPMPCData *>(data);
+    const Eigen::Vector3d &X = zmp_mpc_data->X;
+    const Eigen::Matrix<double, 3, 3> &A = zmp_mpc_data->A;
+    const Eigen::Matrix<double, 3, 1> &B = zmp_mpc_data->B;
+    const Eigen::Matrix<double, 1, 3> &C = zmp_mpc_data->C;
+    const std::vector<double> &zmp_refs = zmp_mpc_data->zmp_refs;
+
+    double cost = 0.0;
+    int k = 0;
+    for (int i = k; i < k + ZMP_MPC_NUM_TIMESTEPS; i++) {
+
+      const Eigen::Vector3d X_next = A * X + B * u[i];
+      double zmp_next = (C * X_next).value();
+      double zmp_ref_next = zmp_refs[i + 1];
+
+      if (grad) {
+        // grad[i] = 2 * (u[i] - i);
+        double grad1 = ZMP_MPC_COP_PENALTY * (zmp_next - zmp_ref_next) * (pow(ZMP_MPC_TIMESTEP_PERIOD_MS, 3)/6 - (ZMP_MPC_COM_HEIGHT_M/g) * ZMP_MPC_TIMESTEP_PERIOD_MS);
+        double grad2 = ZMP_MPC_XDD_PENALTY * u[i];
+        grad[i] = grad1 + grad2;
+      }
+
+      double iteration_cost1 = 0.5 * ZMP_MPC_COP_PENALTY * pow(zmp_next - zmp_ref_next, 2);
+      double iteration_cost2 = 0.5 * ZMP_MPC_XDD_PENALTY * pow(u[i], 2);
+      // double iteration_cost1 = 0.5 * pow(u[i] - i, 2);
+      // double iteration_cost2 = 0.5 * pow(u[i] - i, 2);
+      cost += iteration_cost1 + iteration_cost2;
+    }
+
+    return cost;
+  }
+
+  void zmp_mpc()
+  {
+    std::cout << "Testing ZMP MPC" << std::endl;
+    Eigen::Vector3d X(body_state_.x, body_state_.vx, body_state_.ax);
+    Eigen::Vector3d Y(body_state_.y, body_state_.vy, body_state_.ay);
+    std::vector<double> u_x(ZMP_MPC_NUM_TIMESTEPS);
+    std::vector<double> u_y(ZMP_MPC_NUM_TIMESTEPS);
+
+    double ZMP_STEP_LENGTH_M = 20.0e-3;
+    double ZMP_STEP_WIDTH_M = 50.0e-3;
+    double step_period_ms = 400;
+    double half_step_period_ms = step_period_ms/2;
+    double single_support_duration_ms = half_step_period_ms - 40;
+    double double_support_duration_ms = half_step_period_ms - single_support_duration_ms;
+
+    ZMPMPCData zmp_mpc_x_data{X, A, B, C, {}};
+    ZMPMPCData zmp_mpc_y_data{Y, A, B, C, {}};
+
+    std::cout << "Generating ZMP References" << std::endl;
+    int k = 0;
+    double last_zmp_x = 0;
+    double last_zmp_y = 0;
+    double zmp_x = 0;
+    double zmp_y = 0;
+    for (int i = k; i < k + ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      int step_num = (int) t_ms/half_step_period_ms;
+      bool double_support = t_ms % (int) half_step_period_ms < double_support_duration_ms;
+      
+      double new_zmp_x = body_state_.x + step_num * ZMP_STEP_LENGTH_M;
+      double new_zmp_y = body_state_.y + (2 * (step_num % 2) - 1) * ZMP_STEP_WIDTH_M;
+      if (t_ms % (int) half_step_period_ms == 0) {
+        last_zmp_x = zmp_x;
+        zmp_x = new_zmp_x;
+        last_zmp_y = zmp_y;
+        zmp_y = new_zmp_y;
+      }
+
+      if (double_support) {
+        zmp_mpc_x_data.zmp_refs.push_back(last_zmp_x + ((zmp_x - last_zmp_x)/double_support_duration_ms) * (t_ms % (int) half_step_period_ms));
+        zmp_mpc_y_data.zmp_refs.push_back(last_zmp_y + ((zmp_y - last_zmp_y)/double_support_duration_ms) * (t_ms % (int) half_step_period_ms));
+      } else {
+        zmp_mpc_x_data.zmp_refs.push_back(zmp_x);
+        zmp_mpc_y_data.zmp_refs.push_back(zmp_y);
+      }
+
+      std::cout << "(" << t_ms << ", " << zmp_mpc_x_data.zmp_refs[i] << ", " << zmp_mpc_y_data.zmp_refs[i] << "), ";
+    }
+    std::cout << std::endl;
+
+
+    RCLCPP_INFO(this->get_logger(), "Creating Optimization Problems");
+
+    nlopt::opt opt_x(nlopt::LD_MMA, ZMP_MPC_NUM_TIMESTEPS);
+    opt_x.set_min_objective(zmp_mpc_cost_function, &zmp_mpc_x_data);
+    opt_x.set_xtol_rel(1e-4);
+    opt_x.set_maxtime(10.0);
+    nlopt::opt opt_y(nlopt::LD_MMA, ZMP_MPC_NUM_TIMESTEPS);
+    opt_y.set_min_objective(zmp_mpc_cost_function, &zmp_mpc_y_data);
+    opt_y.set_xtol_rel(1e-4);
+    opt_y.set_maxtime(10.0);
+    
+    auto x_start_time = std::chrono::high_resolution_clock::now(); // Start timer
+    double min_x_cost;
+    try {
+      nlopt::result result = opt_x.optimize(u_x, min_x_cost);
+      
+      auto x_end_time = std::chrono::high_resolution_clock::now(); // End timer
+      auto x_duration = std::chrono::duration_cast<std::chrono::milliseconds>(x_end_time - x_start_time).count();
+      RCLCPP_INFO(this->get_logger(), "X Optimization succeeded. Min cost: %.3f", min_x_cost);
+      RCLCPP_INFO(this->get_logger(), "Solver took %ld ms\n", x_duration);
+      std::cout << std::endl;
+    } catch (std::exception &e) {
+      RCLCPP_ERROR(this->get_logger(), "NLOPT failed: %s", e.what());
+    }
+    
+    auto y_start_time = std::chrono::high_resolution_clock::now(); // Start timer
+    double min_y_cost;
+    try {
+      nlopt::result result = opt_y.optimize(u_y, min_y_cost);
+      
+      auto y_end_time = std::chrono::high_resolution_clock::now(); // End timer
+      auto y_duration = std::chrono::duration_cast<std::chrono::milliseconds>(y_end_time - y_start_time).count();
+      RCLCPP_INFO(this->get_logger(), "Y Optimization succeeded. Min cost: %.3f", min_y_cost);
+      RCLCPP_INFO(this->get_logger(), "Solver took %ld ms\n", y_duration);
+      std::cout << std::endl;
+    } catch (std::exception &e) {
+      RCLCPP_ERROR(this->get_logger(), "NLOPT failed: %s", e.what());
+    }
+
+    std::cout << "Jerk Values" << std::endl;
+    for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      std::cout << "(" << t_ms << ", " << u_x[i - k] << ", " << u_y[i - k] << "), ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "COM Values" << std::endl;
+    std::vector<double> com_x(ZMP_MPC_NUM_TIMESTEPS);
+    std::vector<double> com_y(ZMP_MPC_NUM_TIMESTEPS);
+    Eigen::Vector3d Xp(0, 0, 0);
+    Eigen::Vector3d Yp(0, 0, 0);
+    for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      
+      com_x.push_back(Xp[0]);
+      com_y.push_back(Yp[0]);
+      std::cout << "(" << t_ms << ", " << com_x[i] << ", " << com_y[i] << "), ";
+
+      Xp = A * Xp + B * u_x[i - k];
+      Yp = A * Yp + B * u_y[i - k];
+      
+    }
+    std::cout << std::endl;
   }
 
   void imu_callback(const sensor_msgs::msg::Imu::SharedPtr msg)
@@ -109,31 +267,31 @@ private:
     // Process TF data
     try
     {
-      auto transform_stamped = tf_buffer_->lookupTransform("world", "com_link", tf2::TimePointZero);
-      auto left_foot_transform_stamped = tf_buffer_->lookupTransform("com_link", "left_foot_link", tf2::TimePointZero);
-      auto right_foot_transform_stamped = tf_buffer_->lookupTransform("com_link", "right_foot_link", tf2::TimePointZero);
+      geometry_msgs::msg::TransformStamped transform_stamped = tf_buffer_->lookupTransform("world", "com_link", tf2::TimePointZero);
+      geometry_msgs::msg::TransformStamped left_foot_transform_stamped = tf_buffer_->lookupTransform("world", "left_foot_link", tf2::TimePointZero);
+      geometry_msgs::msg::TransformStamped right_foot_transform_stamped = tf_buffer_->lookupTransform("world", "right_foot_link", tf2::TimePointZero);
       body_transform_ = transform_stamped.transform;
       // RCLCPP_INFO(this->get_logger(), "Positions: B: [%.2f, %.2f, %.2f] L: [%.2f, %.2f, %.2f] R: [%.2f, %.2f, %.2f]",
-      //             body_transform_.translation.x,
-      //             body_transform_.translation.y,
-      //             body_transform_.translation.z,
-      //             left_foot_transform_stamped.transform.translation.x,
-      //             left_foot_transform_stamped.transform.translation.y,
-      //             left_foot_transform_stamped.transform.translation.z,
-      //             right_foot_transform_stamped.transform.translation.x,
-      //             right_foot_transform_stamped.transform.translation.y,
-      //             right_foot_transform_stamped.transform.translation.z);
+                  // body_transform_.translation.x,
+                  // body_transform_.translation.y,
+                  // body_transform_.translation.z,
+                  // left_foot_transform_stamped.transform.translation.x,
+                  // left_foot_transform_stamped.transform.translation.y,
+                  // left_foot_transform_stamped.transform.translation.z,
+                  // right_foot_transform_stamped.transform.translation.x,
+                  // right_foot_transform_stamped.transform.translation.y,
+                  // right_foot_transform_stamped.transform.translation.z);
     }
     catch (const tf2::TransformException &ex)
     {
-      RCLCPP_WARN(this->get_logger(), "Could not transform: %s", ex.what());
+      // RCLCPP_WARN(this->get_logger(), "Could not transform: %s", ex.what());
     }
-    get_robot_state();
+    // get_robot_state();
 
     // Example publishing logic (can be customized)
-    auto message = std_msgs::msg::Int8();
-    message.data = 0; // Example command
-    publisher_->publish(message);
+    // std_msgs::msg::Int8 message = std_msgs::msg::Int8();
+    // message.data = 0; // Example command
+    // publisher_->publish(message);
   }
 
   rclcpp::TimerBase::SharedPtr timer_;

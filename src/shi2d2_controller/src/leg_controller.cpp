@@ -146,8 +146,8 @@ class LegController : public rclcpp::Node
       // double fz = 0.0 * sin(sim_time_elapsed_sec_ * (swap_frequency/160) * M_PI) + 60.0;
       // std::cout << "TICK: " << tick_count_ << ", fx: " << fx << ", fy: " << fy << ", fz: " << fz << std::endl;
 
-      Position foot_position = {fx, fy, fz};
-      Rotation foot_rotation = {0.0, 0.0, yaw};
+      Position foot_position{fx, fy, fz};
+      Rotation foot_rotation{0.0, 0.0, yaw};
       foot_pose = {foot_position, foot_rotation};
     }
 
@@ -294,7 +294,7 @@ class LegController : public rclcpp::Node
       sim_time_ = msg->clock;
       
       if (start_time_.nanoseconds() != 0) {
-        auto sim_time_elapsed_ = sim_time_ - start_time_;
+        rclcpp::Duration sim_time_elapsed_ = sim_time_ - start_time_;
         sim_time_elapsed_sec_ = sim_time_elapsed_.seconds();
         // RCLCPP_INFO(this->get_logger(), "Time since simulation start: %.2fs...", sim_time_elapsed_sec_);
       }

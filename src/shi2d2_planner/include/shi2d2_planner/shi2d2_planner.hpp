@@ -3,8 +3,42 @@
 
 #include <string>
 #include <vector>
+#include <eigen3/Eigen/Dense>
 
 const double PLANNER_LOOP_PERIOD_MS = 10.0;
+
+const double g = 9.81; // m/s^2
+
+// ZMP linear MPC constants
+const int ZMP_MPC_NUM_TIMESTEPS = 300; // number of time steps
+const double ZMP_MPC_TIMESTEP_PERIOD_MS = 5.0; // MPC time step period in ms
+const double ZMP_MPC_COM_HEIGHT_M = 0.275;
+const double ZMP_MPC_COP_X_BOUNDS_M = 0.75 * 0.140/2;
+const double ZMP_MPC_COP_Y_BOUNDS_M = 0.75 * 0.3/2;
+const double ZMP_MPC_COP_PENALTY = 10000.0;
+const double ZMP_MPC_XDD_PENALTY = 10.0 * 1e-6;
+
+Eigen::Matrix<double, 3, 3> A {
+  {1, ZMP_MPC_TIMESTEP_PERIOD_MS, pow(ZMP_MPC_TIMESTEP_PERIOD_MS, 2)/2,},
+  {0, 1, ZMP_MPC_TIMESTEP_PERIOD_MS,},
+  {0, 0, 1},
+};
+Eigen::Matrix<double, 3, 1> B {
+  pow(ZMP_MPC_TIMESTEP_PERIOD_MS, 3)/6,
+  pow(ZMP_MPC_TIMESTEP_PERIOD_MS, 2)/2,
+  ZMP_MPC_TIMESTEP_PERIOD_MS,
+};
+Eigen::Matrix<double, 1, 3> C {
+  1, 0, -ZMP_MPC_COM_HEIGHT_M/g,
+};
+
+struct ZMPMPCData {
+  Eigen::Vector3d X;
+  Eigen::MatrixXd A;
+  Eigen::MatrixXd B;
+  Eigen::MatrixXd C;
+  std::vector<double> zmp_refs;
+};
 
 struct BodyState {
   // linear and angular position
