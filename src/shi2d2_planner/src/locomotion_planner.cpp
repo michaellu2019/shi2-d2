@@ -1,6 +1,7 @@
 #include <chrono>
 #include <cmath>
 #include <nlopt.hpp>
+#include <matplotlibcpp.h>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/int8.hpp"
@@ -16,6 +17,7 @@
 #include "shi2d2_planner/shi2d2_planner.hpp"
 
 using namespace std::chrono_literals;
+namespace plt = matplotlibcpp;
 
 class LocomotionPlanner : public rclcpp::Node
 {
@@ -163,6 +165,7 @@ private:
     std::cout << "Testing ZMP MPC" << std::endl;
     Eigen::Vector3d X(body_state_.x, body_state_.vx, body_state_.ax);
     Eigen::Vector3d Y(body_state_.y, body_state_.vy, body_state_.ay);
+    std::vector<double> t(ZMP_MPC_NUM_TIMESTEPS);
     std::vector<double> u_x(ZMP_MPC_NUM_TIMESTEPS);
     std::vector<double> u_y(ZMP_MPC_NUM_TIMESTEPS);
 
@@ -175,12 +178,12 @@ private:
     ZMPMPCData zmp_mpc_x_data{X, A, B, C, {}};
     ZMPMPCData zmp_mpc_y_data{Y, A, B, C, {}};
 
-    std::cout << "ZMP Reference Values" << std::endl;
+    // std::cout << "ZMP Reference Values" << std::endl;
     int k = 0;
     double last_zmp_x = 0;
     double last_zmp_y = 0;
-    double zmp_x = 0;
-    double zmp_y = 0;
+    double current_zmp_x = 0;
+    double current_zmp_y = 0;
     double zmp_padding = 30;
     for (int i = k; i < zmp_padding; i++) {
       zmp_mpc_x_data.zmp_refs.push_back(0.0);
@@ -195,28 +198,29 @@ private:
       double new_zmp_x = body_state_.x + step_num * ZMP_STEP_LENGTH_M;
       double new_zmp_y = body_state_.y + (2 * (step_num % 2) - 1) * ZMP_STEP_WIDTH_M;
       if (t_ms % (int) half_step_period_ms == 0) {
-        last_zmp_x = zmp_x;
-        zmp_x = new_zmp_x;
-        last_zmp_y = zmp_y;
-        zmp_y = new_zmp_y;
+        last_zmp_x = current_zmp_x;
+        current_zmp_x = new_zmp_x;
+        last_zmp_y = current_zmp_y;
+        current_zmp_y = new_zmp_y;
       }
 
       if (double_support) {
-        zmp_mpc_x_data.zmp_refs.push_back(last_zmp_x + ((zmp_x - last_zmp_x)/double_support_duration_ms) * (t_ms % (int) half_step_period_ms));
-        zmp_mpc_y_data.zmp_refs.push_back(last_zmp_y + ((zmp_y - last_zmp_y)/double_support_duration_ms) * (t_ms % (int) half_step_period_ms));
+        zmp_mpc_x_data.zmp_refs.push_back(last_zmp_x + ((current_zmp_x - last_zmp_x)/double_support_duration_ms) * (t_ms % (int) half_step_period_ms));
+        zmp_mpc_y_data.zmp_refs.push_back(last_zmp_y + ((current_zmp_y - last_zmp_y)/double_support_duration_ms) * (t_ms % (int) half_step_period_ms));
       } else {
-        zmp_mpc_x_data.zmp_refs.push_back(zmp_x);
-        zmp_mpc_y_data.zmp_refs.push_back(zmp_y);
+        zmp_mpc_x_data.zmp_refs.push_back(current_zmp_x);
+        zmp_mpc_y_data.zmp_refs.push_back(current_zmp_y);
       }
+      t[i] = t_ms;
     }
 
-    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
-      std::cout << "(" << t_ms << ", " << zmp_mpc_x_data.zmp_refs[i] << ", " << zmp_mpc_y_data.zmp_refs[i] << "), ";
+    // for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   std::cout << "(" << t_ms << ", " << zmp_mpc_x_data.zmp_refs[i] << ", " << zmp_mpc_y_data.zmp_refs[i] << "), ";
       // u_x[i] = zmp_mpc_x_data.zmp_refs[i];
       // u_y[i] = zmp_mpc_y_data.zmp_refs[i];
-    }
-    std::cout << std::endl;
+    // }
+    // std::cout << std::endl;
 
     const int N = ZMP_MPC_NUM_TIMESTEPS;
     const double T = ZMP_MPC_TIMESTEP_PERIOD_SEC;
@@ -323,17 +327,19 @@ private:
     //   RCLCPP_ERROR(this->get_logger(), "NLOPT failed: %s", e.what());
     // }
 
-    k = 0;
-    std::cout << "Jerk Values" << std::endl;
-    for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
-      std::cout << "(" << t_ms << ", " << u_x[i - k] << ", " << u_y[i - k] << "), ";
-    }
-    std::cout << std::endl;
+    // k = 0;
+    // std::cout << "Jerk Values" << std::endl;
+    // for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   std::cout << "(" << t_ms << ", " << u_x[i - k] << ", " << u_y[i - k] << "), ";
+    // }
+    // std::cout << std::endl;
 
-    std::cout << "ZMP Values" << std::endl;
+    // std::cout << "ZMP Values" << std::endl;
     std::vector<double> com_x(ZMP_MPC_NUM_TIMESTEPS);
     std::vector<double> com_y(ZMP_MPC_NUM_TIMESTEPS);
+    std::vector<double> zmp_x(ZMP_MPC_NUM_TIMESTEPS);
+    std::vector<double> zmp_y(ZMP_MPC_NUM_TIMESTEPS);
     Eigen::Vector3d Xp(0, 0, 0);
     Eigen::Vector3d Yp(0, 0, 0);
     for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
@@ -344,9 +350,9 @@ private:
       // std::cout << "(" << t_ms << ", " << com_x[i] << ", " << com_y[i] << "), ___ " << com_x.size() << ", " << com_y.size() << " ___ ";
       // std::cout << t_ms << ": " << Xp[0] << ", " << Xp[1] << ", " << Xp[2] << " - " << u_x[i - k] << std::endl;
 
-      double zmp_x = (C * Xp).value();
-      double zmp_y = (C * Yp).value();
-      std::cout << "(" << t_ms << ", " << zmp_x << ", " << zmp_y << "), ";
+      zmp_x[i] = (C * Xp).value();
+      zmp_y[i] = (C * Yp).value();
+      // std::cout << "(" << t_ms << ", " << zmp_x[i] << ", " << zmp_y[i] << "), ";
 
       Xp = A * Xp + B * u_x[i - k];
       Yp = A * Yp + B * u_y[i - k];
@@ -354,11 +360,61 @@ private:
     }
     std::cout << std::endl;
 
-    std::cout << "COM Values" << std::endl;
-    for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
-      std::cout << "(" << t_ms << ", " << com_x[i] << ", " << com_y[i] << "), ";
-    }
+    // std::cout << "COM Values" << std::endl;
+    // for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   std::cout << "(" << t_ms << ", " << com_x[i] << ", " << com_y[i] << "), ";
+    // }
+
+    plot_results(
+      t, com_x, com_y,
+      zmp_mpc_x_data.zmp_refs, zmp_mpc_y_data.zmp_refs,
+      zmp_x, zmp_y
+    );
+  }
+
+  void plot_results(const std::vector<double>& time, 
+    const std::vector<double>& com_x, const std::vector<double>& com_y,
+    const std::vector<double>& zmp_ref_x, const std::vector<double>& zmp_ref_y,
+    const std::vector<double>& zmp_x, const std::vector<double>& zmp_y) {
+    plt::figure();
+
+    // Plot 1: COM y vs x, ZMP reference y vs x, and ZMP y vs x
+    plt::subplot(3, 1, 1); // 3 rows, 1 column, 1st plot
+    plt::plot(com_x, com_y, {{"label", "COM y vs x"}});
+    plt::plot(zmp_ref_x, zmp_ref_y, {{"label", "ZMP Reference y vs x"}});
+    plt::plot(zmp_x, zmp_y, {{"label", "ZMP y vs x"}});
+    plt::xlabel("X (meters)");
+    plt::ylabel("Y (meters)");
+    plt::title("COM and ZMP Trajectories in X-Y Plane");
+    plt::legend();
+    plt::grid(true);
+
+    // Plot 2: COM x vs t, ZMP reference x vs t, and ZMP x vs t
+    plt::subplot(3, 1, 2); // 3 rows, 1 column, 2nd plot
+    plt::plot(time, com_x, {{"label", "COM x vs t"}});
+    plt::plot(time, zmp_ref_x, {{"label", "ZMP Reference x vs t"}});
+    plt::plot(time, zmp_x, {{"label", "ZMP x vs t"}});
+    plt::xlabel("Time (seconds)");
+    plt::ylabel("X (meters)");
+    plt::title("COM and ZMP X Trajectories Over Time");
+    plt::legend();
+    plt::grid(true);
+
+    // // Plot 3: COM y vs t, ZMP reference y vs t, and ZMP y vs t
+    plt::subplot(3, 1, 3); // 3 rows, 1 column, 3rd plot
+    plt::plot(time, com_y, {{"label", "COM y vs t"}});
+    plt::plot(time, zmp_ref_y, {{"label", "ZMP Reference y vs t"}});
+    plt::plot(time, zmp_y, {{"label", "ZMP y vs t"}});
+    plt::xlabel("Time (seconds)");
+    plt::ylabel("Y (meters)");
+    plt::title("COM and ZMP Y Trajectories Over Time");
+    plt::legend();
+    plt::grid(true);
+
+    // Show all plots
+    plt::tight_layout();
+    plt::show();
   }
 
   void imu_callback(const sensor_msgs::msg::Imu::SharedPtr msg)

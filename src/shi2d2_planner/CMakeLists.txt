@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 
 find_package(Eigen3 REQUIRED)
 find_package(NLopt REQUIRED)
+find_package(Python3 COMPONENTS Interpreter Development NumPy REQUIRED)
 
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -26,6 +27,7 @@ find_package(geometry_msgs REQUIRED)
 
 include_directories(
   include
+  ${Python3_NumPy_INCLUDE_DIRS} 
 )
 
 add_executable(locomotion_planner src/locomotion_planner.cpp)
@@ -33,11 +35,13 @@ ament_target_dependencies(locomotion_planner Eigen3 NLopt rclcpp std_msgs sensor
 
 target_include_directories(locomotion_planner PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  ${Python3_INCLUDE_DIRS})
 target_compile_features(locomotion_planner PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 # Link the NLopt library to your target
 target_link_libraries(locomotion_planner
   nlopt
+  ${Python3_LIBRARIES}
 )
 
 install(TARGETS 
