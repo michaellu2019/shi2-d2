@@ -1,5 +1,5 @@
-
 import matplotlib.pyplot as plt
+import numpy as np
 
 def f1():
   k = 0
@@ -179,5 +179,144 @@ def f3():
   plt.show()
 
 # f1()
-f2()
+# f2()
 # f3()
+
+def f4():
+  N = 300
+  ts = 5
+  T = 300
+  TH = T/2
+  T2 = T/10
+  T1 = TH - T2
+  T3 = 2 * T2 + T1
+  FLOATING_X = -10
+  FLOATING_Y = 100
+  
+  L = 20
+  W = 50
+  H = 20
+
+  left_foots = []
+  right_foots = []
+
+  zmp_x = []
+  zmp_y = []
+
+  for i in range(N):
+    t = i * ts
+    left_step_num = (t + TH)//T
+    right_step_num = t//T
+    left_foot_floating = False
+    right_foot_floating = False
+
+    left_foot_x_offset = 0
+    left_foot_x_slope = L
+    if (t + TH) % T < T3:
+      left_foot_x = left_foot_x_offset + left_step_num * L
+      left_foot_y = W
+      left_foot_z = 0
+    else:
+       left_foot_x = left_foot_x_offset + left_step_num * L + (left_foot_x_slope * ((t + TH) % T - T3))/T1
+       left_foot_y = W
+       left_foot_z = H * np.sin(np.pi/T1 * (t % TH - T2))
+       left_foot_floating = True
+    
+    right_foot_x_offset = 0 if t < T else 0 + L/2
+    right_foot_x_slope = L * 1.5 if t < T else L
+    if t % T < T3:
+      right_foot_x = right_foot_x_offset + right_step_num * L
+      right_foot_y = -W
+      right_foot_z = 0
+    else:
+      right_foot_x = right_foot_x_offset + right_step_num * L + (right_foot_x_slope * ((t % T) - T3))/T1
+      right_foot_y = -W
+      right_foot_z = H * np.sin(np.pi/T1 * (t % TH - T2))
+      right_foot_floating = True
+
+    left_foots.append((t, left_foot_x, left_foot_y, left_foot_z))
+    right_foots.append((t, right_foot_x, right_foot_y, right_foot_z))
+
+    if not left_foot_floating and right_foot_floating:
+      zmp_x.append(left_foot_x)
+      zmp_y.append(left_foot_y)
+    elif left_foot_floating and not right_foot_floating:
+      zmp_x.append(right_foot_x)
+      zmp_y.append(right_foot_y)
+    else:
+      if left_foot_x > right_foot_x:
+        x = right_foot_x + (left_foot_x - right_foot_x) * (t % TH)/T2
+      else:
+        x = left_foot_x + (right_foot_x - left_foot_x) * (t % TH)/T2
+      if t % T < T2:
+        y = left_foot_y + (right_foot_y - left_foot_y) * (t % TH)/T2
+      else:
+        y = right_foot_y + (left_foot_y - right_foot_y) * (t % TH)/T2
+      zmp_x.append(x)
+      zmp_y.append(y)
+  
+  # Unpack data
+  t_left, left_x, left_y, left_z = zip(*left_foots)
+  t_right, right_x, right_y, right_z = zip(*right_foots)
+
+  # Create plots
+  plt.figure(figsize=(15, 10))
+
+  # Y vs X
+  plt.subplot(3, 1, 1)
+  # plt.plot(left_x, left_y, label='Left Foot Y vs. X', color='blue', alpha=0.5)
+  # plt.plot(right_x, right_y, label='Right Foot Y vs. X', color='orange', alpha=0.5)
+  plt.plot(zmp_x, zmp_y, label='ZMP Y vs. X', color='gray', alpha=1.0)
+  plt.xlabel('X Position')
+  plt.ylabel('Y Position')
+  plt.title('Plot of Foot Y Position vs. X Position')
+  # plt.grid(True)
+  plt.legend()
+  
+  # X vs t
+  plt.subplot(3, 1, 2)
+  for i in range((N * ts)//int(TH)):
+    plt.axvline(x=i*TH, color='red', linestyle='--', alpha=0.5)
+    plt.axvline(x=i*TH + T2, color='green', linestyle='--', alpha=0.5)
+
+  plt.scatter(t_left, left_x, label='Left Foot X vs. t', color='blue', alpha=0.5)
+  plt.scatter(t_right, right_x, label='Right Foot X vs. t', color='orange', alpha=0.5)
+  plt.plot(t_left, zmp_x, label='ZMP X vs. t', color='gray', alpha=1.0)
+  plt.xlabel('t')
+  plt.ylabel('X Position')
+  plt.title('Plot of Foot X Position vs. Time')
+  # plt.grid(True)
+  plt.legend()
+
+  # Y vs t
+  plt.subplot(3, 1, 3)
+  for i in range((N * ts)//int(TH)):
+    plt.axvline(x=i*TH, color='red', linestyle='--', alpha=0.5)
+    plt.axvline(x=i*TH + T2, color='green', linestyle='--', alpha=0.5)
+    
+  plt.scatter(t_left, left_y, label='Left Foot Y vs. t', color='blue', alpha=0.5)
+  plt.scatter(t_right, right_y, label='Right Foot Y vs. t', color='orange', alpha=0.5)
+  plt.plot(t_left, zmp_y, label='ZMP Y vs. t', color='gray', alpha=1.0)
+  plt.xlabel('t')
+  plt.ylabel('Y Position')
+  plt.title('Plot of Foot Y Position vs. Time')
+  # plt.grid(True)
+  plt.legend()
+  plt.tight_layout()
+  plt.show()
+
+  # plot 3D foot trajectory
+  fig = plt.figure(figsize=(15, 10))
+  ax = fig.add_subplot(111, projection='3d')
+  ax.plot(left_x, left_y, left_z, label='Left Foot Trajectory', color='blue', alpha=0.5)
+  ax.plot(right_x, right_y, right_z, label='Right Foot Trajectory', color='orange', alpha=0.5)
+  ax.plot(zmp_x, zmp_y, zs=0, label='ZMP Trajectory', color='gray', alpha=1.0)
+  ax.set_xlabel('X Position')
+  ax.set_ylabel('Y Position')
+  ax.set_zlabel('Z Position')
+  ax.set_title('3D Foot Trajectory')
+  ax.legend()
+  plt.show()
+
+
+f4()
