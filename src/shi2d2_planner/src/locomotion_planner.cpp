@@ -464,6 +464,25 @@ private:
       
     // }
 
+    std::vector<Position> left_foot_positions;
+    std::vector<Position> right_foot_positions;
+
+    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      
+      Position body_position = {com_x[i], com_y[i], 0.0};
+      // double foot_x = zmp_x[i];
+      // double foot_y = zmp_y[i];
+      Position left_foot_position = left_footstep_positions[i];
+      Position right_foot_position = right_footstep_positions[i];
+
+      double x = left_foot_position.x - body_position.x;
+      double y = left_foot_position.y - body_position.y;
+
+      left_foot_positions.push_back({x, y, left_foot_position.z});
+      right_foot_positions.push_back({x, -y, right_foot_position.z});
+    }
+
     plot_results(
       t, 
       double_support_states, right_foot_down_states,
@@ -472,39 +491,6 @@ private:
       zmp_x, zmp_y,
       left_footstep_positions, right_footstep_positions
     );
-
-    std::vector<Position> left_foot_positions;
-    std::vector<Position> right_foot_positions;
-
-    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
-      int step_num = (int) t_ms/half_step_period_ms;
-      bool right_foot_down = step_num % 2 == 0;
-      bool double_support = t_ms % (int) half_step_period_ms < double_support_duration_ms;
-      
-      double body_x = com_x[i];
-      double body_y = com_y[i];
-      // double foot_x = zmp_x[i];
-      // double foot_y = zmp_y[i];
-      double foot_x = zmp_mpc_x_data.zmp_refs[i];
-      double foot_y = zmp_mpc_y_data.zmp_refs[i];
-
-      if (double_support) {
-        
-      } else {
-        double t_ssp_ms = (t_ms % (int) half_step_period_ms) - double_support_duration_ms;
-        double x = foot_x - body_x;
-        double y = foot_y - body_y;
-        double z = ZMP_STEP_HEIGHT_M * sin(M_PI/single_support_duration_ms * t_ssp_ms);
-        if (right_foot_down) {
-          left_foot_positions.push_back({-x, y, z});
-          right_foot_positions.push_back({x, -y, 0.0});
-        } else {
-          left_foot_positions.push_back({x, y, 0.0});
-          right_foot_positions.push_back({-x, -y, z});
-        }
-      }
-    }
   }
 
   void plot_results(const std::vector<double>& time,  
