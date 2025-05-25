@@ -1,0 +1,5 @@
+float64 upper_hip_body_joint_angle
+float64 lower_hip_upper_hip_joint_angle
+float64 upper_leg_lower_hip_joint_angle
+float64 lower_leg_upper_leg_joint_angle
+float64 foot_lower_leg_joint_angle

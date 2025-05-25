@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(shi2d2_controller)
+project(shi2d2_interfaces)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,32 +7,17 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(rclcpp REQUIRED)
-find_package(trajectory_msgs REQUIRED)
-find_package(tf2 REQUIRED)
-find_package(tf2_ros REQUIRED)
-find_package(moveit_ros_planning_interface REQUIRED)
-
-find_package(shi2d2_interfaces REQUIRED)
-
+find_package(std_msgs REQUIRED)
+find_package(rosidl_default_generators REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
 
-include_directories(
-  include
+rosidl_generate_interfaces(${PROJECT_NAME}
+  "msg/FootPose.msg"
+  "msg/LegJointAngles.msg"
+  DEPENDENCIES std_msgs
 )
-
-add_executable(head_controller src/head_controller.cpp)
-ament_target_dependencies(head_controller rclcpp trajectory_msgs)
-add_executable(leg_controller src/leg_controller.cpp)
-ament_target_dependencies(leg_controller rclcpp trajectory_msgs shi2d2_interfaces)
-
-install(TARGETS 
-  # head_controller
-  leg_controller
-  # leg_ik_controller
-  DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

@@ -31,31 +31,6 @@ enum WALKING_DIRECTION {
   CLOCKWISE = 6,
 };
 
-struct LegJointAngles {
-  double upper_hip_body_joint_angle;
-  double lower_hip_upper_hip_joint_angle;
-  double upper_leg_lower_hip_joint_angle;
-  double lower_leg_upper_leg_joint_angle;
-  double foot_lower_leg_joint_angle;
-};
-
-struct Position {
-  double x;
-  double y;
-  double z;
-};
-
-struct Rotation {
-  double rx;
-  double ry;
-  double rz;
-};
-
-struct FootPose {
-  Position position;
-  Rotation rotation;
-};
-
 const int NUM_LEG_JOINTS = 5;
 std::vector<std::string> LEFT_LEG_JOINTS = {"left_upper_hip_body_joint", "left_lower_hip_left_upper_hip_joint",
                                             "left_upper_leg_left_lower_hip_joint", "left_lower_leg_left_upper_leg_joint",
@@ -72,29 +47,32 @@ std::vector<std::string> RIGHT_LEG_LINKS = {"right_upper_hip_link", "right_lower
                                             "right_upper_leg_link", "right_lower_leg_link",
                                             "right_foot_link"};
 
-const double UPPER_HIP_LINK_LENGTH_MM = 50;
-const double LOWER_HIP_LINK_LENGTH_MM = 50;
-const double UPPER_LEG_LINK_LENGTH_MM = 160;
-const double LOWER_LEG_LINK_LENGTH_MM = 100;
-const double FOOT_LINK_LENGTH_MM = 40;
+const double UPPER_HIP_LINK_LENGTH_M = 50e-3;
+const double LOWER_HIP_LINK_LENGTH_M = 50e-3;
+const double UPPER_LEG_LINK_LENGTH_M = 160e-3;
+const double LOWER_LEG_LINK_LENGTH_M = 100e-3;
+const double FOOT_LINK_LENGTH_M = 40e-3;
 
-const Position BODY_TO_FOOT_DISTANCE_MM = {0.0, 
-                                           LOWER_HIP_LINK_LENGTH_MM, 
-                                           UPPER_HIP_LINK_LENGTH_MM + UPPER_LEG_LINK_LENGTH_MM + LOWER_LEG_LINK_LENGTH_MM + FOOT_LINK_LENGTH_MM};
+const double BODY_TO_FOOT_DISTANCE_X_M = 0.0;
+const double BODY_TO_FOOT_DISTANCE_Y_M = LOWER_HIP_LINK_LENGTH_M;
+const double BODY_TO_FOOT_DISTANCE_Z_M = UPPER_HIP_LINK_LENGTH_M + UPPER_LEG_LINK_LENGTH_M + LOWER_LEG_LINK_LENGTH_M + FOOT_LINK_LENGTH_M;
 
 double LEFT_LEG_JOINT_SIGNS[] = {1.0, -1.0, 1.0, 1.0, 1.0};
 double LEFT_LEG_JOINT_OFFSETS[] = {0.0, 0.0, 0.0, 0.0, 0.0};
 double RIGHT_LEG_JOINT_SIGNS[] = {-1.0, 1.0, -1.0, 1.0, 1.0};
 double RIGHT_LEG_JOINT_OFFSETS[] = {0.0, 0.0, 0.0, 0.0, 0.0};
 
-Position DEFAULT_FOOT_POSITION = {-20.0, 0.0, 50.0};
-Rotation DEFAULT_FOOT_ROTATION = {0.0, 0.0, 0.0};
-FootPose DEFAULT_FOOT_POSE = {DEFAULT_FOOT_POSITION, DEFAULT_FOOT_ROTATION};
+const double DEFAULT_FOOT_POSITION_X_M = -20.0e-3;
+const double DEFAULT_FOOT_POSITION_Y_M = 0.0e-3;
+const double DEFAULT_FOOT_POSITION_Z_M = 50.0e-3;
+const double DEFAULT_FOOT_ROTATION_RX_RAD = 0.0;
+const double DEFAULT_FOOT_ROTATION_RY_RAD = 0.0;
+const double DEFAULT_FOOT_ROTATION_RZ_RAD = 0.0;
 
 const double TURN_STEP_ANGLE_RAD = 15 * (M_PI/180.0);
-const double FORWARD_STEP_LENGTH_MM = 20.0;
-const double SIDE_STEP_WIDTH_MM = 20.0;
-const double STEP_HEIGHT_MM = 30.0;
+const double FORWARD_STEP_LENGTH_M = 20.0e-3;
+const double SIDE_STEP_WIDTH_M = 20.0e-3;
+const double STEP_HEIGHT_M = 30.0e-3;
 const double STEP_PERIOD_MS = 500;
 
 // speed at which foot travels when sliding along ground for first half of step

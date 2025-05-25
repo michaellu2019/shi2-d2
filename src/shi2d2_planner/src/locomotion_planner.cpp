@@ -13,6 +13,9 @@
 #include "tf2_ros/buffer.h"
 #include "geometry_msgs/msg/transform_stamped.hpp"
 #include "geometry_msgs/msg/transform.hpp"
+#include "geometry_msgs/msg/vector3.hpp"
+
+#include "shi2d2_interfaces/msg/foot_pose.hpp"
 
 #include "shi2d2_planner/shi2d2_planner.hpp"
 
@@ -186,8 +189,8 @@ private:
     ZMPMPCData zmp_mpc_x_data{X, A, B, C, {}};
     ZMPMPCData zmp_mpc_y_data{Y, A, B, C, {}};
 
-    // std::vector<Position> left_footsteps;
-    // std::vector<Position> right_footsteps;
+    // std::vector<geometry_msgs::msg::Vector3> left_footsteps;
+    // std::vector<geometry_msgs::msg::Vector3> right_footsteps;
 
     // for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
     //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
@@ -212,8 +215,8 @@ private:
     double FLOATING_Y = 0.0;
 
     // generate footsteps and zmp reference positions
-    std::vector<Position> left_footstep_positions;
-    std::vector<Position> right_footstep_positions;
+    std::vector<geometry_msgs::msg::Vector3> left_footstep_positions;
+    std::vector<geometry_msgs::msg::Vector3> right_footstep_positions;
     std::vector<double> zmp_ref_x;
     std::vector<double> zmp_ref_y;
 
@@ -226,8 +229,8 @@ private:
       bool left_foot_floating = false;
       bool right_foot_floating = false;
 
-      Position left_foot_position;
-      Position right_foot_position;
+      geometry_msgs::msg::Vector3 left_foot_position;
+      geometry_msgs::msg::Vector3 right_foot_position;
 
       double left_foot_x_offset = body_state_.x;
       double left_foot_x_slope = ZMP_STEP_LENGTH_M;
@@ -464,23 +467,23 @@ private:
       
     // }
 
-    std::vector<Position> left_foot_positions;
-    std::vector<Position> right_foot_positions;
+    std::vector<geometry_msgs::msg::Vector3> left_foot_positions;
+    std::vector<geometry_msgs::msg::Vector3> right_foot_positions;
 
     for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
       int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
       
-      Position body_position = {com_x[i], com_y[i], 0.0};
+      geometry_msgs::msg::Vector3 body_position = geometry_msgs::build<geometry_msgs::msg::Vector3>().x(com_x[i]).y(com_y[i]).z(0.0);
       // double foot_x = zmp_x[i];
       // double foot_y = zmp_y[i];
-      Position left_foot_position = left_footstep_positions[i];
-      Position right_foot_position = right_footstep_positions[i];
+      geometry_msgs::msg::Vector3 left_foot_position = left_footstep_positions[i];
+      geometry_msgs::msg::Vector3 right_foot_position = right_footstep_positions[i];
 
-      double x = left_foot_position.x - body_position.x;
-      double y = left_foot_position.y - body_position.y;
+      double dx = left_foot_position.x - body_position.x;
+      double dy = left_foot_position.y - body_position.y;
 
-      left_foot_positions.push_back({x, y, left_foot_position.z});
-      right_foot_positions.push_back({x, -y, right_foot_position.z});
+      left_foot_positions.push_back(geometry_msgs::build<geometry_msgs::msg::Vector3>().x(dx).y(dy).z(left_foot_position.z));
+      right_foot_positions.push_back(geometry_msgs::build<geometry_msgs::msg::Vector3>().x(dx).y(-dy).z(right_foot_position.z));
     }
 
     plot_results(
@@ -498,8 +501,8 @@ private:
     const std::vector<double>& com_x, const std::vector<double>& com_y,
     const std::vector<double>& zmp_ref_x, const std::vector<double>& zmp_ref_y,
     const std::vector<double>& zmp_x, const std::vector<double>& zmp_y,
-    const std::vector<Position>& left_footstep_positions = {},
-    const std::vector<Position>& right_footstep_positions = {}) {
+    const std::vector<geometry_msgs::msg::Vector3>& left_footstep_positions = {},
+    const std::vector<geometry_msgs::msg::Vector3>& right_footstep_positions = {}) {
     plt::figure();
 
     std::vector<double> left_foot_x, left_foot_y, left_foot_z;

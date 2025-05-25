@@ -19,6 +19,9 @@ find_package(nav_msgs REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(geometry_msgs REQUIRED)
+
+find_package(shi2d2_interfaces REQUIRED)
+
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -31,7 +34,7 @@ include_directories(
 )
 
 add_executable(locomotion_planner src/locomotion_planner.cpp)
-ament_target_dependencies(locomotion_planner Eigen3 NLopt rclcpp std_msgs sensor_msgs nav_msgs tf2 tf2_ros geometry_msgs)
+ament_target_dependencies(locomotion_planner Eigen3 NLopt rclcpp std_msgs sensor_msgs nav_msgs tf2 tf2_ros geometry_msgs shi2d2_interfaces)
 
 target_include_directories(locomotion_planner PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

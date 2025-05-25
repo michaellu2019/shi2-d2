@@ -76,10 +76,4 @@ struct BodyState {
   double alz;
 };
 
-struct Position {
-  double x;
-  double y;
-  double z;
-};
-
 #endif
