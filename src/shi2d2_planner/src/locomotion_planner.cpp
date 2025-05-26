@@ -29,6 +29,7 @@ public:
   {
     // Publisher
     publisher_ = this->create_publisher<std_msgs::msg::Int8>("locomotion_commands", PLANNER_LOOP_PERIOD_MS);
+    foot_pose_publisher_ = this->create_publisher<shi2d2_interfaces::msg::FootPose>("foot_pose", FOOT_POSE_PUBLISHER_LOOP_PERIOD_MS);
 
     // Subscribers
     imu_subscriber_ = this->create_subscription<sensor_msgs::msg::Imu>("/shi2d2/imu", PLANNER_LOOP_PERIOD_MS,
@@ -172,6 +173,7 @@ private:
     const double R = ZMP_MPC_U_PENALTY;
 
     std::cout << "Testing ZMP MPC" << std::endl;
+
     Eigen::Vector3d X(body_state_.x, body_state_.vx, body_state_.ax);
     Eigen::Vector3d Y(body_state_.y, body_state_.vy, body_state_.ay);
     std::vector<double> t(ZMP_MPC_NUM_TIMESTEPS);
@@ -213,6 +215,8 @@ private:
     double new_zmp_y = 0;
 
     double FLOATING_Y = 0.0;
+
+    auto footstep_start = std::chrono::high_resolution_clock::now(); // Start timer
 
     // generate footsteps and zmp reference positions
     std::vector<geometry_msgs::msg::Vector3> left_footstep_positions;
@@ -286,6 +290,11 @@ private:
       }
     }
 
+    
+    auto footstep_end = std::chrono::high_resolution_clock::now(); // End timer
+    auto footstep_duration = std::chrono::duration_cast<std::chrono::milliseconds>(footstep_start - footstep_end).count();
+    std::cout << "Footstep generation took " << footstep_duration << " ms" << std::endl;
+
     // for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
     //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
     //   int step_num = (int) t_ms/half_step_period_ms;
@@ -334,6 +343,8 @@ private:
 
     // std::cout << "Populating Pu and Px... " << std::endl;
 
+    auto zmp_gen_start = std::chrono::high_resolution_clock::now(); // Start timer
+
     // analytically solve the optimal jerk/control values for the ZMP MPC problem
     for (int i = 0; i < N; i++) {
       int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
@@ -353,6 +364,13 @@ private:
         Pu(i, j) = coeff * pow(T, 3)/6 - (h/g) * T;
       }
     }
+
+    Eigen::MatrixXd PuPuRQI = (Pu.transpose() * Pu + (R/Q) * I).inverse();
+    Eigen::MatrixXd PuPuRQIPuT = -PuPuRQI * Pu.transpose();
+
+    auto zmp_gen_end = std::chrono::high_resolution_clock::now(); // End timer
+    auto zmp_gen_duration = std::chrono::duration_cast<std::chrono::milliseconds>(zmp_gen_end - zmp_gen_start).count();
+    std::cout << "ZMP generation took " << zmp_gen_duration << " ms" << std::endl;
     
     // std::cout << "\nZMP Ref X: " << std::endl;
     // std::cout << ZMP_REF_X << std::endl;
@@ -363,17 +381,22 @@ private:
     // std::cout << "\nPu: " << std::endl;
     // std::cout << Pu << std::endl;
 
-    Eigen::MatrixXd PuPuRQI = (Pu.transpose() * Pu + (R/Q) * I).inverse();
+    auto zmp_mpc_start = std::chrono::high_resolution_clock::now(); // Start timer
+
     Eigen::VectorXd PxZ = Px * X - ZMP_REF_X;
     Eigen::VectorXd PyZ = Px * Y - ZMP_REF_Y;
 
-    Eigen::VectorXd Ux = -PuPuRQI * Pu.transpose() * PxZ;
-    Eigen::VectorXd Uy = -PuPuRQI * Pu.transpose() * PyZ;
+    Eigen::VectorXd Ux = PuPuRQIPuT * PxZ;
+    Eigen::VectorXd Uy = PuPuRQIPuT * PyZ;
 
     for (int i = 0; i < N; i++) {
       u_x[i] = Ux[i];
       u_y[i] = Uy[i];
     }
+
+    auto zmp_mpc_end = std::chrono::high_resolution_clock::now(); // End timer
+    auto zmp_mpc_duration = std::chrono::duration_cast<std::chrono::milliseconds>(zmp_mpc_end - zmp_mpc_start).count();
+    std::cout << "Solving ZMP MPC took " << zmp_mpc_duration << " ms" << std::endl;
 
     // std::cout << "\nUx: " << std::endl;
     // std::cout << Ux << std::endl;
@@ -467,33 +490,56 @@ private:
       
     // }
 
-    std::vector<geometry_msgs::msg::Vector3> left_foot_positions;
-    std::vector<geometry_msgs::msg::Vector3> right_foot_positions;
+    auto footpose_start = std::chrono::high_resolution_clock::now(); // Start timer
+
+    std::vector<shi2d2_interfaces::msg::FootPose> left_foot_poses;
+    std::vector<shi2d2_interfaces::msg::FootPose> right_foot_poses;
 
     for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
       int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
-      
-      geometry_msgs::msg::Vector3 body_position = geometry_msgs::build<geometry_msgs::msg::Vector3>().x(com_x[i]).y(com_y[i]).z(0.0);
-      // double foot_x = zmp_x[i];
-      // double foot_y = zmp_y[i];
-      geometry_msgs::msg::Vector3 left_foot_position = left_footstep_positions[i];
-      geometry_msgs::msg::Vector3 right_foot_position = right_footstep_positions[i];
 
-      double dx = left_foot_position.x - body_position.x;
-      double dy = left_foot_position.y - body_position.y;
+      shi2d2_interfaces::msg::FootPose left_foot_pose; 
+      left_foot_pose.leg_id = LEFT_LEG;
+      left_foot_pose.x = (left_footstep_positions[i].x - com_x[i]) + DEFAULT_FOOT_POSITION_X_M;
+      left_foot_pose.y = (0*left_footstep_positions[i].y - com_y[i]) + DEFAULT_FOOT_POSITION_Y_M;
+      left_foot_pose.z = left_footstep_positions[i].z + DEFAULT_FOOT_POSITION_Z_M;
+      left_foot_pose.rx = 0.0;
+      left_foot_pose.ry = 0.0;
+      left_foot_pose.rz = 0.0;
 
-      left_foot_positions.push_back(geometry_msgs::build<geometry_msgs::msg::Vector3>().x(dx).y(dy).z(left_foot_position.z));
-      right_foot_positions.push_back(geometry_msgs::build<geometry_msgs::msg::Vector3>().x(dx).y(-dy).z(right_foot_position.z));
+      shi2d2_interfaces::msg::FootPose right_foot_pose;
+      right_foot_pose.leg_id = RIGHT_LEG;
+      right_foot_pose.x = (right_footstep_positions[i].x - com_x[i]) + DEFAULT_FOOT_POSITION_X_M;
+      right_foot_pose.y = -(0*right_footstep_positions[i].y - com_y[i]) + DEFAULT_FOOT_POSITION_Y_M;
+      right_foot_pose.z = right_footstep_positions[i].z + DEFAULT_FOOT_POSITION_Z_M;
+      right_foot_pose.rx = 0.0;
+      right_foot_pose.ry = 0.0;
+      right_foot_pose.rz = 0.0;
+
+      left_foot_poses.push_back(left_foot_pose);
+      right_foot_poses.push_back(right_foot_pose);
     }
 
-    plot_results(
-      t, 
-      double_support_states, right_foot_down_states,
-      com_x, com_y,
-      zmp_ref_x, zmp_ref_y,
-      zmp_x, zmp_y,
-      left_footstep_positions, right_footstep_positions
-    );
+    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      foot_pose_publisher_->publish(left_foot_poses[i]);
+      foot_pose_publisher_->publish(right_foot_poses[i]);
+      rclcpp::sleep_for(std::chrono::milliseconds(5)); // Sleep to avoid flooding the topic
+    }
+
+    auto footpose_end = std::chrono::high_resolution_clock::now(); // End timer
+    auto footpose_duration = std::chrono::duration_cast<std::chrono::milliseconds>(footpose_end - footpose_start).count();
+
+    std::cout << "Published Foot Poses" << std::endl;
+    std::cout << "Foot pose generation took " << footpose_duration << " ms" << std::endl;
+
+    // plot_results(
+    //   t, 
+    //   double_support_states, right_foot_down_states,
+    //   com_x, com_y,
+    //   zmp_ref_x, zmp_ref_y,
+    //   zmp_x, zmp_y,
+    //   left_footstep_positions, right_footstep_positions
+    // );
   }
 
   void plot_results(const std::vector<double>& time,  
@@ -627,6 +673,7 @@ private:
 
   rclcpp::TimerBase::SharedPtr timer_;
   rclcpp::Publisher<std_msgs::msg::Int8>::SharedPtr publisher_;
+  rclcpp::Publisher<shi2d2_interfaces::msg::FootPose>::SharedPtr foot_pose_publisher_;
   rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_subscriber_;
   rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odometry_subscriber_;
   

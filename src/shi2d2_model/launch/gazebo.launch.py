@@ -173,6 +173,6 @@ def generate_launch_description():
         rviz,
         joint_state_broadcaster_spawner,
         shi2d2_group_controller_spawner,
-        shi2d2_controller,
+        # shi2d2_controller,
         gazebo_camera,
     ])

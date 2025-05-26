@@ -30,6 +30,8 @@ class LegController : public rclcpp::Node
       teleop_subscriber_ = this->create_subscription<std_msgs::msg::Int8>("teleop_commands", CONTROLLER_LOOP_PERIOD_MS,
         std::bind(&LegController::teleop_callback, this, std::placeholders::_1));
 
+      foot_pose_subscriber_ = this->create_subscription<shi2d2_interfaces::msg::FootPose>("foot_pose", CONTROLLER_LOOP_PERIOD_MS,
+        std::bind(&LegController::foot_pose_callback, this, std::placeholders::_1));
 
       init_robot();
       
@@ -42,7 +44,7 @@ class LegController : public rclcpp::Node
     }
 
   private:
-  void init_robot()
+    void init_robot()
     {
       for (int i = 0; i < NUM_LEG_JOINTS; i++) {
         std::cout << i << ": " << LEFT_LEG_JOINTS[i] << " and " << RIGHT_LEG_JOINTS[i] << std::endl;
@@ -51,7 +53,7 @@ class LegController : public rclcpp::Node
         right_leg_joint_traj_.joint_names.push_back(RIGHT_LEG_JOINTS[i]);
         right_leg_joint_traj_point_.positions.push_back(0.0);
       }
-      set_foot_pose_values(DEFAULT_FOOT_POSE_, 
+      set_foot_pose_values(DEFAULT_FOOT_POSE_, -1,
                            DEFAULT_FOOT_POSITION_X_M, DEFAULT_FOOT_POSITION_Y_M, DEFAULT_FOOT_POSITION_Z_M,
                            DEFAULT_FOOT_ROTATION_RX_RAD, DEFAULT_FOOT_ROTATION_RY_RAD, DEFAULT_FOOT_ROTATION_RZ_RAD);
 
@@ -66,8 +68,9 @@ class LegController : public rclcpp::Node
       write_leg_angles();
     }
 
-    void set_foot_pose_values(shi2d2_interfaces::msg::FootPose &foot_pose1, const shi2d2_interfaces::msg::FootPose &foot_pose2)
+    void set_foot_pose_values(shi2d2_interfaces::msg::FootPose &foot_pose1, int leg_id, const shi2d2_interfaces::msg::FootPose &foot_pose2)
     {
+      foot_pose1.leg_id = leg_id;
       foot_pose1.x = foot_pose2.x;
       foot_pose1.y = foot_pose2.y;
       foot_pose1.z = foot_pose2.z;
@@ -76,8 +79,9 @@ class LegController : public rclcpp::Node
       foot_pose1.rz = foot_pose2.rz;
     }
 
-    void set_foot_pose_values(shi2d2_interfaces::msg::FootPose &foot_pose, double x, double y, double z, double rx, double ry, double rz)
+    void set_foot_pose_values(shi2d2_interfaces::msg::FootPose &foot_pose, int leg_id, double x, double y, double z, double rx, double ry, double rz)
     {
+      foot_pose.leg_id = leg_id;
       foot_pose.x = x;
       foot_pose.y = y;
       foot_pose.z = z;
@@ -172,7 +176,7 @@ class LegController : public rclcpp::Node
       // double fz = 0.0 * sin(sim_time_elapsed_sec_ * (swap_frequency/160) * M_PI) + 60.0;
       // std::cout << "TICK: " << tick_count_ << ", fx: " << fx << ", fy: " << fy << ", fz: " << fz << std::endl;
 
-      set_foot_pose_values(foot_pose, fx, fy, fz, 0.0, 0.0, yaw);
+      set_foot_pose_values(foot_pose, leg_id,fx, fy, fz, 0.0, 0.0, yaw);
     }
 
     void set_leg_joint_angles(int leg_id, shi2d2_interfaces::msg::LegJointAngles &leg_joint_angles)
@@ -244,14 +248,14 @@ class LegController : public rclcpp::Node
       // std::cout << "SLIDE: " << step_slide_x << ", " << step_slide_z << " & " << step_lift_x << ", " << step_lift_z << std::endl;
       
       if (step_half_cycle_count == 0) {
-        set_foot_pose_values(left_foot_pose, step_slide_x, step_slide_y, step_slide_z, 0.0, 0.0, -step_slide_yaw);
-        set_foot_pose_values(right_foot_pose, step_lift_x, -step_lift_y, step_lift_z, 0.0, 0.0, step_lift_yaw);
+        set_foot_pose_values(left_foot_pose, LEFT_LEG, step_slide_x, step_slide_y, step_slide_z, 0.0, 0.0, -step_slide_yaw);
+        set_foot_pose_values(right_foot_pose, RIGHT_LEG, step_lift_x, -step_lift_y, step_lift_z, 0.0, 0.0, step_lift_yaw);
       } else if (step_half_cycle_count == 1) {
-        set_foot_pose_values(left_foot_pose, step_lift_x, step_lift_y, step_lift_z, 0.0, 0.0, -step_lift_yaw);
-        set_foot_pose_values(right_foot_pose, step_slide_x, -step_slide_y, step_slide_z, 0.0, 0.0, step_slide_yaw);
+        set_foot_pose_values(left_foot_pose, LEFT_LEG, step_lift_x, step_lift_y, step_lift_z, 0.0, 0.0, -step_lift_yaw);
+        set_foot_pose_values(right_foot_pose, RIGHT_LEG, step_slide_x, -step_slide_y, step_slide_z, 0.0, 0.0, step_slide_yaw);
       } else {
-        set_foot_pose_values(left_foot_pose, DEFAULT_FOOT_POSE_);
-        set_foot_pose_values(right_foot_pose, DEFAULT_FOOT_POSE_);
+        set_foot_pose_values(left_foot_pose, LEFT_LEG, DEFAULT_FOOT_POSE_);
+        set_foot_pose_values(right_foot_pose, RIGHT_LEG, DEFAULT_FOOT_POSE_);
       }
     }
 
@@ -273,6 +277,15 @@ class LegController : public rclcpp::Node
         walk_open_loop(teleop_command_, left_foot_pose, right_foot_pose);
       }
 
+      if (left_foot_poses_.size() > 0) {
+        left_foot_pose = left_foot_poses_.front();
+        left_foot_poses_.pop();
+      } 
+      if (right_foot_poses_.size() > 0) {
+        right_foot_pose = right_foot_poses_.front();
+        right_foot_poses_.pop();
+      }
+
       // test_leg_ik(LEFT_LEG, left_foot_pose);
       // test_leg_ik(RIGHT_LEG, right_foot_pose);
 
@@ -286,7 +299,7 @@ class LegController : public rclcpp::Node
       tick_count_++;
     }
 
-    void teleop_callback(std_msgs::msg::Int8::SharedPtr msg)
+    void teleop_callback(const std_msgs::msg::Int8::SharedPtr msg)
     {
       int walking_direction = msg->data;
       if (walking_direction != teleop_command_) {
@@ -294,6 +307,39 @@ class LegController : public rclcpp::Node
       }
       last_teleop_command_tick_ = tick_count_;
       teleop_command_ = walking_direction;
+    }
+
+    void foot_pose_callback(const shi2d2_interfaces::msg::FootPose::SharedPtr msg)
+    {
+      shi2d2_interfaces::msg::LegJointAngles left_leg_joint_angles;
+      shi2d2_interfaces::msg::LegJointAngles right_leg_joint_angles;
+
+      if (msg->leg_id == LEFT_LEG) {
+        std::cout << "LEFT LEG FOOT POSE RECEIVED " << msg->x << ", " << msg->y << ", " << msg->z << ", "
+                  << msg->rx << ", " << msg->ry << ", " << msg->rz << std::endl;
+        left_foot_poses_.push(*msg);
+        // solve_leg_ik(LEFT_LEG, *msg, left_leg_joint_angles);
+        // std::cout << "LEFT LEG JOINT ANGLES: " << left_leg_joint_angles.upper_hip_body_joint_angle << ", "
+        //           << left_leg_joint_angles.lower_hip_upper_hip_joint_angle << ", "
+        //           << left_leg_joint_angles.upper_leg_lower_hip_joint_angle << ", "
+        //           << left_leg_joint_angles.lower_leg_upper_leg_joint_angle << ", "
+        //           << left_leg_joint_angles.foot_lower_leg_joint_angle << std::endl;
+        // set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
+        // write_leg_angles();
+      } else if (msg->leg_id == RIGHT_LEG) {
+        std::cout << "RIGHT LEG FOOT POSE RECEIVED " << msg->x << ", " << msg->y << ", " << msg->z << ", "
+                  << msg->rx << ", " << msg->ry << ", " << msg->rz << std::endl;
+        right_foot_poses_.push(*msg);
+        // solve_leg_ik(RIGHT_LEG, *msg, right_leg_joint_angles);
+        // std::cout << "RIGHT LEG JOINT ANGLES: " << right_leg_joint_angles.upper_hip_body_joint_angle << ", "
+        //           << right_leg_joint_angles.lower_hip_upper_hip_joint_angle << ", "
+        //           << right_leg_joint_angles.upper_leg_lower_hip_joint_angle << ", "
+        //           << right_leg_joint_angles.lower_leg_upper_leg_joint_angle << ", "
+        //           << right_leg_joint_angles.foot_lower_leg_joint_angle << std::endl;
+        // set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
+        // write_leg_angles();
+      }
+
     }
 
     void clock_callback(const rosgraph_msgs::msg::Clock::SharedPtr msg)
@@ -319,6 +365,8 @@ class LegController : public rclcpp::Node
     trajectory_msgs::msg::JointTrajectoryPoint right_leg_joint_traj_point_ = trajectory_msgs::msg::JointTrajectoryPoint();
 
     shi2d2_interfaces::msg::FootPose DEFAULT_FOOT_POSE_;
+    std::queue<shi2d2_interfaces::msg::FootPose> left_foot_poses_;
+    std::queue<shi2d2_interfaces::msg::FootPose> right_foot_poses_;
 
     rclcpp::TimerBase::SharedPtr timer_;
     size_t tick_count_;
@@ -332,6 +380,8 @@ class LegController : public rclcpp::Node
     rclcpp::Subscription<std_msgs::msg::Int8>::SharedPtr teleop_subscriber_;
     int teleop_command_;
     size_t last_teleop_command_tick_;
+
+    rclcpp::Subscription<shi2d2_interfaces::msg::FootPose>::SharedPtr foot_pose_subscriber_;
 };
 
 int main(int argc, char ** argv)
