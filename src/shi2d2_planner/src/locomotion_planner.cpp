@@ -128,7 +128,7 @@ private:
       //           << X_next[0] << ", " << X_next[1] << ", " << X_next[2] << ") with u:" << u[i] << std::endl;
 
       if (grad) {
-        double grad1 = ZMP_MPC_COP_PENALTY * (zmp_next - zmp_ref_next) * (pow(ZMP_MPC_TIMESTEP_PERIOD_SEC, 3)/6 - (ZMP_MPC_COM_HEIGHT_M/g) * ZMP_MPC_TIMESTEP_PERIOD_SEC);
+        double grad1 = ZMP_MPC_COP_PENALTY * (zmp_next - zmp_ref_next) * (pow(ZMP_MPC_TIMESTEP_DURATION_SEC, 3)/6 - (ZMP_MPC_COM_HEIGHT_M/g) * ZMP_MPC_TIMESTEP_DURATION_SEC);
         double grad2 = ZMP_MPC_U_PENALTY * u[i];
         grad[i] = grad1 + grad2;
 
@@ -148,26 +148,10 @@ private:
     return cost;
   }
 
-  // static double zmp_mpc_constraint(unsigned n, const double *u, double *grad, void *data)
-  // {
-  //   ZMPMPCData *zmp_mpc_data = static_cast<ZMPMPCData *>(data);
-  //   const Eigen::Vector3d &X = zmp_mpc_data->X;
-  //   const Eigen::Matrix<double, 3, 3> &A = zmp_mpc_data->A;
-  //   const Eigen::Matrix<double, 3, 1> &B = zmp_mpc_data->B;
-  //   const Eigen::Matrix<double, 1, 3> &C = zmp_mpc_data->C;
-
-  //   double constraint_value = 0.0;
-  //   for (int i = 0; i < n; i++) {
-  //     constraint_value += u[i];
-  //   }
-
-  //   return constraint_value;
-  // }
-
   void zmp_mpc()
   {
     const int N = ZMP_MPC_NUM_TIMESTEPS;
-    const double T = ZMP_MPC_TIMESTEP_PERIOD_SEC;
+    const double T = ZMP_MPC_TIMESTEP_DURATION_SEC;
     const double h = ZMP_MPC_COM_HEIGHT_M;
     const double Q = ZMP_MPC_COP_PENALTY;
     const double R = ZMP_MPC_U_PENALTY;
@@ -195,7 +179,7 @@ private:
     // std::vector<geometry_msgs::msg::Vector3> right_footsteps;
 
     // for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
     //   int step_num = (int) t_ms/half_step_period_ms;
     //   bool right_foot_down = step_num % 2 == 0;
     //   bool double_support = t_ms % (int) half_step_period_ms < double_support_duration_ms;
@@ -225,68 +209,112 @@ private:
     std::vector<double> zmp_ref_y;
 
     for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
+      int t_walk_ms = std::max(0, (int) (t_ms - ZMP_MPC_NUM_STATIONARY_TIMESTEPS * ZMP_MPC_TIMESTEP_DURATION_MS));
       t[i] = t_ms;
-
-      int left_step_num = (int) (t_ms + half_step_period_ms)/step_period_ms;
-      int right_step_num = (int) t_ms/step_period_ms;
-      bool left_foot_floating = false;
-      bool right_foot_floating = false;
 
       geometry_msgs::msg::Vector3 left_foot_position;
       geometry_msgs::msg::Vector3 right_foot_position;
 
-      double left_foot_x_offset = body_state_.x;
-      double left_foot_x_slope = ZMP_STEP_LENGTH_M;
-      if ((t_ms + (int) half_step_period_ms) % (int) step_period_ms < step_support_duration_ms) {
-        left_foot_position.x = left_foot_x_offset + left_step_num * ZMP_STEP_LENGTH_M;
+      if (i < ZMP_MPC_NUM_STATIONARY_TIMESTEPS) {
+        left_foot_position.x = body_state_.x;
         left_foot_position.y = body_state_.y + ZMP_STEP_WIDTH_M;
         left_foot_position.z = 0.0;
-      } else {
-        left_foot_position.x = left_foot_x_offset + left_step_num * ZMP_STEP_LENGTH_M + (left_foot_x_slope * ((t_ms + (int) half_step_period_ms) % (int) step_period_ms - step_support_duration_ms))/single_support_duration_ms;
-        left_foot_position.y = body_state_.y + FLOATING_Y;
-        left_foot_position.z = ZMP_STEP_HEIGHT_M * sin(M_PI/single_support_duration_ms * (t_ms % (int) half_step_period_ms - double_support_duration_ms));
-        left_foot_floating = true;
-      }
 
-      double right_foot_x_offset = t_ms < step_period_ms ? body_state_.x : body_state_.x + ZMP_STEP_LENGTH_M/2;
-      double right_foot_x_slope = t_ms < step_period_ms ? 1.5 * ZMP_STEP_LENGTH_M : ZMP_STEP_LENGTH_M;
-      if (t_ms % (int) step_period_ms < step_support_duration_ms) {
-        right_foot_position.x = right_foot_x_offset + right_step_num * ZMP_STEP_LENGTH_M;
+        right_foot_position.x = body_state_.x;
         right_foot_position.y = body_state_.y - ZMP_STEP_WIDTH_M;
         right_foot_position.z = 0.0;
-      } else {
-        right_foot_position.x = right_foot_x_offset + right_step_num * ZMP_STEP_LENGTH_M + (right_foot_x_slope * ((t_ms % (int) step_period_ms) - step_support_duration_ms))/single_support_duration_ms;
-        right_foot_position.y = body_state_.y - FLOATING_Y;
-        right_foot_position.z = ZMP_STEP_HEIGHT_M * sin(M_PI/single_support_duration_ms * (t_ms % (int) half_step_period_ms - double_support_duration_ms));
-        right_foot_floating = true;
-      }
 
-      left_footstep_positions.push_back(left_foot_position);
-      right_footstep_positions.push_back(right_foot_position);
+        left_footstep_positions.push_back(left_foot_position);
+        right_footstep_positions.push_back(right_foot_position);
 
-      if (!left_foot_floating && right_foot_floating) {
-        zmp_ref_x.push_back(left_foot_position.x);
-        zmp_ref_y.push_back(left_foot_position.y);
-       } else if (left_foot_floating && !right_foot_floating) {
-        zmp_ref_x.push_back(right_foot_position.x);
-        zmp_ref_y.push_back(right_foot_position.y);
-       } else {
-        double x = 0;
-        double y = 0;
-        if (left_foot_position.x > right_foot_position.x) {
-          x = right_foot_position.x + (left_foot_position.x - right_foot_position.x) * (t_ms % (int) half_step_period_ms)/double_support_duration_ms;
-        } else {
-          x = left_foot_position.x + (right_foot_position.x - left_foot_position.x) * (t_ms % (int) half_step_period_ms)/double_support_duration_ms;
-        }
-
-        if (t_ms % (int) step_period_ms < double_support_duration_ms) {
-          y = left_foot_position.y + (right_foot_position.y - left_foot_position.y) * (t_ms % (int) half_step_period_ms)/double_support_duration_ms;
-        } else {
-          y = right_foot_position.y + (left_foot_position.y - right_foot_position.y) * (t_ms % (int) half_step_period_ms)/double_support_duration_ms;
-        }
+        double x = (left_foot_position.x + right_foot_position.x)/2;
+        double y = (left_foot_position.y + right_foot_position.y)/2;
         zmp_ref_x.push_back(x);
         zmp_ref_y.push_back(y);
+      } else if (i > ZMP_MPC_NUM_TIMESTEPS - ZMP_MPC_NUM_STATIONARY_TIMESTEPS) {
+        double last_step_x = body_state_.x + ((ZMP_MPC_NUM_TIMESTEPS - ZMP_MPC_NUM_STATIONARY_TIMESTEPS) * ZMP_MPC_TIMESTEP_DURATION_MS)/step_period_ms * ZMP_STEP_LENGTH_M;
+
+        left_foot_position.x = last_step_x;
+        left_foot_position.y = body_state_.y + ZMP_STEP_WIDTH_M;
+        left_foot_position.z = 0.0;
+        
+        right_foot_position.x = last_step_x;
+        right_foot_position.y = body_state_.y - ZMP_STEP_WIDTH_M;
+        right_foot_position.z = 0.0;
+
+        left_footstep_positions.push_back(left_foot_position);
+        right_footstep_positions.push_back(right_foot_position);
+
+
+        double x = (left_foot_position.x + right_foot_position.x)/2;
+        double y = (left_foot_position.y + right_foot_position.y)/2;
+        zmp_ref_x.push_back(x);
+        zmp_ref_y.push_back(y);
+      } else {
+        int left_step_num = (int) (t_walk_ms + half_step_period_ms)/step_period_ms;
+        int right_step_num = (int) t_walk_ms/step_period_ms;
+        bool left_foot_floating = false;
+        bool right_foot_floating = false;
+  
+
+        // left footstep generation
+        double left_foot_x_offset = body_state_.x;
+        double left_foot_x_slope = ZMP_STEP_LENGTH_M;
+        if ((t_walk_ms + (int) half_step_period_ms) % (int) step_period_ms < step_support_duration_ms) {
+          left_foot_position.x = left_foot_x_offset + left_step_num * ZMP_STEP_LENGTH_M;
+          left_foot_position.y = body_state_.y + ZMP_STEP_WIDTH_M;
+          left_foot_position.z = 0.0;
+        } else {
+          left_foot_position.x = left_foot_x_offset + left_step_num * ZMP_STEP_LENGTH_M + (left_foot_x_slope * ((t_walk_ms + (int) half_step_period_ms) % (int) step_period_ms - step_support_duration_ms))/single_support_duration_ms;
+          left_foot_position.y = body_state_.y + FLOATING_Y;
+          left_foot_position.z = ZMP_STEP_HEIGHT_M * sin(M_PI/single_support_duration_ms * (t_walk_ms % (int) half_step_period_ms - double_support_duration_ms));
+          left_foot_floating = true;
+        }
+
+        // right footstep generation
+        double right_foot_x_offset = t_walk_ms < step_period_ms ? body_state_.x : body_state_.x + ZMP_STEP_LENGTH_M/2;
+        double right_foot_x_slope = t_walk_ms < step_period_ms ? 1.5 * ZMP_STEP_LENGTH_M : ZMP_STEP_LENGTH_M;
+        if (t_walk_ms % (int) step_period_ms < step_support_duration_ms) {
+          right_foot_position.x = right_foot_x_offset + right_step_num * ZMP_STEP_LENGTH_M;
+          right_foot_position.y = body_state_.y - ZMP_STEP_WIDTH_M;
+          right_foot_position.z = 0.0;
+        } else {
+          right_foot_position.x = right_foot_x_offset + right_step_num * ZMP_STEP_LENGTH_M + (right_foot_x_slope * ((t_walk_ms % (int) step_period_ms) - step_support_duration_ms))/single_support_duration_ms;
+          right_foot_position.y = body_state_.y - FLOATING_Y;
+          right_foot_position.z = ZMP_STEP_HEIGHT_M * sin(M_PI/single_support_duration_ms * (t_walk_ms % (int) half_step_period_ms - double_support_duration_ms));
+          right_foot_floating = true;
+        }
+
+        left_footstep_positions.push_back(left_foot_position);
+        right_footstep_positions.push_back(right_foot_position);
+
+        // zmp reference generation
+        if (!left_foot_floating && right_foot_floating) {
+          zmp_ref_x.push_back(left_foot_position.x);
+          zmp_ref_y.push_back(left_foot_position.y);
+        } else if (left_foot_floating && !right_foot_floating) {
+          zmp_ref_x.push_back(right_foot_position.x);
+          zmp_ref_y.push_back(right_foot_position.y);
+        } else {
+          double left_foot_y_offset = t_walk_ms < half_step_period_ms ? 0.0 : left_foot_position.y;
+          double right_foot_y_offset = t_walk_ms < half_step_period_ms ? 0.0 : right_foot_position.y; 
+          double x = 0;
+          double y = 0;
+          if (left_foot_position.x > right_foot_position.x) {
+            x = right_foot_position.x + (left_foot_position.x - right_foot_position.x) * (t_walk_ms % (int) half_step_period_ms)/double_support_duration_ms;
+          } else {
+            x = left_foot_position.x + (right_foot_position.x - left_foot_position.x) * (t_walk_ms % (int) half_step_period_ms)/double_support_duration_ms;
+          }
+
+          if (t_walk_ms % (int) step_period_ms < double_support_duration_ms) {
+            y = left_foot_y_offset + (right_foot_position.y - left_foot_y_offset) * (t_walk_ms % (int) half_step_period_ms)/double_support_duration_ms;
+          } else {
+            y = right_foot_y_offset + (left_foot_position.y - right_foot_y_offset) * (t_walk_ms % (int) half_step_period_ms)/double_support_duration_ms;
+          }
+          zmp_ref_x.push_back(x);
+          zmp_ref_y.push_back(y);
+        }
       }
     }
 
@@ -296,7 +324,7 @@ private:
     std::cout << "Footstep generation took " << footstep_duration << " ms" << std::endl;
 
     // for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
     //   int step_num = (int) t_ms/half_step_period_ms;
     //   bool right_foot_down = step_num % 2 == 0;
     //   bool double_support = t_ms % (int) half_step_period_ms < double_support_duration_ms;
@@ -324,7 +352,7 @@ private:
     // }
 
     // for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
     //   std::cout << "(" << t_ms << ", " << zmp_mpc_x_data.zmp_refs[i] << ", " << zmp_mpc_y_data.zmp_refs[i] << "), ";
       // u_x[i] = zmp_mpc_x_data.zmp_refs[i];
       // u_y[i] = zmp_mpc_y_data.zmp_refs[i];
@@ -347,7 +375,7 @@ private:
 
     // analytically solve the optimal jerk/control values for the ZMP MPC problem
     for (int i = 0; i < N; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
       int n = i + 1;
       
       Px(i, 0) = 1;
@@ -356,7 +384,7 @@ private:
     }
 
     for (int i = 0; i < N; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
       int n = i + 1;
       for (int j = 0; j <= i; j++) {
         int m = j + 1;
@@ -371,15 +399,6 @@ private:
     auto zmp_gen_end = std::chrono::high_resolution_clock::now(); // End timer
     auto zmp_gen_duration = std::chrono::duration_cast<std::chrono::milliseconds>(zmp_gen_end - zmp_gen_start).count();
     std::cout << "ZMP generation took " << zmp_gen_duration << " ms" << std::endl;
-    
-    // std::cout << "\nZMP Ref X: " << std::endl;
-    // std::cout << ZMP_REF_X << std::endl;
-
-    // std::cout << "\nPx: " << std::endl;
-    // std::cout << Px << std::endl;
-    
-    // std::cout << "\nPu: " << std::endl;
-    // std::cout << Pu << std::endl;
 
     auto zmp_mpc_start = std::chrono::high_resolution_clock::now(); // Start timer
 
@@ -448,7 +467,7 @@ private:
     // k = 0;
     // std::cout << "Jerk Values" << std::endl;
     // for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
     //   std::cout << "(" << t_ms << ", " << u_x[i - k] << ", " << u_y[i - k] << "), ";
     // }
     // std::cout << std::endl;
@@ -462,7 +481,7 @@ private:
     Eigen::Vector3d Xp(0, 0, 0);
     Eigen::Vector3d Yp(0, 0, 0);
     for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
       
       com_x[i] = Xp[0];
       com_y[i] = Yp[0];
@@ -481,12 +500,12 @@ private:
 
     // std::cout << "COM Values" << std::endl;
     // for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
     //   std::cout << "(" << t_ms << ", " << com_x[i] << ", " << com_y[i] << "), ";
     // }
 
     // for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+    //   int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
       
     // }
 
@@ -496,7 +515,7 @@ private:
     std::vector<shi2d2_interfaces::msg::FootPose> right_foot_poses;
 
     for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_PERIOD_MS;
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
 
       shi2d2_interfaces::msg::FootPose left_foot_pose; 
       left_foot_pose.leg_id = LEFT_LEG;

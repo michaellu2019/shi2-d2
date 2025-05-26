@@ -280,19 +280,26 @@ class LegController : public rclcpp::Node
       if (left_foot_poses_.size() > 0) {
         left_foot_pose = left_foot_poses_.front();
         left_foot_poses_.pop();
+
+
+        solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
+        set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
       } 
       if (right_foot_poses_.size() > 0) {
         right_foot_pose = right_foot_poses_.front();
         right_foot_poses_.pop();
+
+        solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
+        set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
       }
 
       // test_leg_ik(LEFT_LEG, left_foot_pose);
       // test_leg_ik(RIGHT_LEG, right_foot_pose);
 
-      solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
-      solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
-      set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
-      set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
+      // solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
+      // solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
+      // set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
+      // set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
       
       write_leg_angles();
 

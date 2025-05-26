@@ -50,8 +50,8 @@ def generate_launch_description():
 
     # launch the gazebo world
     gazebo = ExecuteProcess(
-        # cmd=["gz", "sim", "-r", "-s", world_file],
-        cmd=["gz", "sim", "-r", world_file],
+        cmd=["gz", "sim", "-r", "-s", world_file],
+        # cmd=["gz", "sim", "-r", world_file],
         output="screen"
     )
 

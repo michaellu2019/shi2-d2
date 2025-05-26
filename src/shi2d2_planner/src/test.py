@@ -9,7 +9,7 @@ def f1():
   zmp_y = 0.0
 
   ZMP_MPC_NUM_TIMESTEPS = 300  # Example constant
-  ZMP_MPC_TIMESTEP_PERIOD_MS = 5.0  # Example constant
+  ZMP_MPC_TIMESTEP_DURATION_MS = 5.0  # Example constant
   ZMP_STEP_LENGTH_M = 0.02  # Example constant
   ZMP_STEP_WIDTH_M = 0.05  # Example constant
   step_period_ms = 500  # Example constant
@@ -23,7 +23,7 @@ def f1():
   zmp_mpc_y_data = {"zmp_refs": [0.0] * ZMP_MPC_NUM_TIMESTEPS}
 
   for i in range(k, k + ZMP_MPC_NUM_TIMESTEPS):
-      t_ms = i * ZMP_MPC_TIMESTEP_PERIOD_MS
+      t_ms = i * ZMP_MPC_TIMESTEP_DURATION_MS
       step_num = int(t_ms / (0.5 * step_period_ms))
       double_support = t_ms % (0.5 * step_period_ms) < double_support_duration_ms
 
@@ -46,7 +46,7 @@ def f1():
   # Extract the ZMP references
   zmp_x_refs = zmp_mpc_x_data["zmp_refs"]
   zmp_y_refs = zmp_mpc_y_data["zmp_refs"]
-  time = [i * ZMP_MPC_TIMESTEP_PERIOD_MS / 1000.0 for i in range(ZMP_MPC_NUM_TIMESTEPS)]  # Time in seconds
+  time = [i * ZMP_MPC_TIMESTEP_DURATION_MS / 1000.0 for i in range(ZMP_MPC_NUM_TIMESTEPS)]  # Time in seconds
 
   # Create the plots
   plt.figure(figsize=(12, 8))
