@@ -11,7 +11,7 @@ const double FOOT_POSE_PUBLISHER_LOOP_PERIOD_MS = 5.0;
 const double g = 9.81; // m/s^2
 
 // ZMP linear MPC constants
-const int ZMP_MPC_NUM_TIMESTEPS = 300; // number of time steps
+const int ZMP_MPC_NUM_TIMESTEPS = 450; // number of time steps
 const int ZMP_MPC_NUM_STATIONARY_TIMESTEPS = ZMP_MPC_NUM_TIMESTEPS/10;
 const double ZMP_MPC_TIMESTEP_DURATION_MS = FOOT_POSE_PUBLISHER_LOOP_PERIOD_MS; // MPC time step period in ms
 const double ZMP_MPC_TIMESTEP_DURATION_SEC = ZMP_MPC_TIMESTEP_DURATION_MS/1000.0; // MPC time step period in s
@@ -21,10 +21,10 @@ const double ZMP_MPC_U_PENALTY = 1000.0 * 1e-6;
 const double ZMP_MPC_COP_X_BOUNDS_M = 0.75 * 0.140/2;
 const double ZMP_MPC_COP_Y_BOUNDS_M = 0.75 * 0.3/2;
 
-double ZMP_STEP_LENGTH_M = 30.0e-3;
+double ZMP_STEP_LENGTH_M = 40.0e-3;
 double ZMP_STEP_WIDTH_M = 240.0e-3 * 0.5;
-double ZMP_STEP_HEIGHT_M = 40.0e-3;
-double step_period_ms = 300;
+double ZMP_STEP_HEIGHT_M = 30.0e-3;
+double step_period_ms = 200;
 double half_step_period_ms = step_period_ms/2;
 double double_support_duration_ms = half_step_period_ms/5;
 double single_support_duration_ms = half_step_period_ms - double_support_duration_ms;
