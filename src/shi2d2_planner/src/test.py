@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import re
 
 def f1():
   k = 0
@@ -319,4 +320,340 @@ def f4():
   plt.show()
 
 
-f4()
+# f4()
+
+def f5():
+  # Function to parse the data file
+  def parse_file(file_path):
+      indices = []
+
+      left_x = []
+      left_y = []
+      left_z = []
+
+      right_x = []
+      right_y = []
+      right_z = []
+
+      line_num = 0
+      
+      with open(file_path, 'r') as file:
+          lines = file.readlines()[3:]
+          for i in range(0, len(lines), 3):  # Each entry has 3 lines
+              # Parse index
+              index = int(lines[i].split()[0])
+              indices.append(index)
+              
+              # Parse left foot X
+              left_x_value = float(lines[i].split(':')[1].split(',')[0].strip())
+              left_x.append(left_x_value)
+              left_y_value = float(lines[i].split(':')[1].split(',')[1].strip())
+              left_y.append(left_y_value)
+              left_z_value = float(lines[i].split(':')[1].split(',')[2].strip())
+              left_z.append(left_z_value)
+              
+              # Parse right foot X
+              right_x_value = float(lines[i + 1].split(':')[1].split(',')[0].strip())
+              right_x.append(right_x_value)
+              right_y_value = float(lines[i].split(':')[1].split(',')[1].strip())
+              right_y.append(right_y_value)
+              right_z_value = float(lines[i].split(':')[1].split(',')[2].strip())
+              right_z.append(right_z_value)
+      
+      return indices, left_x, left_y, left_z, right_x, right_y, right_z
+
+  # Parse both files
+  indices_feedback, left_x_feedback, left_y_feedback, left_z_feedback, right_x_feedback, right_y_feedback, right_z_feedback = parse_file("./src/shi2d2_planner/debug_data/footsteps_with_feedback.txt")
+  indices_no_feedback, left_x_no_feedback, left_y_no_feedback, left_z_no_feedback, right_x_no_feedback, right_y_no_feedback, right_z_no_feedback = parse_file("./src/shi2d2_planner/debug_data/footsteps_no_feedback.txt")
+
+  # Plot the data
+  plt.figure(figsize=(10, 6))
+
+  # Plot no feedback data
+  plt.plot(indices_no_feedback, left_x_no_feedback, label="Left Foot (No Feedback)", color="red")
+  plt.plot(indices_no_feedback, right_x_no_feedback, label="Right Foot (No Feedback)", color="orange")
+
+  # Plot feedback data
+  plt.plot(indices_feedback, left_x_feedback, label="Left Foot (Feedback)", color="blue")
+  plt.plot(indices_feedback, right_x_feedback, label="Right Foot (Feedback)", color="cyan")
+
+  # Add labels, legend, and grid
+  plt.xlabel("Index")
+  plt.ylabel("X Position")
+  plt.title("Foot Pose X Position vs Index")
+  plt.legend()
+  plt.grid(True)
+
+  # Show the plot
+  plt.show()
+
+# f5()
+
+def f6():
+  def parse_data(file_path):
+    # Initialize lists to store parsed data
+    indices = []
+    zmp_ref_x = []
+    zmp_ref_y = []
+    x = []
+    x_dot = []
+    x_ddot = []
+    y = []
+    y_dot = []
+    y_ddot = []
+    u_x = []
+    u_y = []
+
+    # Regular expressions to extract data
+    index_pattern = r"Solving ZMP MPC for (?:i|k)=(\d+)"
+    zmp_ref_pattern = r"ZMP REF X=([\d\.\-e]+), Y=([\d\.\-e]+)"
+    x_pattern = r"X=([\d\.\-e]+), ([\d\.\-e]+), ([\d\.\-e]+)"
+    y_pattern = r"Y=([\d\.\-e]+), ([\d\.\-e]+), ([\d\.\-e]+)"
+    u_pattern = r"Ux=([\d\.\-e]+), Uy=([\d\.\-e]+)"
+
+    # Read the file and parse data
+    with open(file_path, 'r') as file:
+        j = 0
+        for line in file:
+            # Match each line with the corresponding pattern
+            index_match = re.search(index_pattern, line)
+            zmp_ref_match = re.search(zmp_ref_pattern, line)
+            x_match = re.search(x_pattern, line)
+            y_match = re.search(y_pattern, line)
+            u_match = re.search(u_pattern, line)
+
+            # Extract and append data
+            if index_match:
+                indices.append(int(index_match.group(1)))
+            if zmp_ref_match:
+                zmp_ref_x.append(float(zmp_ref_match.group(1)))
+                zmp_ref_y.append(float(zmp_ref_match.group(2)))
+            if x_match:
+                x.append(float(x_match.group(1)))
+                x_dot.append(float(x_match.group(2)))
+                x_ddot.append(float(x_match.group(3)))
+            if y_match:
+                y.append(float(y_match.group(1)))
+                y_dot.append(float(y_match.group(2)))
+                y_ddot.append(float(y_match.group(3)))
+            if u_match:
+                u_x.append(float(u_match.group(1)))
+                u_y.append(float(u_match.group(2)))
+
+    return indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot, u_x, u_y
+
+  def plot_data(indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot, u_x, u_y, title):
+      # Create subplots
+      fig, axs = plt.subplots(5, 1, figsize=(10, 15), sharex=True)
+
+      # Plot ZMP references
+      axs[0].plot(indices, zmp_ref_x, label="ZMP REF X", color="blue")
+      axs[0].plot(indices, zmp_ref_y, label="ZMP REF Y", color="orange")
+      axs[0].set_ylabel("ZMP REF")
+      axs[0].legend()
+      axs[0].grid()
+
+      # Plot X values
+      axs[1].plot(indices, x, label="X", color="blue")
+      # axs[1].plot(indices, x_dot, label="X Dot", color="orange")
+      # axs[1].plot(indices, x_ddot, label="X DDot", color="green")
+      axs[1].set_ylabel("X Values")
+      axs[1].legend()
+      axs[1].grid()
+
+      # Plot Y values
+      axs[2].plot(indices, y, label="Y", color="blue")
+      # axs[2].plot(indices, y_dot, label="Y Dot", color="orange")
+      # axs[2].plot(indices, y_ddot, label="Y DDot", color="green")
+      axs[2].set_ylabel("Y Values")
+      axs[2].legend()
+      axs[2].grid()
+
+      # Plot Ux
+      axs[3].plot(indices, u_x, label="Ux", color="blue")
+      axs[3].set_ylabel("Ux")
+      axs[3].legend()
+      axs[3].grid()
+
+      # Plot Uy
+      axs[4].plot(indices, u_y, label="Uy", color="orange")
+      axs[4].set_ylabel("Uy")
+      axs[4].set_xlabel("Index (i)")
+      axs[4].legend()
+      axs[4].grid()
+
+      # Set the title
+      fig.suptitle(title, fontsize=16)
+      plt.tight_layout()
+      plt.show()
+
+
+  # Parse and plot data for both files
+  file_paths = {
+      "data_with_feedback": "./src/shi2d2_planner/debug_data/data_with_feedback.txt",
+      "data_no_feedback": "./src/shi2d2_planner/debug_data/data_no_feedback.txt"
+  }
+
+  for title, file_path in file_paths.items():
+      indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot, u_x, u_y = parse_data(file_path)
+      plot_data(indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot, u_x, u_y, title)
+  
+# f6()
+
+def f7():
+    def parse_data(file_path):
+        # Initialize lists to store parsed data
+        indices = []
+        zmp_ref_x = []
+        zmp_ref_y = []
+        x = []
+        x_dot = []
+        x_ddot = []
+        y = []
+        y_dot = []
+        y_ddot = []
+        u_x = []
+        u_y = []
+        com_x = []
+        com_y = []
+        left_foot_x = []
+        left_foot_y = []
+        left_foot_z = []
+        right_foot_x = []
+        right_foot_y = []
+        right_foot_z = []
+
+        # Regular expressions to extract data
+        index_pattern = r"Solving ZMP MPC for (?:i|k)=(\d+)"
+        zmp_ref_pattern = r"ZMP REF X=([\d\.\-e]+), Y=([\d\.\-e]+)"
+        x_pattern = r"X=([\d\.\-e]+), ([\d\.\-e]+), ([\d\.\-e]+)"
+        y_pattern = r"Y=([\d\.\-e]+), ([\d\.\-e]+), ([\d\.\-e]+)"
+        u_pattern = r"Ux=([\d\.\-e]+), Uy=([\d\.\-e]+)"
+        com_pattern = r"COM X=([\d\.\-e]+), COM Y=([\d\.\-e]+)"
+        left_foot_pattern = r"Left foot pose: ([\d\.\-e]+), ([\d\.\-e]+), ([\d\.\-e]+)"
+        right_foot_pattern = r"Right foot pose: ([\d\.\-e]+), ([\d\.\-e]+), ([\d\.\-e]+)"
+
+        # Read the file and parse data
+        with open(file_path, 'r') as file:
+            for line in file:
+                # Match each line with the corresponding pattern
+                index_match = re.search(index_pattern, line)
+                zmp_ref_match = re.search(zmp_ref_pattern, line)
+                x_match = re.search(x_pattern, line)
+                y_match = re.search(y_pattern, line)
+                u_match = re.search(u_pattern, line)
+                com_match = re.search(com_pattern, line)
+                left_foot_match = re.search(left_foot_pattern, line)
+                right_foot_match = re.search(right_foot_pattern, line)
+
+                # Extract and append data
+                if index_match:
+                    indices.append(int(index_match.group(1)))
+                if zmp_ref_match:
+                    zmp_ref_x.append(float(zmp_ref_match.group(1)))
+                    zmp_ref_y.append(float(zmp_ref_match.group(2)))
+                if x_match:
+                    x.append(float(x_match.group(1)))
+                    x_dot.append(float(x_match.group(2)))
+                    x_ddot.append(float(x_match.group(3)))
+                if y_match:
+                    y.append(float(y_match.group(1)))
+                    y_dot.append(float(y_match.group(2)))
+                    y_ddot.append(float(y_match.group(3)))
+                if u_match:
+                    u_x.append(float(u_match.group(1)))
+                    u_y.append(float(u_match.group(2)))
+                if com_match:
+                    com_x.append(float(com_match.group(1)))
+                    com_y.append(float(com_match.group(2)))
+                if left_foot_match:
+                    left_foot_x.append(float(left_foot_match.group(1)))
+                    left_foot_y.append(float(left_foot_match.group(2)))
+                    left_foot_z.append(float(left_foot_match.group(3)))
+                if right_foot_match:
+                    right_foot_x.append(float(right_foot_match.group(1)))
+                    right_foot_y.append(float(right_foot_match.group(2)))
+                    right_foot_z.append(float(right_foot_match.group(3)))
+
+        return (indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot,
+                u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,
+                right_foot_x, right_foot_y, right_foot_z)
+
+    def plot_data(indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot,
+                  u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,
+                  right_foot_x, right_foot_y, right_foot_z, title):
+        # Create subplots
+        fig, axs = plt.subplots(6, 1, figsize=(10, 20), sharex=True)
+        # Plot ZMP references
+        axs[0].plot(indices, zmp_ref_x, label="ZMP REF X", color="blue")
+        axs[0].plot(indices, zmp_ref_y, label="ZMP REF Y", color="orange")
+        axs[0].set_ylabel("ZMP REF")
+        axs[0].legend()
+        axs[0].grid()
+
+        # Plot X values
+        axs[1].plot(indices, x, label="X", color="blue")
+        axs[1].plot(indices, com_x, label="COM X", color="purple")
+        # axs[1].plot(indices, x_dot, label="X Dot", color="orange")
+        # axs[1].plot(indices, x_ddot, label="X DDot", color="green")
+        axs[1].set_ylabel("X Values")
+        axs[1].legend()
+        axs[1].grid()
+
+        # Plot Y values
+        axs[2].plot(indices, y, label="Y", color="blue")
+        axs[2].plot(indices, com_y, label="COM Y", color="purple")
+        # axs[2].plot(indices, y_dot, label="Y Dot", color="orange")
+        # axs[2].plot(indices, y_ddot, label="Y DDot", color="green")
+        axs[2].set_ylabel("Y Values")
+        axs[2].legend()
+        axs[2].grid()
+
+        # Plot Ux and Uy
+        axs[3].plot(indices, u_x, label="Ux", color="blue")
+        axs[3].set_ylabel("X Control Inputs")
+        axs[3].legend()
+        axs[3].grid()
+        
+        axs[4].plot(indices, u_y, label="Uy", color="orange")
+        axs[4].set_ylabel("Y Control Inputs")
+        axs[4].legend()
+        axs[4].grid()
+
+        # Plot foot positions
+        axs[5].plot(indices, left_foot_x, label="Left Foot X", color="blue")
+        axs[5].plot(indices, right_foot_x, label="Right Foot X", color="orange")
+        axs[5].set_ylabel("Foot X Positions")
+        axs[5].set_xlabel("Index (i)")
+        axs[5].legend()
+        axs[5].grid()
+
+        # Set the title
+        fig.suptitle(title, fontsize=16)
+        plt.tight_layout()
+        # plt.show()
+
+        if "no_feedback" in title:
+           print("COM X:")
+           print(com_x)
+           print("COM Y:")
+           print(com_y)
+
+    # Parse and plot data for both files
+    file_paths = {
+        "data_with_feedback": "./src/shi2d2_planner/debug_data/full_data_with_feedback.txt",
+        "data_with_feedback2": "./src/shi2d2_planner/debug_data/full_data_with_feedback2.txt",
+        "data_no_feedback": "./src/shi2d2_planner/debug_data/full_data_no_feedback.txt"
+    }
+
+    max_index = 301
+    for title, file_path in file_paths.items():
+        (indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot,
+         u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,
+         right_foot_x, right_foot_y, right_foot_z) = parse_data(file_path)
+        plot_data(indices[:max_index], zmp_ref_x[:max_index], zmp_ref_y[:max_index], x[:max_index], x_dot[:max_index], x_ddot[:max_index], y[:max_index], y_dot[:max_index], y_ddot[:max_index],
+                  u_x[:max_index], u_y[:max_index], com_x[:max_index], com_y[:max_index], left_foot_x[:max_index], left_foot_y[:max_index], left_foot_z[:max_index],
+                  right_foot_x[:max_index], right_foot_y[:max_index], right_foot_z[:max_index], title)
+    plt.show()
+
+f7()
