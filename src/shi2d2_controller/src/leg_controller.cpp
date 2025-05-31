@@ -261,47 +261,45 @@ class LegController : public rclcpp::Node
 
     void timer_callback()
     {
-      if (sim_time_elapsed_sec_ < 1.0) {
-        return;
+      if (tick_count_ * CONTROLLER_LOOP_PERIOD_MS >= 1000.0) {
+        shi2d2_interfaces::msg::FootPose left_foot_pose = DEFAULT_FOOT_POSE_;
+        shi2d2_interfaces::msg::FootPose right_foot_pose = DEFAULT_FOOT_POSE_;
+        shi2d2_interfaces::msg::LegJointAngles left_leg_joint_angles;
+        shi2d2_interfaces::msg::LegJointAngles right_leg_joint_angles;
+
+        if ((tick_count_ - last_teleop_command_tick_) * CONTROLLER_LOOP_PERIOD_MS > TELEOP_COMMAND_TIMEOUT_MS) {
+          teleop_command_ = STOP;
+        }
+        if (teleop_command_ != STOP) {
+          walk_open_loop(teleop_command_, left_foot_pose, right_foot_pose);
+        }
+
+        if (left_foot_poses_.size() > 0) {
+          left_foot_pose = left_foot_poses_.front();
+          left_foot_poses_.pop();
+
+
+          solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
+          set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
+        } 
+        if (right_foot_poses_.size() > 0) {
+          right_foot_pose = right_foot_poses_.front();
+          right_foot_poses_.pop();
+
+          solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
+          set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
+        }
+
+        // test_leg_ik(LEFT_LEG, left_foot_pose);
+        // test_leg_ik(RIGHT_LEG, right_foot_pose);
+
+        // solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
+        // solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
+        // set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
+        // set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
+        
+        write_leg_angles();
       }
-
-      shi2d2_interfaces::msg::FootPose left_foot_pose = DEFAULT_FOOT_POSE_;
-      shi2d2_interfaces::msg::FootPose right_foot_pose = DEFAULT_FOOT_POSE_;
-      shi2d2_interfaces::msg::LegJointAngles left_leg_joint_angles;
-      shi2d2_interfaces::msg::LegJointAngles right_leg_joint_angles;
-
-      if ((tick_count_ - last_teleop_command_tick_) * CONTROLLER_LOOP_PERIOD_MS > TELEOP_COMMAND_TIMEOUT_MS) {
-        teleop_command_ = STOP;
-      }
-      if (teleop_command_ != STOP) {
-        walk_open_loop(teleop_command_, left_foot_pose, right_foot_pose);
-      }
-
-      if (left_foot_poses_.size() > 0) {
-        left_foot_pose = left_foot_poses_.front();
-        left_foot_poses_.pop();
-
-
-        solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
-        set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
-      } 
-      if (right_foot_poses_.size() > 0) {
-        right_foot_pose = right_foot_poses_.front();
-        right_foot_poses_.pop();
-
-        solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
-        set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
-      }
-
-      // test_leg_ik(LEFT_LEG, left_foot_pose);
-      // test_leg_ik(RIGHT_LEG, right_foot_pose);
-
-      // solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
-      // solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
-      // set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
-      // set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
-      
-      write_leg_angles();
 
       tick_count_++;
     }
@@ -322,8 +320,8 @@ class LegController : public rclcpp::Node
       shi2d2_interfaces::msg::LegJointAngles right_leg_joint_angles;
 
       if (msg->leg_id == LEFT_LEG) {
-        std::cout << "LEFT LEG FOOT POSE RECEIVED " << msg->x << ", " << msg->y << ", " << msg->z << ", "
-                  << msg->rx << ", " << msg->ry << ", " << msg->rz << std::endl;
+        // std::cout << "LEFT LEG FOOT POSE RECEIVED " << msg->x << ", " << msg->y << ", " << msg->z << ", "
+        //           << msg->rx << ", " << msg->ry << ", " << msg->rz << std::endl;
         left_foot_poses_.push(*msg);
         // solve_leg_ik(LEFT_LEG, *msg, left_leg_joint_angles);
         // std::cout << "LEFT LEG JOINT ANGLES: " << left_leg_joint_angles.upper_hip_body_joint_angle << ", "
@@ -334,8 +332,8 @@ class LegController : public rclcpp::Node
         // set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
         // write_leg_angles();
       } else if (msg->leg_id == RIGHT_LEG) {
-        std::cout << "RIGHT LEG FOOT POSE RECEIVED " << msg->x << ", " << msg->y << ", " << msg->z << ", "
-                  << msg->rx << ", " << msg->ry << ", " << msg->rz << std::endl;
+        // std::cout << "RIGHT LEG FOOT POSE RECEIVED " << msg->x << ", " << msg->y << ", " << msg->z << ", "
+        //           << msg->rx << ", " << msg->ry << ", " << msg->rz << std::endl;
         right_foot_poses_.push(*msg);
         // solve_leg_ik(RIGHT_LEG, *msg, right_leg_joint_angles);
         // std::cout << "RIGHT LEG JOINT ANGLES: " << right_leg_joint_angles.upper_hip_body_joint_angle << ", "

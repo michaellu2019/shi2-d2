@@ -25,7 +25,7 @@ namespace plt = matplotlibcpp;
 class LocomotionPlanner : public rclcpp::Node
 {
 public:
-  LocomotionPlanner() : Node("locomotion_planner")
+  LocomotionPlanner() : Node("locomotion_planner"), tick_count_(0)
   {
     // Publisher
     publisher_ = this->create_publisher<std_msgs::msg::Int8>("locomotion_commands", PLANNER_LOOP_PERIOD_MS);
@@ -44,7 +44,7 @@ public:
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
     init_zmp_mpc();
-    solve_zmp_mpc();
+    // solve_zmp_mpc();
   }
 
   ~LocomotionPlanner()
@@ -69,42 +69,6 @@ private:
 
   }
 
-  void get_robot_state()
-  {
-    // Get the robot state from the IMU and odometry data
-    body_state_.x = body_odometry_.pose.pose.position.x;
-    body_state_.y = body_odometry_.pose.pose.position.y;
-    body_state_.z = body_odometry_.pose.pose.position.z;
-
-    quaternion_to_euler(body_imu_data_.orientation.x, body_imu_data_.orientation.y, body_imu_data_.orientation.z, body_imu_data_.orientation.w,
-                        body_state_.rx, body_state_.ry, body_state_.rz);
-
-    body_state_.vx = body_odometry_.twist.twist.linear.x;
-    body_state_.vy = body_odometry_.twist.twist.linear.y;
-    body_state_.vz = body_odometry_.twist.twist.linear.z;
-
-    body_state_.wx = body_imu_data_.angular_velocity.x;
-    body_state_.wy = body_imu_data_.angular_velocity.y;
-    body_state_.wz = body_imu_data_.angular_velocity.z;
-
-    body_state_.ax = body_imu_data_.linear_acceleration.x;
-    body_state_.ay = body_imu_data_.linear_acceleration.y;
-    body_state_.az = body_imu_data_.linear_acceleration.z;
-
-    body_state_.alx = 0.0; // TODO: is there a way to get angular acceleration if we need it?
-    body_state_.aly = 0.0;
-    body_state_.alz = 0.0;
-    
-    // std::cout << std::fixed << std::setprecision(3)
-    //       << "Body State: X: [" 
-    //       << body_state_.x << ", " << body_state_.y << ", " << body_state_.z << ", "
-    //       << body_state_.rx << ", " << body_state_.ry << ", " << body_state_.rz << "] XD: ["
-    //       << body_state_.vx << ", " << body_state_.vy << ", " << body_state_.vz << ", "
-    //       << body_state_.wx << ", " << body_state_.wy << ", " << body_state_.wz << "] XDD:["
-    //       << body_state_.ax << ", " << body_state_.ay << ", " << body_state_.az << ", "
-    //       << body_state_.alx << ", " << body_state_.aly << ", " << body_state_.alz << "]" << std::endl;
-  }
-
   void plan_footsteps()
   {
     t_.clear();
@@ -114,15 +78,15 @@ private:
     zmp_refs_y_.clear();
 
     // generate footsteps and zmp reference positions
-    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+    for (int i = 0; i < ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS; i++) {
       int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
-      int t_walk_ms = std::max(0, (int) (t_ms - ZMP_MPC_NUM_STATIONARY_TIMESTEPS * ZMP_MPC_TIMESTEP_DURATION_MS));
+      int t_walk_ms = std::max(0, (int) (t_ms - ZMP_MPC_NUM_STATIONARY_FOOTSTEP_PLANNING_TIMESTEPS * ZMP_MPC_TIMESTEP_DURATION_MS));
       t_.push_back(t_ms);
 
       geometry_msgs::msg::Vector3 left_foot_position;
       geometry_msgs::msg::Vector3 right_foot_position;
 
-      if (i < ZMP_MPC_NUM_STATIONARY_TIMESTEPS) {
+      if (i < ZMP_MPC_NUM_STATIONARY_FOOTSTEP_PLANNING_TIMESTEPS) {
         left_foot_position.x = body_state_.x;
         left_foot_position.y = body_state_.y + ZMP_STEP_WIDTH_M;
         left_foot_position.z = 0.0;
@@ -138,8 +102,8 @@ private:
         double zmp_ref_y = (left_foot_position.y + right_foot_position.y)/2;
         zmp_refs_x_.push_back(zmp_ref_x);
         zmp_refs_y_.push_back(zmp_ref_y);
-      } else if (i > ZMP_MPC_NUM_TIMESTEPS - ZMP_MPC_NUM_STATIONARY_TIMESTEPS) {
-        double last_step_x = body_state_.x + ((ZMP_MPC_NUM_TIMESTEPS - ZMP_MPC_NUM_STATIONARY_TIMESTEPS) * ZMP_MPC_TIMESTEP_DURATION_MS)/step_period_ms * ZMP_STEP_LENGTH_M;
+      } else if (i > ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS - ZMP_MPC_NUM_STATIONARY_FOOTSTEP_PLANNING_TIMESTEPS) {
+        double last_step_x = body_state_.x + ((ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS - ZMP_MPC_NUM_STATIONARY_FOOTSTEP_PLANNING_TIMESTEPS) * ZMP_MPC_TIMESTEP_DURATION_MS)/step_period_ms * ZMP_STEP_LENGTH_M;
 
         left_foot_position.x = last_step_x;
         left_foot_position.y = body_state_.y + ZMP_STEP_WIDTH_M;
@@ -277,42 +241,104 @@ private:
     std::cout << "ZMP initialization took " << zmp_gen_duration << " ms" << std::endl;
   }
 
-  void solve_zmp_mpc()
+  void solve_zmp_mpc(int k)
   {
     // get_robot_state(); ??????
 
+    // solve optimal control (jerk values) for the ZMP MPC problem
     auto zmp_mpc_start = std::chrono::high_resolution_clock::now(); // Start timer
+    
+    Eigen::Vector<double, ZMP_MPC_NUM_TIMESTEPS> ZMP_REFS_X;
+    Eigen::Vector<double, ZMP_MPC_NUM_TIMESTEPS> ZMP_REFS_Y;
+    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int j = k + i;
+      if (j < zmp_refs_x_.size() && j < zmp_refs_y_.size()) {
+        ZMP_REFS_X(i) = zmp_refs_x_[j];
+        ZMP_REFS_Y(i) = zmp_refs_y_[j];
+      } else {
+        ZMP_REFS_X(i) = 0.0; // pad with zeroes
+        ZMP_REFS_Y(i) = 0.0; // pad with zeroes
+      }
+    }
     
     Eigen::Vector3d X(body_state_.x, body_state_.vx, body_state_.ax);
     Eigen::Vector3d Y(body_state_.y, body_state_.vy, body_state_.ay);
-    Eigen::Vector<double, ZMP_MPC_NUM_TIMESTEPS> ZMP_REFS_X(zmp_refs_x_.data());
-    Eigen::Vector<double, ZMP_MPC_NUM_TIMESTEPS> ZMP_REFS_Y(zmp_refs_y_.data());
+    // Eigen::Vector3d X(0, 0, 0);
+    // Eigen::Vector3d Y(0, 0, 0);
+    
+    // Eigen::Vector<double, ZMP_MPC_NUM_TIMESTEPS> ZMP_REFS_X(zmp_refs_x_.data()); 
+    // Eigen::Vector<double, ZMP_MPC_NUM_TIMESTEPS> ZMP_REFS_Y(zmp_refs_y_.data());
 
-    Eigen::VectorXd PxZ = Px_ * X - ZMP_REFS_X;
-    Eigen::VectorXd PyZ = Px_ * Y - ZMP_REFS_Y;
+    // Px_ - N x 3
+    // X, Y - 3 x 1
+    // ZMP_REFS_X, ZMP_REFS_Y - N x 1
+    // PuPuRQIPuT_ - N x N
+    // PxZ, PyZ - N x 1
+    // Ux, Uy - N x 1
 
-    Eigen::VectorXd Ux = PuPuRQIPuT_ * PxZ;
-    Eigen::VectorXd Uy = PuPuRQIPuT_ * PyZ;
+    // print sizes of Px_, X, Y, and ZMP_REFS_X and ZMP_REFS_Y
+    // std::cout << "Px_ size: " << Px_.rows() << " x " << Px_.cols() << std::endl;
+    // std::cout << "X size: " << X.size() << std::endl;
+    // std::cout << "Y size: " << Y.size() << std::endl;
+    // std::cout << "ZMP_REFS_X size: " << ZMP_REFS_X.size() << std::endl;
+    // std::cout << "ZMP_REFS_Y size: " << ZMP_REFS_Y.size() << std::endl;
+    // std::cout << "PuPuRQIPuT_ size: " << PuPuRQIPuT_.rows() << " x " << PuPuRQIPuT_.cols() << std::endl;
+
+    Eigen::VectorXd PxZMP = Px_ * X - ZMP_REFS_X;
+    Eigen::VectorXd PyZMP = Px_ * Y - ZMP_REFS_Y;
+
+    Eigen::VectorXd Ux = PuPuRQIPuT_ * PxZMP;
+    Eigen::VectorXd Uy = PuPuRQIPuT_ * PyZMP;
+
+    // std::cout << "Px:\n" << Px_ << std::endl;
+    // std::cout << "X:\n" << X << std::endl;
+    // std::cout << "Y:\n" << Y << std::endl;
+    // std::cout << "ZMP_REFS_X:\n" << ZMP_REFS_X << std::endl;
+    // std::cout << "ZMP_REFS_Y:\n" << ZMP_REFS_Y << std::endl;
+    // std::cout << "PuPuRQIPuT:\n" << PuPuRQIPuT_ << std::endl;
+    // std::cout << "Ux:\n" << Ux << std::endl;
+    // std::cout << "Uy:\n" << Uy << std::endl;
 
     auto zmp_mpc_end = std::chrono::high_resolution_clock::now(); // End timer
     auto zmp_mpc_duration = std::chrono::duration_cast<std::chrono::milliseconds>(zmp_mpc_end - zmp_mpc_start).count();
-    std::cout << "Solving ZMP MPC took " << zmp_mpc_duration << " ms" << std::endl;
+    std::cout << "Solving ZMP MPC for k=" << k << " took " << zmp_mpc_duration << " ms" << std::endl;
+    std::cout << "ZMP REF X=" << ZMP_REFS_X[0] << ", Y=" << ZMP_REFS_Y[0] << std::endl;
+    std::cout << "X=" << X[0] << ", " << X[1] << ", " << X[2] << std::endl;
+    std::cout << "Y=" << Y[0] << ", " << Y[1] << ", " << Y[2] << std::endl;
+    std::cout << "Ux=" << Ux[0] << ", Uy=" << Uy[0] << std::endl;
+    // std::cout << std::endl;
     
+    // integrate COM trajectory forward in time
     // calculate ZMP values based on COM values
     // std::cout << "ZMP Values" << std::endl;
+    std::vector<shi2d2_interfaces::msg::FootPose> left_foot_poses;
+    std::vector<shi2d2_interfaces::msg::FootPose> right_foot_poses;
     std::vector<double> com_x(ZMP_MPC_NUM_TIMESTEPS);
     std::vector<double> com_y(ZMP_MPC_NUM_TIMESTEPS);
     std::vector<double> zmp_x(ZMP_MPC_NUM_TIMESTEPS);
     std::vector<double> zmp_y(ZMP_MPC_NUM_TIMESTEPS);
-    Eigen::Vector3d Xp(0, 0, 0);
-    Eigen::Vector3d Yp(0, 0, 0);
-    int k = 0;
+    Eigen::Vector3d Xp(X[0], X[1], X[2]);
+    Eigen::Vector3d Yp(Y[0], Y[1], Y[2]);
     
-    for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+    // int L = ZMP_MPC_NUM_TIMESTEPS;
+    int L = 1;
+    
+    // change to only use first element of Ux and Uy 
+    // only use first com_x and com_y
+    // only publish first left_foot_pose and right_foot_pose
+
+    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      // std::cout << "Solving ZMP MPC for i=" << i << " took " << zmp_mpc_duration << " ms" << std::endl;
+      // std::cout << "ZMP REF X=" << ZMP_REFS_X[i] << ", Y=" << ZMP_REFS_Y[i] << std::endl;
+      // std::cout << "X=" << Xp[0] << ", " << Xp[1] << ", " << Xp[2] << std::endl;
+      // std::cout << "Y=" << Yp[0] << ", " << Yp[1] << ", " << Yp[2] << std::endl;
+      // std::cout << "Ux=" << Ux[i] << ", Uy=" << Uy[i] << std::endl;
+      // std::cout << std::endl;
+
       int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
       
-      com_x[i] = Xp[0];
-      com_y[i] = Yp[0];
+      // com_x[i] = Xp[0];
+      // com_y[i] = Yp[0];
       // std::cout << "(" << t_ms << ", " << com_x[i] << ", " << com_y[i] << "), ___ " << com_x.size() << ", " << com_y.size() << " ___ ";
       // std::cout << t_ms << ": " << Xp[0] << ", " << Xp[1] << ", " << Xp[2] << " - " << u_x[i - k] << std::endl;
 
@@ -320,60 +346,93 @@ private:
       zmp_y[i] = (C * Yp).value();
       // std::cout << "(" << t_ms << ", " << zmp_x[i] << ", " << zmp_y[i] << "), ";
 
-      Xp = A * Xp + B * Ux[i - k];
-      Yp = A * Yp + B * Uy[i - k];
+      Xp = A * Xp + B * Ux[i];
+      Yp = A * Yp + B * Uy[i];
+      
+      com_x[i] = Xp[0];
+      com_y[i] = Yp[0];
+      // std::cout << "Ux=" << Ux[i] << ", Uy=" << Uy[i] << std::endl;
     }
-    std::cout << std::endl;
 
-    auto footpose_start = std::chrono::high_resolution_clock::now(); // Start timer
+    // auto footpose_start = std::chrono::high_resolution_clock::now(); // Start timer
 
-    std::vector<shi2d2_interfaces::msg::FootPose> left_foot_poses;
-    std::vector<shi2d2_interfaces::msg::FootPose> right_foot_poses;
-
-    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
-      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
+    for (int i = 0; i < L; i++) {
+      int j = k + i;
+      // int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
 
       shi2d2_interfaces::msg::FootPose left_foot_pose; 
       left_foot_pose.leg_id = LEFT_LEG;
-      left_foot_pose.x = (left_footstep_positions_[i].x - com_x[i]) + DEFAULT_FOOT_POSITION_X_M;
-      left_foot_pose.y = (0*left_footstep_positions_[i].y - com_y[i]) + DEFAULT_FOOT_POSITION_Y_M;
-      left_foot_pose.z = left_footstep_positions_[i].z + DEFAULT_FOOT_POSITION_Z_M;
+      left_foot_pose.x = (left_footstep_positions_[j].x - com_x[i]) + DEFAULT_FOOT_POSITION_X_M;
+      left_foot_pose.y = (0*left_footstep_positions_[j].y - com_y[i]) + DEFAULT_FOOT_POSITION_Y_M;
+      left_foot_pose.z = left_footstep_positions_[j].z + DEFAULT_FOOT_POSITION_Z_M;
       left_foot_pose.rx = 0.0;
       left_foot_pose.ry = 0.0;
       left_foot_pose.rz = 0.0;
 
       shi2d2_interfaces::msg::FootPose right_foot_pose;
       right_foot_pose.leg_id = RIGHT_LEG;
-      right_foot_pose.x = (right_footstep_positions_[i].x - com_x[i]) + DEFAULT_FOOT_POSITION_X_M;
-      right_foot_pose.y = -(0*right_footstep_positions_[i].y - com_y[i]) + DEFAULT_FOOT_POSITION_Y_M;
-      right_foot_pose.z = right_footstep_positions_[i].z + DEFAULT_FOOT_POSITION_Z_M;
+      right_foot_pose.x = (right_footstep_positions_[j].x - com_x[i]) + DEFAULT_FOOT_POSITION_X_M;
+      right_foot_pose.y = -(0*right_footstep_positions_[j].y - com_y[i]) + DEFAULT_FOOT_POSITION_Y_M;
+      right_foot_pose.z = right_footstep_positions_[j].z + DEFAULT_FOOT_POSITION_Z_M;
       right_foot_pose.rx = 0.0;
       right_foot_pose.ry = 0.0;
       right_foot_pose.rz = 0.0;
 
       left_foot_poses.push_back(left_foot_pose);
       right_foot_poses.push_back(right_foot_pose);
+
+      // std::cout << "COM X=" << com_x[i] << ", COM Y=" << com_y[i] << std::endl;
+      // std::cout << i << " Left foot pose=" << left_foot_poses[i].x << ", " 
+      //           << left_foot_poses[i].y << ", " << left_foot_poses[i].z << std::endl;
+      // std::cout << i << " Right foot pose=" << right_foot_poses[i].x << ", "
+      //           << right_foot_poses[i].y << ", " << right_foot_poses[i].z << std::endl;
+      // std::cout << std::endl;
     }
 
-    for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+    for (int i = 0; i < L; i++) {
       foot_pose_publisher_->publish(left_foot_poses[i]);
       foot_pose_publisher_->publish(right_foot_poses[i]);
-      rclcpp::sleep_for(std::chrono::milliseconds(5)); // Sleep to avoid flooding the topic
+      // rclcpp::sleep_for(std::chrono::milliseconds(5)); // Sleep to avoid flooding the topic
     }
 
-    auto footpose_end = std::chrono::high_resolution_clock::now(); // End timer
-    auto footpose_duration = std::chrono::duration_cast<std::chrono::milliseconds>(footpose_end - footpose_start).count();
+    // auto footpose_end = std::chrono::high_resolution_clock::now(); // End timer
+    // auto footpose_duration = std::chrono::duration_cast<std::chrono::milliseconds>(footpose_end - footpose_start).count();
 
-    std::cout << "Published Foot Poses" << std::endl;
-    std::cout << "Foot pose generation took " << footpose_duration << " ms" << std::endl;
+    // std::cout << "Published Foot Poses" << std::endl;
+    // std::cout << "Foot pose generation took " << footpose_duration << " ms" << std::endl;
+    std::cout << "COM X=" << com_x[0] << ", COM Y=" << com_y[0] << std::endl;
+    std::cout << k << " Left foot pose: " << left_foot_poses[0].x << ", " 
+              << left_foot_poses[0].y << ", " << left_foot_poses[0].z << std::endl;
+    std::cout << k << " Right foot pose: " << right_foot_poses[0].x << ", "
+              << right_foot_poses[0].y << ", " << right_foot_poses[0].z << std::endl;
+    std::cout << std::endl;
 
-    plot_zmp_mpc_results(
-      t_, 
-      com_x, com_y,
-      zmp_refs_x_, zmp_refs_y_,
-      zmp_x, zmp_y,
-      left_footstep_positions_, right_footstep_positions_
-    );
+
+    // stuff for plotting solutions
+
+    // std::vector<double> zmp_refs_x(ZMP_MPC_NUM_TIMESTEPS);
+    // std::vector<double> zmp_refs_y(ZMP_MPC_NUM_TIMESTEPS);
+    // std::vector<double> t(ZMP_MPC_NUM_TIMESTEPS);
+    // for (int i = 0; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+    //   t[i] = (k + i) * ZMP_MPC_TIMESTEP_DURATION_MS;
+    //   if (k + i < zmp_refs_x_.size() && k + i < zmp_refs_y_.size()) {
+    //     zmp_refs_x[i] = zmp_refs_x_[k + i];
+    //     zmp_refs_y[i] = zmp_refs_y_[k + i];
+    //   } else {
+    //     zmp_refs_x[i] = 0.0; // pad with zeroes
+    //     zmp_refs_y[i] = 0.0; // pad with zeroes
+    //   }
+    // }
+
+    // if ((int) (tick_count_ * PLANNER_LOOP_PERIOD_MS) % 500 == 0) {
+    //   plot_zmp_mpc_results(
+    //     t, 
+    //     com_x, com_y,
+    //     zmp_refs_x, zmp_refs_y,
+    //     zmp_x, zmp_y,
+    //     left_footstep_positions_, right_footstep_positions_
+    //   );
+    // }
   }
 
   void plot_zmp_mpc_results(const std::vector<double>& time,  
@@ -472,39 +531,92 @@ private:
     //             msg->pose.pose.position.x, msg->pose.pose.position.y, msg->pose.pose.position.z);
   }
 
+  void get_robot_state()
+  {
+    // Get the robot state from the IMU and odometry data
+    body_state_.x = body_odometry_.pose.pose.position.x;
+    body_state_.y = body_odometry_.pose.pose.position.y;
+    body_state_.z = body_odometry_.pose.pose.position.z;
+
+    quaternion_to_euler(body_imu_data_.orientation.x, body_imu_data_.orientation.y, body_imu_data_.orientation.z, body_imu_data_.orientation.w,
+                        body_state_.rx, body_state_.ry, body_state_.rz);
+
+    body_state_.vx = body_odometry_.twist.twist.linear.x;
+    body_state_.vy = body_odometry_.twist.twist.linear.y;
+    body_state_.vz = body_odometry_.twist.twist.linear.z;
+
+    body_state_.wx = body_imu_data_.angular_velocity.x;
+    body_state_.wy = body_imu_data_.angular_velocity.y;
+    body_state_.wz = body_imu_data_.angular_velocity.z;
+
+    body_state_.ax = body_imu_data_.linear_acceleration.x;
+    body_state_.ay = body_imu_data_.linear_acceleration.y;
+    body_state_.az = body_imu_data_.linear_acceleration.z;
+
+    body_state_.alx = 0.0; // TODO: is there a way to get angular acceleration if we need it?
+    body_state_.aly = 0.0;
+    body_state_.alz = 0.0;
+    
+    // std::cout << std::fixed << std::setprecision(3)
+    //       << "Body State: X: [" 
+    //       << body_state_.x << ", " << body_state_.y << ", " << body_state_.z << ", "
+    //       << body_state_.rx << ", " << body_state_.ry << ", " << body_state_.rz << "] XD: ["
+    //       << body_state_.vx << ", " << body_state_.vy << ", " << body_state_.vz << ", "
+    //       << body_state_.wx << ", " << body_state_.wy << ", " << body_state_.wz << "] XDD:["
+    //       << body_state_.ax << ", " << body_state_.ay << ", " << body_state_.az << ", "
+    //       << body_state_.alx << ", " << body_state_.aly << ", " << body_state_.alz << "]" << std::endl;
+  }
+
   void timer_callback()
   {
-    // Process TF data
-    try
-    {
-      geometry_msgs::msg::TransformStamped transform_stamped = tf_buffer_->lookupTransform("world", "com_link", tf2::TimePointZero);
-      geometry_msgs::msg::TransformStamped left_foot_transform_stamped = tf_buffer_->lookupTransform("world", "left_foot_link", tf2::TimePointZero);
-      geometry_msgs::msg::TransformStamped right_foot_transform_stamped = tf_buffer_->lookupTransform("world", "right_foot_link", tf2::TimePointZero);
-      body_transform_ = transform_stamped.transform;
-      // RCLCPP_INFO(this->get_logger(), "Positions: B: [%.2f, %.2f, %.2f] L: [%.2f, %.2f, %.2f] R: [%.2f, %.2f, %.2f]",
-                  // body_transform_.translation.x,
-                  // body_transform_.translation.y,
-                  // body_transform_.translation.z,
-                  // left_foot_transform_stamped.transform.translation.x,
-                  // left_foot_transform_stamped.transform.translation.y,
-                  // left_foot_transform_stamped.transform.translation.z,
-                  // right_foot_transform_stamped.transform.translation.x,
-                  // right_foot_transform_stamped.transform.translation.y,
-                  // right_foot_transform_stamped.transform.translation.z);
-    }
-    catch (const tf2::TransformException &ex)
-    {
-      // RCLCPP_WARN(this->get_logger(), "Could not transform: %s", ex.what());
-    }
-    // get_robot_state();
+    get_robot_state();
+    if (tick_count_ * PLANNER_LOOP_PERIOD_MS >= 1000.0) {
+      // Process TF data
+      // try
+      // {
+      //   geometry_msgs::msg::TransformStamped transform_stamped = tf_buffer_->lookupTransform("world", "com_link", tf2::TimePointZero);
+      //   geometry_msgs::msg::TransformStamped left_foot_transform_stamped = tf_buffer_->lookupTransform("world", "left_foot_link", tf2::TimePointZero);
+      //   geometry_msgs::msg::TransformStamped right_foot_transform_stamped = tf_buffer_->lookupTransform("world", "right_foot_link", tf2::TimePointZero);
+      //   body_transform_ = transform_stamped.transform;
+        // RCLCPP_INFO(this->get_logger(), "Positions: B: [%.2f, %.2f, %.2f] L: [%.2f, %.2f, %.2f] R: [%.2f, %.2f, %.2f]",
+                    // body_transform_.translation.x,
+                    // body_transform_.translation.y,
+                    // body_transform_.translation.z,
+                    // left_foot_transform_stamped.transform.translation.x,
+                    // left_foot_transform_stamped.transform.translation.y,
+                    // left_foot_transform_stamped.transform.translation.z,
+                    // right_foot_transform_stamped.transform.translation.x,
+                    // right_foot_transform_stamped.transform.translation.y,
+                    // right_foot_transform_stamped.transform.translation.z);
+      // }
+      // catch (const tf2::TransformException &ex)
+      // {
+      //   RCLCPP_WARN(this->get_logger(), "Could not transform: %s", ex.what());
+      // }
+      // get_robot_state();
 
-    // Example publishing logic (can be customized)
-    // std_msgs::msg::Int8 message = std_msgs::msg::Int8();
-    // message.data = 0; // Example command
-    // publisher_->publish(message);
+      // Example publishing logic (can be customized)
+      // std_msgs::msg::Int8 message = std_msgs::msg::Int8();
+      // message.data = 0; // Example command
+      // publisher_->publish(message);
+
+
+
+      // if (((int) (tick_count_ * PLANNER_LOOP_PERIOD_MS)) % 500 == 0 && tick_count_ > 100) {
+      //   std::cout << tick_count_ << std::endl;
+      //   solve_zmp_mpc();
+      // }
+      if (tick_count_ + ZMP_MPC_NUM_TIMESTEPS < ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS) {
+        solve_zmp_mpc((int) (tick_count_ - 1000/PLANNER_LOOP_PERIOD_MS));
+      }
+    }
+    
+    tick_count_++;
   }
 
   rclcpp::TimerBase::SharedPtr timer_;
+  size_t tick_count_;
+
   rclcpp::Publisher<std_msgs::msg::Int8>::SharedPtr publisher_;
   rclcpp::Publisher<shi2d2_interfaces::msg::FootPose>::SharedPtr foot_pose_publisher_;
   rclcpp::Subscription<sensor_msgs::msg::Imu>::SharedPtr imu_subscriber_;

@@ -5,14 +5,17 @@
 #include <vector>
 #include <eigen3/Eigen/Dense>
 
-const double PLANNER_LOOP_PERIOD_MS = 10.0;
+const double PLANNER_LOOP_PERIOD_MS = 5.0;
 const double FOOT_POSE_PUBLISHER_LOOP_PERIOD_MS = 5.0;
 
 const double g = 9.81; // m/s^2
 
 // ZMP linear MPC constants
-const int ZMP_MPC_NUM_TIMESTEPS = 450; // number of time steps
-const int ZMP_MPC_NUM_STATIONARY_TIMESTEPS = ZMP_MPC_NUM_TIMESTEPS/10;
+const int ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS = 600 * 2;
+// const int ZMP_MPC_NUM_STATIONARY_FOOTSTEP_PLANNING_TIMESTEPS = ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS/8;
+const int ZMP_MPC_NUM_STATIONARY_FOOTSTEP_PLANNING_TIMESTEPS = 60;
+
+const int ZMP_MPC_NUM_TIMESTEPS = 300; // number of time steps
 const double ZMP_MPC_TIMESTEP_DURATION_MS = FOOT_POSE_PUBLISHER_LOOP_PERIOD_MS; // MPC time step period in ms
 const double ZMP_MPC_TIMESTEP_DURATION_SEC = ZMP_MPC_TIMESTEP_DURATION_MS/1000.0; // MPC time step period in s
 const double ZMP_MPC_COM_HEIGHT_M = 0.275;
