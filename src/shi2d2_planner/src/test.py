@@ -583,7 +583,7 @@ def f7():
                   u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,
                   right_foot_x, right_foot_y, right_foot_z, title):
         # Create subplots
-        fig, axs = plt.subplots(6, 1, figsize=(10, 20), sharex=True)
+        fig, axs = plt.subplots(7, 1, figsize=(10, 20), sharex=True)
         # Plot ZMP references
         axs[0].plot(indices, zmp_ref_x, label="ZMP REF X", color="blue")
         axs[0].plot(indices, zmp_ref_y, label="ZMP REF Y", color="orange")
@@ -628,25 +628,39 @@ def f7():
         axs[5].legend()
         axs[5].grid()
 
+        # Plot foot positions
+        axs[6].plot(indices, left_foot_y, label="Left Foot Y", color="blue")
+        axs[6].plot(indices, right_foot_y, label="Right Foot Y", color="orange")
+        axs[6].set_ylabel("Foot Y Positions")
+        axs[6].set_xlabel("Index (i)")
+        axs[6].legend()
+        axs[6].grid()
+
         # Set the title
         fig.suptitle(title, fontsize=16)
         plt.tight_layout()
         # plt.show()
 
-        if "no_feedback" in title:
-           print("COM X:")
-           print(com_x)
-           print("COM Y:")
-           print(com_y)
+        # if "no_feedback" in title:
+        #    print("COM X:")
+        #    print(com_x)
+        #    print("COM Y:")
+        #    print(com_y)
 
     # Parse and plot data for both files
     file_paths = {
-        "data_with_feedback": "./src/shi2d2_planner/debug_data/full_data_with_feedback.txt",
-        "data_with_feedback2": "./src/shi2d2_planner/debug_data/full_data_with_feedback2.txt",
-        "data_no_feedback": "./src/shi2d2_planner/debug_data/full_data_no_feedback.txt"
+        # "data_with_feedback": "./src/shi2d2_planner/debug_data/full_data_with_feedback.txt",
+        # "data_with_feedback2": "./src/shi2d2_planner/debug_data/full_data_with_feedback2.txt",
+        # "data_with_feedback3": "./src/shi2d2_planner/debug_data/full_data_with_feedback3.txt",
+        # "data_with_feedback4": "./src/shi2d2_planner/debug_data/full_data_with_feedback4.txt",
+        # "data_fake_feedback": "./src/shi2d2_planner/debug_data/full_data_fake_feedback.txt",
+        # "data_fake_feedback2": "./src/shi2d2_planner/debug_data/full_data_fake_feedback2.txt",
+        "data_fake_feedback3": "./src/shi2d2_planner/debug_data/full_data_fake_feedback3.txt",
+        # "data_no_feedback": "./src/shi2d2_planner/debug_data/full_data_no_feedback.txt",
+        "data_no_feedback2": "./src/shi2d2_planner/debug_data/full_data_no_feedback2.txt",
     }
 
-    max_index = 301
+    max_index = 600
     for title, file_path in file_paths.items():
         (indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot,
          u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,

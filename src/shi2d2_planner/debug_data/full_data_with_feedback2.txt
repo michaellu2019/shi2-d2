@@ -1,4 +1,4 @@
-Initializing ZMP MPC...
+Initializing ZMP MPC... (full data with feedback 2)
 Footstep generation took 0 ms
 ZMP initialization took 596 ms
 Solving ZMP MPC for k=0 took 1 ms
