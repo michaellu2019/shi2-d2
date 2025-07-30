@@ -583,7 +583,7 @@ def f7():
                   u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,
                   right_foot_x, right_foot_y, right_foot_z, title):
         # Create subplots
-        fig, axs = plt.subplots(7, 1, figsize=(10, 20), sharex=True)
+        fig, axs = plt.subplots(7, 1, figsize=(10, 20), sharex=False)
         # Plot ZMP references
         axs[0].plot(indices, zmp_ref_x, label="ZMP REF X", color="blue")
         axs[0].plot(indices, zmp_ref_y, label="ZMP REF Y", color="orange")
@@ -599,6 +599,15 @@ def f7():
         axs[1].set_ylabel("X Values")
         axs[1].legend()
         axs[1].grid()
+
+        # Plot X vs Y
+        # axs[1].plot(x, y, label="X vs Y", color="blue", alpha=0.5)
+        # axs[1].plot(com_x, com_y, label="X vs Y", color="purple", alpha=0.5)
+        # axs[1].set_xlabel("X Values")
+        # axs[1].set_ylabel("Y Values")
+        # axs[1].legend()
+        # axs[1].grid()
+        
 
         # Plot Y values
         axs[2].plot(indices, y, label="Y", color="blue")
@@ -647,6 +656,54 @@ def f7():
         #    print("COM Y:")
         #    print(com_y)
 
+    def plot_data2(indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot,
+                  u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,
+                  right_foot_x, right_foot_y, right_foot_z, title):
+        # Create subplots
+        fig, axs = plt.subplots(4, 1, figsize=(10, 20), sharex=False)
+        # Plot ZMP references
+        axs[0].plot(indices, zmp_ref_x, label="ZMP REF X", color="blue")
+        axs[0].plot(indices, x, label="X", color="red")
+        axs[0].plot(indices, com_x, label="COM X", color="orange")
+        # axs[0].plot(indices, left_foot_x, label="Left Foot X", color="green")
+        # axs[0].plot(indices, right_foot_x, label="Right Foot X", color="purple")
+        axs[0].set_ylabel("X Values")
+        axs[0].legend()
+        axs[0].grid()
+        
+
+        # Plot Y values
+        axs[1].plot(indices, zmp_ref_y, label="ZMP REF Y", color="blue")
+        axs[1].plot(indices, y, label="Y", color="red")
+        axs[1].plot(indices, com_y, label="COM Y", color="orange")
+        # axs[1].plot(indices, left_foot_y, label="Left Foot Y", color="green")
+        # axs[1].plot(indices, right_foot_y, label="Right Foot Y", color="purple")
+        axs[1].set_ylabel("Y Values")
+        axs[1].legend()
+        axs[1].grid()
+
+        # Plot Ux and Uy
+        axs[2].plot(indices, u_x, label="Ux", color="blue")
+        axs[2].set_ylabel("X Control Inputs")
+        axs[2].legend()
+        axs[2].grid()
+        
+        axs[3].plot(indices, u_y, label="Uy", color="orange")
+        axs[3].set_ylabel("Y Control Inputs")
+        axs[3].legend()
+        axs[3].grid()
+
+        # Set the title
+        fig.suptitle(title, fontsize=16)
+        plt.tight_layout()
+        # plt.show()
+
+        # if "no_feedback" in title:
+        #    print("COM X:")
+        #    print(com_x)
+        #    print("COM Y:")
+        #    print(com_y)
+
     # Parse and plot data for both files
     file_paths = {
         # "data_with_feedback": "./src/shi2d2_planner/debug_data/full_data_with_feedback.txt",
@@ -655,17 +712,18 @@ def f7():
         # "data_with_feedback4": "./src/shi2d2_planner/debug_data/full_data_with_feedback4.txt",
         # "data_fake_feedback": "./src/shi2d2_planner/debug_data/full_data_fake_feedback.txt",
         # "data_fake_feedback2": "./src/shi2d2_planner/debug_data/full_data_fake_feedback2.txt",
-        "data_fake_feedback3": "./src/shi2d2_planner/debug_data/full_data_fake_feedback3.txt",
+        # "data_fake_feedback3": "./src/shi2d2_planner/debug_data/full_data_fake_feedback3.txt",
         # "data_no_feedback": "./src/shi2d2_planner/debug_data/full_data_no_feedback.txt",
         "data_no_feedback2": "./src/shi2d2_planner/debug_data/full_data_no_feedback2.txt",
+        # "stationary_with_feedback": "./src/shi2d2_planner/debug_data/stationary_data_with_feedback.txt",
     }
 
-    max_index = 600
+    max_index = 300
     for title, file_path in file_paths.items():
         (indices, zmp_ref_x, zmp_ref_y, x, x_dot, x_ddot, y, y_dot, y_ddot,
          u_x, u_y, com_x, com_y, left_foot_x, left_foot_y, left_foot_z,
          right_foot_x, right_foot_y, right_foot_z) = parse_data(file_path)
-        plot_data(indices[:max_index], zmp_ref_x[:max_index], zmp_ref_y[:max_index], x[:max_index], x_dot[:max_index], x_ddot[:max_index], y[:max_index], y_dot[:max_index], y_ddot[:max_index],
+        plot_data2(indices[:max_index], zmp_ref_x[:max_index], zmp_ref_y[:max_index], x[:max_index], x_dot[:max_index], x_ddot[:max_index], y[:max_index], y_dot[:max_index], y_ddot[:max_index],
                   u_x[:max_index], u_y[:max_index], com_x[:max_index], com_y[:max_index], left_foot_x[:max_index], left_foot_y[:max_index], left_foot_z[:max_index],
                   right_foot_x[:max_index], right_foot_y[:max_index], right_foot_z[:max_index], title)
     plt.show()
