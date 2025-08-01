@@ -43,8 +43,9 @@ public:
     tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
     tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
 
-    init_zmp_mpc();
+    // init_zmp_mpc();
     // solve_zmp_mpc();
+    mpc();
   }
 
   ~LocomotionPlanner()
@@ -67,6 +68,281 @@ private:
   void get_robot_zmp()
   {
 
+  }
+
+  static double mpc_cost_function(unsigned n, const double *u, double *grad, void *data)
+  {
+    MPCData *mpc_data = static_cast<MPCData *>(data);
+    // const Eigen::Vector3d &X = mpc_data->X;
+    double x = mpc_data->X[0];
+    double v = mpc_data->X[1];
+    double a = mpc_data->X[2];
+    const std::vector<double> &v_refs = mpc_data->v_refs;
+    
+    double cost = 0.0;
+    int k = 0;
+
+    for (int i = k; i < k + ZMP_MPC_NUM_TIMESTEPS; i++) {
+      a = g/ZMP_MPC_COM_HEIGHT_M * (u[i]);
+      // a = g/ZMP_MPC_COM_HEIGHT_M * (x - u[i]);
+      v = v + a * ZMP_MPC_TIMESTEP_DURATION_SEC;
+      x = x + v * ZMP_MPC_TIMESTEP_DURATION_SEC;
+      double v_ref = v_refs[i + 1];
+      
+      if (grad) {
+        // double grad1 = 2 * (u[i] - 1);
+        double grad1 = 2 * MPC_V_PENALTY * (v - v_ref) * ZMP_MPC_TIMESTEP_DURATION_SEC * (-g/ZMP_MPC_COM_HEIGHT_M);
+        // double grad2 = -2 * MPC_U_PENALTY * 1/pow(u[i], 3);
+        double grad2 = 2 * MPC_U_PENALTY * u[i];
+        grad[i] = grad1 + grad2;
+      }
+
+      // double iteration_cost1 = pow(u[i] - 1, 2);
+      double iteration_cost1 = MPC_V_PENALTY * pow(v - v_ref, 2);
+      // double iteration_cost2 = MPC_U_PENALTY * 1/pow(u[i], 2);
+      double iteration_cost2 = MPC_U_PENALTY * pow(u[i], 2);
+      cost += iteration_cost1 + iteration_cost2;
+      // std::cout << i << "cost: " << iteration_cost << ", v_next: " << v_next << ", v_ref_next: " << v_ref_next << std::endl;
+    }
+
+
+    return cost;
+  }
+
+  static void mpc_multi_constraint(unsigned m, double *result, unsigned n, const double *u, double *grad, void *data)
+  {
+    MPCData *mpc_data = static_cast<MPCData *>(data);
+    double x = mpc_data->X[0];
+    double v = mpc_data->X[1];
+    double a = mpc_data->X[2];
+
+    double step_period_ms = mpc_data->step_period_ms;
+    double half_step_period_ms = step_period_ms/2.0;
+
+    int k = 0;
+
+    for (int i = k; i < k + ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = i * ZMP_MPC_TIMESTEP_DURATION_MS;
+      bool left_foot_on_ground = t_ms % (int) step_period_ms < half_step_period_ms;
+
+      if (grad) {
+        grad[i] = left_foot_on_ground ? 1.0 : -1.0;
+        // grad[i] = 1.0;
+      }
+      
+      // result[i] = left_foot_on_ground ? -(x - u[i]) + 60e-3 : (x - u[i]) + 60e-3;
+      // result[i] = left_foot_on_ground ? u[i] + 2 : -u[i] + 2;
+      result[i] = left_foot_on_ground ? u[i] + 1.0 : -u[i] + 1.0;
+
+      std::cout << t_ms << ": " << left_foot_on_ground << " -> " << x << " vs " << u[i] << " = " << result[i] << std::endl;
+      
+      a = g/ZMP_MPC_COM_HEIGHT_M * (x - u[i]);
+      v = v + a * ZMP_MPC_TIMESTEP_DURATION_SEC;
+      x = x + v * ZMP_MPC_TIMESTEP_DURATION_SEC;
+    }
+
+    return;
+  }
+
+  void mpc()
+  {
+    const double V_REF_X = 400e-3;
+    const double V_REF_Y = 0.0;
+    
+    std::vector<double> v_refs_x(ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS, V_REF_X);
+    std::vector<double> v_refs_y(ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS, V_REF_Y);
+
+    double half_step_period_ms = ZMP_STEP_LENGTH_M/V_REF_X * 1000.0;
+    double step_period_ms = half_step_period_ms * 2;
+    double double_support_duration_ms = half_step_period_ms/5;
+    double single_support_duration_ms = half_step_period_ms - double_support_duration_ms;
+    double step_support_duration_ms = 2 * double_support_duration_ms + single_support_duration_ms;
+
+    Eigen::Vector3d X(body_state_.x, body_state_.vx, body_state_.ax);
+    Eigen::Vector3d Y(body_state_.y, body_state_.vy, body_state_.ay);
+    std::vector<double> u_x(ZMP_MPC_NUM_TIMESTEPS);
+    std::vector<double> u_y(ZMP_MPC_NUM_TIMESTEPS);
+
+
+
+    int k = 0;
+    std::vector<double> u_y_lb;
+    std::vector<double> u_y_ub;
+
+
+    for (int i = k; i < k + ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = i * ZMP_MPC_TIMESTEP_DURATION_MS;
+      bool left_foot_on_ground = t_ms % (int) step_period_ms < half_step_period_ms;
+
+      if (left_foot_on_ground) {
+        u_y_lb.push_back(-HUGE_VAL);
+        u_y_ub.push_back(-MPC_FOOTSTEP_Y_INNER_BOUND);
+        u_y[i] = -MPC_FOOTSTEP_Y_INNER_BOUND * 2;
+      } else {
+        u_y_lb.push_back(MPC_FOOTSTEP_Y_INNER_BOUND);
+        u_y_ub.push_back(HUGE_VAL);
+        u_y[i] = MPC_FOOTSTEP_Y_INNER_BOUND * 2;
+      }
+    }
+
+    // for (int i = 0; i < u_y_lb.size(); i++) {
+    //   std::cout << u_y_lb[i] << ", ";
+    // }
+    // std::cout << std::endl;
+    // for (int i = 0; i < u_y_ub.size(); i++) {
+    //   std::cout << u_y_ub[i] << ", ";
+    // }
+    // std::cout << std::endl;
+
+    MPCData mpc_y_data{Y, step_period_ms, v_refs_y};
+    std::vector<double> y_tol_constraints(ZMP_MPC_NUM_TIMESTEPS, 1e-8);
+
+    // nlopt::opt opt_x(nlopt::LD_MMA, ZMP_MPC_NUM_TIMESTEPS);
+    // opt_x.set_min_objective(zmp_mpc_cost_function, &zmp_mpc_x_data);
+    // opt_x.set_xtol_rel(1e-4);
+    // opt_x.set_maxtime(10.0);
+    
+    nlopt::opt opt_y(nlopt::LD_MMA, ZMP_MPC_NUM_TIMESTEPS);
+    opt_y.set_min_objective(mpc_cost_function, &mpc_y_data);
+    // opt_y.add_inequality_mconstraint(mpc_multi_constraint, &mpc_y_data, y_tol_constraints);
+    opt_y.set_lower_bounds(u_y_lb);
+    opt_y.set_upper_bounds(u_y_ub);
+    opt_y.set_xtol_rel(1e-4);
+    opt_y.set_maxtime(10.0);
+    
+    auto y_start_time = std::chrono::high_resolution_clock::now(); // Start timer
+    double min_y_cost;
+    try {
+      nlopt::result result = opt_y.optimize(u_y, min_y_cost);
+      
+      auto y_end_time = std::chrono::high_resolution_clock::now(); // End timer
+      auto y_duration = std::chrono::duration_cast<std::chrono::milliseconds>(y_end_time - y_start_time).count();
+      RCLCPP_INFO(this->get_logger(), "Y Optimization succeeded. Min cost: %.3f", min_y_cost);
+      RCLCPP_INFO(this->get_logger(), "Solver took %ld ms\n", y_duration);
+      std::cout << std::endl;
+    } catch (std::exception &e) {
+      RCLCPP_ERROR(this->get_logger(), "NLOPT failed: %s", e.what());
+    }
+
+    std::cout << "Footstep Values" << std::endl;
+    std::vector<double> time;
+    k = 0;
+    for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
+      time.push_back(t_ms);
+      std::cout << "(" << t_ms << ", " << u_x[i - k] << ", " << u_y[i - k] << "), ";
+    }
+    std::cout << std::endl;
+
+    std::vector<double> com_x(ZMP_MPC_NUM_TIMESTEPS);
+    std::vector<double> com_v_x(ZMP_MPC_NUM_TIMESTEPS);
+
+    double y_sim = Y[0];
+    double v_y_sim = Y[1];
+    double a_y_sim = Y[2];
+    std::vector<double> com_y;
+    std::vector<double> com_v_y;
+    for (int i = k; i < ZMP_MPC_NUM_TIMESTEPS; i++) {
+      int t_ms = (int) i * ZMP_MPC_TIMESTEP_DURATION_MS;
+
+      com_y.push_back(y_sim);
+      com_v_y.push_back(v_y_sim);
+
+      std::cout << "Y[" << t_ms << "] = " << y_sim << ", "
+                << "VY[" << t_ms << "] = " << v_y_sim << ", "
+                << "AY[" << t_ms << "] = " << a_y_sim << ", "
+                << "UY[" << t_ms << "] = " << u_y[i] << ", " << std::endl;
+      
+      a_y_sim = g/ZMP_MPC_COM_HEIGHT_M * (u_y[i]);
+      // a_y_sim = g/ZMP_MPC_COM_HEIGHT_M * (y_sim - u_y[i]);
+      v_y_sim = v_y_sim + a_y_sim * ZMP_MPC_TIMESTEP_DURATION_SEC;
+      y_sim = y_sim + v_y_sim * ZMP_MPC_TIMESTEP_DURATION_SEC;
+
+    }
+
+    plot_mpc_results(time, com_x, com_v_x, com_y, com_v_y, u_x, u_y);
+  }
+
+  void plot_mpc_results(const std::vector<double>& time,  
+                        const std::vector<double>& com_x, const std::vector<double>& com_v_x,
+                        const std::vector<double>& com_y, const std::vector<double>& com_v_y,
+                        const std::vector<double>& u_x, const std::vector<double>& u_y) {
+    plt::figure();
+
+    // Plot 1: Y vs X
+    plt::subplot(5, 1, 1); // 3 rows, 1 column, 1st plot
+    plt::plot(com_x, com_y, {{"label", "com_y vs com_x"}});
+    plt::plot(u_x, u_y, {{"label", "u_y vs u_x"}});
+    plt::xlabel("X (meters)");
+    plt::ylabel("Y (meters)");
+    plt::title("Trajectories in X-Y Plane");
+    plt::legend();
+    plt::grid(true);
+
+    // Plot 2: X vs t
+    plt::subplot(5, 1, 2); // 3 rows, 1 column, 2nd plot
+    // plt::plot(time, com_x, {{"label", "COM X vs t"}});
+    plt::plot(time, u_x, {{"label", "Ux vs t"}});
+    plt::xlabel("Time (seconds)");
+    plt::ylabel("X (meters)");
+    plt::title("Trajectory X over Time");
+    plt::legend();
+    plt::grid(true);
+    
+    // Plot 3: Y vs t
+    plt::subplot(5, 1, 3); // 3 rows, 1 column, 3rd plot
+    // plt::plot(time, com_y, {{"label", "COM Y vs t"}});
+    plt::plot(time, u_y, {{"label", "Uy vs t"}});
+    plt::xlabel("Time (seconds)");
+    plt::ylabel("Y (meters)");
+    plt::title("Trajectory Y over Time");
+    plt::legend();
+    plt::grid(true);
+
+    // Plot 4: Vx vs t
+    plt::subplot(5, 1, 4); // 3 rows, 1 column, 4th plot
+    plt::plot(time, com_v_x, {{"label", "Vx vs t"}});
+    plt::xlabel("Time (seconds)");
+    plt::ylabel("Vx (m/s)");
+    plt::title("Trajectory Vx over Time");
+    plt::legend();
+    plt::grid(true);
+
+    // Plot 5: Vy vs t
+    plt::subplot(5, 1, 5); // 3 rows, 1 column, 5th plot
+    plt::plot(time, com_v_y, {{"label", "Vy vs t"}});
+    plt::xlabel("Time (seconds)");
+    plt::ylabel("Vy (m/s)");
+    plt::title("Trajectory Vy over Time");
+    plt::legend();
+    plt::grid(true);
+
+    // // Plot 2: states
+    // plt::subplot(4, 1, 4); // 3 rows, 1 column, 2nd plot
+    // plt::plot(time, double_support, {{"label", "DSP vs t"}});
+    // plt::plot(time, right_foot_down, {{"label", "RFD vs t"}});
+    // plt::xlabel("Time (seconds)");
+    // plt::ylabel("States");
+    // plt::title("Gait States over Time");
+    // plt::legend();
+    // plt::grid(true);
+
+    // Show all plots
+    plt::tight_layout();
+    plt::show();
+
+    // 3D plot of foot step and ZMP trajectories
+    // plt::figure();
+    // plt::plot3(com_x, com_y, std::vector<double>(com_x.size(), 0.0), {{"label", "COM Trajectory"}});
+    // plt::plot3(zmp_ref_x, zmp_ref_y, std::vector<double>(zmp_ref_x.size(), 0.0), {{"label", "ZMP Reference Trajectory"}});
+    // plt::plot3(zmp_x, zmp_y, std::vector<double>(zmp_x.size(), 0.0), {{"label", "ZMP Trajectory"}});
+    // plt::plot3(left_foot_x, left_foot_y, left_foot_z, {{"label", "Left Foot Steps"}});
+    // plt::plot3(right_foot_x, right_foot_y, right_foot_z, {{"label", "Right Foot Steps"}});
+    // plt::xlabel("X (meters)");
+    // plt::ylabel("Y (meters)");
+    // plt::zlabel("Z (meters)");
+    // plt::title("3D Trajectories of COM and ZMP");
+    // plt::legend();
   }
 
   void plan_footsteps()
@@ -618,7 +894,7 @@ private:
       //   solve_zmp_mpc();
       // }
       if (tick_count_ + ZMP_MPC_NUM_TIMESTEPS < ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS) {
-        solve_zmp_mpc((int) (tick_count_ - 1000/PLANNER_LOOP_PERIOD_MS));
+        // solve_zmp_mpc((int) (tick_count_ - 1000/PLANNER_LOOP_PERIOD_MS));
       }
     }
     

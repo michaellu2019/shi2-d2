@@ -24,6 +24,10 @@ const double ZMP_MPC_U_PENALTY = 1000.0 * 1e-6 *1e-6;
 const double ZMP_MPC_COP_X_BOUNDS_M = 0.75 * 0.140/2;
 const double ZMP_MPC_COP_Y_BOUNDS_M = 0.75 * 0.3/2;
 
+const double MPC_V_PENALTY = 1;//1000.0;
+const double MPC_U_PENALTY = 1;//10.0e-5;
+const double MPC_FOOTSTEP_Y_INNER_BOUND = 80e-3;
+
 double ZMP_STEP_LENGTH_M = 40.0e-3;
 double ZMP_STEP_WIDTH_M = 240.0e-3 * 0.5;
 double ZMP_STEP_HEIGHT_M = 30.0e-3;
@@ -57,6 +61,12 @@ Eigen::Matrix<double, 1, 3> C {
 enum LEG_ID {
   LEFT_LEG,
   RIGHT_LEG,
+};
+
+struct MPCData {
+  Eigen::Vector3d X;
+  double step_period_ms;
+  std::vector<double> v_refs;
 };
 
 struct ZMPMPCData {
