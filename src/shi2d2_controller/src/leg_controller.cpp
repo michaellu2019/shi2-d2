@@ -209,6 +209,84 @@ class LegController : public rclcpp::Node
       right_leg_joint_traj_.points.clear();
     }
 
+    void walk_open_loop(WalkingTwist &walking_twist, shi2d2_interfaces::msg::FootPose &left_foot_pose, shi2d2_interfaces::msg::FootPose &right_foot_pose)
+    {
+      int t_ms = (tick_count_ - walk_start_tick_) * CONTROLLER_LOOP_PERIOD_MS;
+      double v_ref = sqrt(walking_twist.vx * walking_twist.vx + walking_twist.vy * walking_twist.vy);
+      double w_ref = abs(walking_twist.wz);
+
+      double half_step_duration_ms = STEP_LENGTH_M/v_ref * 1000.0;
+      if (v_ref == 0 && w_ref != 0) {
+        half_step_duration_ms = TURN_STEP_ANGLE_RAD/w_ref * 1000.0;
+      }
+      double double_support_duration_ms = half_step_duration_ms/5.0;
+      double single_support_duration_ms = half_step_duration_ms - double_support_duration_ms;
+      double step_period_ms = half_step_duration_ms * 2;
+      double step_support_duration_ms = 2 * double_support_duration_ms + single_support_duration_ms;
+
+      int half_step_time_ms = t_ms % (int) half_step_duration_ms;
+      int step_time_ms = t_ms % (int) step_period_ms;
+      int single_support_step_time_ms = half_step_time_ms < single_support_duration_ms ? half_step_time_ms : single_support_duration_ms;
+      bool left_foot_on_ground = t_ms % (int) step_period_ms < half_step_duration_ms;
+
+      double step_x_length_m = walking_twist.vx * half_step_duration_ms/1000.0;
+      double step_y_length_m = walking_twist.vy * half_step_duration_ms/1000.0;
+      double step_z_height_m = STEP_HEIGHT_M * 1.0;
+      double step_angle_rad = walking_twist.wz * half_step_duration_ms/1000.0;
+
+      double step_vx = walking_twist.vx;
+      double step_vy = walking_twist.vy;
+      double step_wz = walking_twist.wz;
+
+      double yaw = -step_angle_rad/2 + step_wz * single_support_step_time_ms/1000.0; // huh???
+      if (t_ms < single_support_duration_ms) {
+        // first step from rest
+        yaw = step_wz/2 * single_support_step_time_ms/1000.0; 
+      }
+
+      double ground_step_x = DEFAULT_FOOT_POSITION_X_M + step_x_length_m/2 - step_vx * single_support_step_time_ms/1000.0;
+      double ground_step_y = DEFAULT_FOOT_POSITION_Y_M + step_y_length_m/2 - step_vy * single_support_step_time_ms/1000.0;
+      double ground_step_z = DEFAULT_FOOT_POSITION_Z_M;
+      if (t_ms < single_support_duration_ms) { 
+        // first step from rest
+        ground_step_x = DEFAULT_FOOT_POSITION_X_M - step_vx/2 * single_support_step_time_ms/1000.0;
+        ground_step_y = DEFAULT_FOOT_POSITION_Y_M - step_vy/2 * single_support_step_time_ms/1000.0;
+      }
+      if (yaw != 0) {
+        ground_step_x = DEFAULT_FOOT_POSITION_X_M * cos(-yaw) + (DEFAULT_FOOT_POSITION_Y_M + LOWER_HIP_LINK_LENGTH_M) * sin(-yaw);
+        ground_step_y = (DEFAULT_FOOT_POSITION_X_M * -sin(-yaw) + (DEFAULT_FOOT_POSITION_Y_M + LOWER_HIP_LINK_LENGTH_M) * cos(-yaw)) - (DEFAULT_FOOT_POSITION_Y_M + LOWER_HIP_LINK_LENGTH_M);
+      }
+      double ground_step_yaw = yaw;
+
+      double lift_step_x = DEFAULT_FOOT_POSITION_X_M - step_x_length_m/2 * cos(M_PI/(single_support_duration_ms) * single_support_step_time_ms);
+      double lift_step_y = DEFAULT_FOOT_POSITION_Y_M - step_y_length_m/2 * cos(M_PI/(single_support_duration_ms) * single_support_step_time_ms);
+      double lift_step_z = DEFAULT_FOOT_POSITION_Z_M + step_z_height_m * sin(M_PI/(single_support_duration_ms) * single_support_step_time_ms);
+      if (t_ms < single_support_duration_ms) { 
+        // first step from rest
+        lift_step_x = DEFAULT_FOOT_POSITION_X_M - step_x_length_m/4 * cos(M_PI/(single_support_duration_ms) * single_support_step_time_ms);
+        lift_step_y = DEFAULT_FOOT_POSITION_Y_M - step_y_length_m/4 * cos(M_PI/(single_support_duration_ms) * single_support_step_time_ms);
+      }
+      if (yaw != 0) {
+        lift_step_x = DEFAULT_FOOT_POSITION_X_M * cos(yaw) + (DEFAULT_FOOT_POSITION_Y_M + LOWER_HIP_LINK_LENGTH_M) * sin(yaw);
+        lift_step_y = (DEFAULT_FOOT_POSITION_X_M * -sin(yaw) + (DEFAULT_FOOT_POSITION_Y_M + LOWER_HIP_LINK_LENGTH_M) * cos(yaw)) - (DEFAULT_FOOT_POSITION_Y_M + LOWER_HIP_LINK_LENGTH_M);
+      }
+      double lift_step_yaw = yaw;
+
+      if (left_foot_on_ground) {
+        set_foot_pose_values(left_foot_pose, LEFT_LEG, ground_step_x, ground_step_y, ground_step_z, 0.0, 0.0, -ground_step_yaw);
+        set_foot_pose_values(right_foot_pose, RIGHT_LEG, lift_step_x, -lift_step_y, lift_step_z, 0.0, 0.0, lift_step_yaw);
+      } else {
+        set_foot_pose_values(left_foot_pose, LEFT_LEG, lift_step_x, lift_step_y, lift_step_z, 0.0, 0.0, -lift_step_yaw);
+        set_foot_pose_values(right_foot_pose, RIGHT_LEG, ground_step_x, -ground_step_y, ground_step_z, 0.0, 0.0, ground_step_yaw);
+      }
+
+      std::cout << "t: " << t_ms << ", step: " << step_time_ms << ", half: " << half_step_time_ms << ", ssp: " << single_support_step_time_ms << ", LF: " << left_foot_on_ground
+                << ", T: " << step_period_ms << ", X: " << step_x_length_m << ", Y: " << step_y_length_m
+                << ", L: " << left_foot_pose.x << ", " << left_foot_pose.y << ", " << left_foot_pose.z
+                << ", R: " << right_foot_pose.x << ", " << right_foot_pose.y << ", " << right_foot_pose.z
+                << std::endl;
+    }
+
     void walk_open_loop(int walking_direction, shi2d2_interfaces::msg::FootPose &left_foot_pose, shi2d2_interfaces::msg::FootPose &right_foot_pose)
     {
       int step_tick = tick_count_ - walk_start_tick_;
@@ -219,7 +297,7 @@ class LegController : public rclcpp::Node
       double step_x_slide_speed_m_p_s = step_length_m/(STEP_PERIOD_MS * 0.5);
       double step_y_slide_speed_m_p_s = step_width_m/(STEP_PERIOD_MS * 0.5);
       double step_turn_speed_rad_p_s = step_angle_rad/(STEP_PERIOD_MS * 0.5);
-
+      
       int count_time_elapsed_ms = (step_tick * CONTROLLER_LOOP_PERIOD_MS);
       int step_half_cycle_count = (count_time_elapsed_ms/((int) STEP_PERIOD_MS/2)) % 2;
       int step_half_cycle_time_ms = count_time_elapsed_ms % ((int) STEP_PERIOD_MS/2);
@@ -235,8 +313,8 @@ class LegController : public rclcpp::Node
       }
       double step_slide_yaw = yaw;
 
-      double step_lift_x = DEFAULT_FOOT_POSITION_X_M - step_length_m * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
-      double step_lift_y = DEFAULT_FOOT_POSITION_Y_M - step_width_m * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      double step_lift_x = DEFAULT_FOOT_POSITION_X_M - step_length_m/2 * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
+      double step_lift_y = DEFAULT_FOOT_POSITION_Y_M - step_width_m/2 * cos(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
       double step_lift_z = DEFAULT_FOOT_POSITION_Z_M + step_height_m * sin(M_PI/(STEP_PERIOD_MS * 0.5) * step_half_cycle_time_ms);
       if (yaw != 0) {
         step_lift_x = DEFAULT_FOOT_POSITION_X_M * cos(yaw) + (DEFAULT_FOOT_POSITION_Y_M + LOWER_HIP_LINK_LENGTH_M) * sin(yaw);
@@ -267,36 +345,41 @@ class LegController : public rclcpp::Node
         shi2d2_interfaces::msg::LegJointAngles left_leg_joint_angles;
         shi2d2_interfaces::msg::LegJointAngles right_leg_joint_angles;
 
-        if ((tick_count_ - last_teleop_command_tick_) * CONTROLLER_LOOP_PERIOD_MS > TELEOP_COMMAND_TIMEOUT_MS) {
-          teleop_command_ = STOP;
-        }
+        // if ((tick_count_ - last_teleop_command_tick_) * CONTROLLER_LOOP_PERIOD_MS > TELEOP_COMMAND_TIMEOUT_MS) {
+        //   teleop_command_ = STOP;
+        // }
         if (teleop_command_ != STOP) {
-          walk_open_loop(teleop_command_, left_foot_pose, right_foot_pose);
+          // walk_open_loop(teleop_command_, left_foot_pose, right_foot_pose);
+          WalkingTwist walking_twist;
+          walking_twist.vx = 0.25 * ((teleop_command_ == FORWARD) - (teleop_command_ == BACKWARD));
+          walking_twist.vy = 0.25 * ((teleop_command_ == LEFT) - (teleop_command_ == RIGHT));
+          walking_twist.wz = 45 * (M_PI/180.0) * ((teleop_command_ == CLOCKWISE) - (teleop_command_ == COUNTERCLOCKWISE));
+          walk_open_loop(walking_twist, left_foot_pose, right_foot_pose);
         }
 
-        if (left_foot_poses_.size() > 0) {
-          left_foot_pose = left_foot_poses_.front();
-          left_foot_poses_.pop();
+        // if (left_foot_poses_.size() > 0) {
+        //   left_foot_pose = left_foot_poses_.front();
+        //   left_foot_poses_.pop();
 
 
-          solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
-          set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
-        } 
-        if (right_foot_poses_.size() > 0) {
-          right_foot_pose = right_foot_poses_.front();
-          right_foot_poses_.pop();
-
-          solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
-          set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
-        }
+        //   solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
+        //   set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
+        // } 
+        // if (right_foot_poses_.size() > 0) {
+        //   right_foot_pose = right_foot_poses_.front();
+        //   right_foot_poses_.pop();
+        
+        //   solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
+        //   set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
+        // }
 
         // test_leg_ik(LEFT_LEG, left_foot_pose);
         // test_leg_ik(RIGHT_LEG, right_foot_pose);
 
-        // solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
-        // solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
-        // set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
-        // set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
+        solve_leg_ik(LEFT_LEG, left_foot_pose, left_leg_joint_angles);
+        solve_leg_ik(RIGHT_LEG, right_foot_pose, right_leg_joint_angles);
+        set_leg_joint_angles(LEFT_LEG, left_leg_joint_angles);
+        set_leg_joint_angles(RIGHT_LEG, right_leg_joint_angles);
         
         write_leg_angles();
       }

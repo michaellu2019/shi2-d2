@@ -75,6 +75,9 @@ private:
         case 'e':
           message.data = CLOCKWISE;
           break;
+        case 'p':
+          message.data = STOP;
+          break;
         default:
           message.data = STOP;
           break;

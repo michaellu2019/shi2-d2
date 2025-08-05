@@ -31,6 +31,15 @@ enum WALKING_DIRECTION {
   CLOCKWISE = 6,
 };
 
+struct WalkingTwist {
+  double vx;
+  double vy;
+  double vz;
+  double wx;
+  double wy;
+  double wz;
+};
+
 const int NUM_LEG_JOINTS = 5;
 std::vector<std::string> LEFT_LEG_JOINTS = {"left_upper_hip_body_joint", "left_lower_hip_left_upper_hip_joint",
                                             "left_upper_leg_left_lower_hip_joint", "left_lower_leg_left_upper_leg_joint",
@@ -70,6 +79,7 @@ const double DEFAULT_FOOT_ROTATION_RY_RAD = 0.0;
 const double DEFAULT_FOOT_ROTATION_RZ_RAD = 0.0;
 
 const double TURN_STEP_ANGLE_RAD = 15 * (M_PI/180.0);
+const double STEP_LENGTH_M = 40.0e-3;
 const double FORWARD_STEP_LENGTH_M = 20.0e-3;
 const double SIDE_STEP_WIDTH_M = 20.0e-3;
 const double STEP_HEIGHT_M = 30.0e-3;

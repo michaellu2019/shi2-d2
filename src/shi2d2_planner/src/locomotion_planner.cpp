@@ -147,12 +147,13 @@ private:
   void mpc()
   {
     const double V_REF_X = 400e-3;
-    const double V_REF_Y = 0.0;
+    const double V_REF_Y = 0.05;
+    const double V_REF = sqrt(pow(V_REF_X, 2) + pow(V_REF_Y, 2));
     
     std::vector<double> v_refs_x(ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS, V_REF_X);
     std::vector<double> v_refs_y(ZMP_MPC_NUM_FOOTSTEP_PLANNING_TIMESTEPS, V_REF_Y);
 
-    double half_step_period_ms = ZMP_STEP_LENGTH_M/V_REF_X * 1000.0;
+    double half_step_period_ms = ZMP_STEP_LENGTH_M/V_REF * 1000.0;
     double step_period_ms = half_step_period_ms * 2;
     double double_support_duration_ms = half_step_period_ms/5;
     double single_support_duration_ms = half_step_period_ms - double_support_duration_ms;
