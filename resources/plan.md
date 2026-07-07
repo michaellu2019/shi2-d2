@@ -19,6 +19,7 @@
 - Disney BD-X Research Paper: https://la.disneyresearch.com/wp-content/uploads/BD_X_paper.pdf
 - Open Source BD-X: https://github.com/apirrone/Open_Duck_Mini
 - Open Source BD-X Build: https://youtu.be/Yb17agcttoQ
+- Kayden Kapnick's BD-X Build: https://youtu.be/r5bIgLKbuCI
 - Open Source Biped: https://github.com/golaced/OmniBotSeries-Tinker
 - Open Source Humanoid: https://github.com/opensourcerobot/Alpha_Human_gym
 - QDD Actuators: https://docs.google.com/spreadsheets/d/1shXSUE_LMXkp5jD5uSPLa-V1LpkE5tsNzz1r5Yb0H7o
